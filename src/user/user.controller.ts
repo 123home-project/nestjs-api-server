@@ -4,11 +4,10 @@ import { LoginDto } from './dto/login.dto';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    @Inject('IUserService') private readonly userService: IUserService) { }
+  constructor(@Inject('IUserService') private readonly userService: IUserService) {}
 
   @Post('/login')
   login(@Body() loginDto: LoginDto) {
     return this.userService.login(loginDto);
   }
-} 
+}

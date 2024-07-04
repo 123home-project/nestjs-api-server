@@ -1,5 +1,5 @@
-import { LoginDto } from "../dto/login.dto";
+import { LoginDto } from '../dto/login.dto';
 
 export interface IUserService {
-  login(loginDto: LoginDto)
+  login(loginDto: LoginDto);
 }
