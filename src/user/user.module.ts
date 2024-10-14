@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './adapter/in/controllers/user.controller';
-import { SignUpService } from './application/services/sign-up.service';
+import { UserController } from './adepter/in/controllers/user.controller';
+import { SnsSignUpService } from './application/services/sns-sign-up.service';
+import { SignUpStrategyMap } from './domain/strategy/map/sns-sign-up.strategy.map';
+import { GoogleSignUpStrategy } from './domain/strategy/google-sign-up.strategy';
 
 @Module({
   controllers: [UserController],
-  providers: [{ provide: 'ISignUpService', useClass: SignUpService }],
+  providers: [{ provide: 'ISnsSignUpService', useClass: SnsSignUpService }, SignUpStrategyMap, GoogleSignUpStrategy],
 })
 export class UserModule {}
