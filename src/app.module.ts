@@ -3,11 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
-import appConfig from './config/app.config';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
-  imports: [AuthModule, ConfigModule.forRoot(appConfig())],
+  imports: [AuthModule, SharedModule],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
 })
