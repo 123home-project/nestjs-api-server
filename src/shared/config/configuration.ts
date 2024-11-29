@@ -25,4 +25,13 @@ export default (): any => ({
     accessTokenExpires: String(process.env.JWT_ACCESS_TOKEN_EXPIRES),
     refreshTokenExpires: String(process.env.JWT_REFRESH_TOKEN_EXPIRES),
   },
+  db: {
+    mysql: {
+      host: String(process.env.DB_MYSQL_HOST),
+      port: String(process.env.DB_MYSQL_PORT),
+      name: String(process.env.DB_MYSQL_NAME),
+      user: String(process.env.DB_MYSQL_USER),
+      password: String(process.env.DB_MYSQL_PASSWORD),
+    },
+  },
 });
