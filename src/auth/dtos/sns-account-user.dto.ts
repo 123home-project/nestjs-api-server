@@ -1,4 +1,4 @@
-import { LoginPlatformType } from '../type/LoginPlatformType';
+import { LoginPlatformType } from '../types/LoginPlatformType';
 
 export class snsAccountUserDto {
   platform: LoginPlatformType;

@@ -18,7 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         password: configService.get('db.mysql.password'),
         timezone: 'Z',
         entities: ['dist/**/*.entity.{js,ts}'],
-        synchronize: false,
+        synchronize: true,
         debug: configService.get('env') === 'development',
         autoLoadEntities: true,
       }),
