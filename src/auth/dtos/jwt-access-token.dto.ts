@@ -1,3 +1,6 @@
-export class jwtAccessToken {
+import { IsNumber } from 'class-validator';
+
+export class jwtAccessTokenDto {
+  @IsNumber()
   userId: number;
 }

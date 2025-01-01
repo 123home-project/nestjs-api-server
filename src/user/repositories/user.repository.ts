@@ -14,6 +14,9 @@ export class UserRepository extends Repository<User> implements IUserRepository 
       where: {
         id: userId,
       },
+      relations: {
+        userAccount: true,
+      },
     });
   }
 
