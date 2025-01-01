@@ -4,10 +4,10 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { IUserService } from 'src/user/interfaces/user.service.inteface';
 import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
-import { UserAccount } from 'src/user/entities/user-account.entity';
 import { IRefreshTokenRepository } from '../interfaces/refresh-token.repository.interface';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import { User } from 'src/user/entities/user.entity';
+import { jwtRefreshTokenDto } from '../dtos/jwt-refresh-token.dto';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -20,10 +20,14 @@ export class AuthService implements IAuthService {
   async snsLogin(snsAccountUser: snsAccountUserDto) {
     const userAccount = await this.verifyValidateUserBySnsAcccountUser(snsAccountUser);
 
-    return await this.getAuthToken(userAccount);
+    return await this.getAuthToken(userAccount.userId);
   }
 
-  async verifyValidateUserBySnsAcccountUser(snsAccountUser: snsAccountUserDto) {
+  async convertRefreshToken(refreshToken: jwtRefreshTokenDto) {
+    return await this.getAuthToken(refreshToken.userId);
+  }
+
+  private async verifyValidateUserBySnsAcccountUser(snsAccountUser: snsAccountUserDto) {
     const userAccount = await this.userService.getUserAndAccountByAccountId(snsAccountUser.accountId);
 
     if (!userAccount) {
@@ -33,17 +37,19 @@ export class AuthService implements IAuthService {
     return userAccount;
   }
 
-  async getAuthToken(userAccount: UserAccount) {
+  private async getAuthToken(userId: number) {
+    const user = await this.userService.getUserById(userId);
+
     const accessTokenPayload = {
-      userId: userAccount.user.id,
-      nickname: userAccount.user.nickname,
-      registerDate: userAccount.user.createdAt,
-      platform: userAccount.platform,
+      userId: user.id,
+      nickname: user.nickname,
+      registerDate: user.createdAt,
+      platform: user.userAccount.platform,
     };
 
     const refreshTokenPayload = {
-      userId: userAccount.id,
-      platform: userAccount.platform,
+      userId: user.id,
+      platform: user.userAccount.platform,
     };
 
     const authToken = {
@@ -55,7 +61,7 @@ export class AuthService implements IAuthService {
       }),
     };
 
-    await this.addRefreshToken(authToken.refreshToken, userAccount.user);
+    await this.addRefreshToken(authToken.refreshToken, user);
 
     return authToken;
   }
