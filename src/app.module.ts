@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
+import { CryptoModule } from './crypto/crypto.module';
 
 @Module({
-  imports: [AuthModule, SharedModule, UserModule, EmailModule],
+  imports: [AuthModule, SharedModule, UserModule, EmailModule, CryptoModule],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
 })
