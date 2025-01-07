@@ -34,4 +34,15 @@ export default (): any => ({
       password: String(process.env.DB_MYSQL_PASSWORD),
     },
   },
+  email: {
+    auth: {
+      address: String(process.env.AUTH_EMAIL_ADDRESS),
+      password: String(process.env.AUTH_EMAIL_PASSWORD),
+    },
+  },
+  encryption: {
+    twoway: {
+      key: String(process.env.TWO_WAY_ENCRYPT_KEY),
+    },
+  },
 });
