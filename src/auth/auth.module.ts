@@ -13,11 +13,15 @@ import { UserModule } from 'src/user/user.module';
 import { RefreshTokenRepository } from './repositories/refresh-token.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
+import { EmailModule } from 'src/email/email.module';
+import { CryptoModule } from 'src/crypto/crypto.module';
 
 @Module({
   imports: [
     SharedModule,
     UserModule,
+    EmailModule,
+    CryptoModule,
     JwtModule.registerAsync({
       imports: [SharedModule],
       useFactory: async (configService: ConfigService) => ({

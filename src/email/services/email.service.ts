@@ -10,7 +10,11 @@ export class EmailService implements IEmailService {
     await this.mailerService.sendMail({
       to: email,
       subject: '[일이삼홈] 일이삼홈 인증안내',
-      html: `인증하고싶으면 아래 버튼 클릭 ${emailAuthToken}`,
+      html: `
+        계정 인증을 위해 아래 링크를 클릭해주세요 
+        <p><p>
+        <a>http://${emailAuthToken}</a>
+      `,
     });
   }
 }

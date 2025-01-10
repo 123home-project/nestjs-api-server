@@ -18,7 +18,8 @@ export class CryptoService implements ICryptoService {
 
   twoWayEncrypt(text: string): string {
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-cbc', this.configService.get('encryption.twoway.key'), iv);
+    const key = Buffer.from(this.configService.get('encryption.twoway.key'));
+    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
     const encrypt = cipher.update(text, 'utf8', 'hex');
     const encrypted = encrypt + cipher.final('hex');
     return `${encrypted}:${iv.toString('hex')}`;

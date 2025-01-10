@@ -23,5 +23,6 @@ import { EmailService } from './services/email.service';
     }),
   ],
   providers: [{ provide: 'IEmailService', useClass: EmailService }],
+  exports: [{ provide: 'IEmailService', useClass: EmailService }],
 })
 export class EmailModule {}
