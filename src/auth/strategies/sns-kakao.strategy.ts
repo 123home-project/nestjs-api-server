@@ -22,6 +22,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
         platform: LoginPlatformType.Kakao,
         name: profile._json.properties.nickname,
         accountId: profile._json.id,
+        verify: true,
       };
       return snsAccountUser;
     } catch (error) {

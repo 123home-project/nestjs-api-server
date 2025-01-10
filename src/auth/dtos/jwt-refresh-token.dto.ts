@@ -1,7 +1,7 @@
 import { IsEnum, IsNumber } from 'class-validator';
 import { LoginPlatformType } from '../types/LoginPlatformType';
 
-export class jwtRefreshTokenDto {
+export class JwtRefreshTokenDto {
   @IsNumber()
   userId: number;
 

@@ -22,7 +22,9 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
         name: profile.name,
         accountId: profile.id,
         email: profile.email,
+        verify: true,
       };
+
       return snsAccountUser;
     } catch (error) {
       throw error;

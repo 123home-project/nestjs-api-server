@@ -24,6 +24,9 @@ export class UserAccount {
   @Column({ type: 'varchar' })
   platform: LoginPlatformType;
 
+  @Column({ type: 'boolean' })
+  verify: boolean;
+
   @OneToOne(() => User, (user) => user.userAccount, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;

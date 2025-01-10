@@ -23,7 +23,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         name: profile._json.name,
         accountId: profile._json.sub,
         email: profile._json.email,
+        verify: true,
       };
+
       return snsAccountUser;
     } catch (error) {
       throw error;

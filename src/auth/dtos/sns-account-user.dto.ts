@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
 import { LoginPlatformType } from '../types/LoginPlatformType';
 
 export class snsAccountUserDto {
@@ -13,4 +13,7 @@ export class snsAccountUserDto {
 
   @IsEmail()
   email?: string;
+
+  @IsBoolean()
+  verify: boolean;
 }
