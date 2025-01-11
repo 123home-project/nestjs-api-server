@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { IUserRepository } from '../interfaces/user.repository.interface';
+import { LoginPlatformType } from 'src/auth/types/LoginPlatformType';
 
 @Injectable()
 export class UserRepository extends Repository<User> implements IUserRepository {
@@ -22,5 +23,19 @@ export class UserRepository extends Repository<User> implements IUserRepository 
 
   async addUser(user: User): Promise<User> {
     return await this.save(user);
+  }
+
+  async getLocalUserByEmail(email: string): Promise<User[]> {
+    return await this.find({
+      where: {
+        email: email,
+        userAccount: {
+          platform: LoginPlatformType.Normal,
+        },
+      },
+      relations: {
+        userAccount: true,
+      },
+    });
   }
 }

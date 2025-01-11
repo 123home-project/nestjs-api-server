@@ -26,7 +26,7 @@ export class CryptoService implements ICryptoService {
   }
 
   twoWayDecrypt(encryptedText: string): string {
-    const [ivHex, encrypted] = encryptedText.split(':');
+    const [encrypted, ivHex] = encryptedText.split(':');
     const iv = Buffer.from(ivHex, 'hex');
     const decipher = crypto.createDecipheriv('aes-256-cbc', this.configService.get('encryption.twoway.key'), iv);
     const decrypt = decipher.update(encrypted, 'hex', 'utf8');
