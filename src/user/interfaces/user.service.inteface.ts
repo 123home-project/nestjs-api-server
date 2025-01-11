@@ -9,4 +9,5 @@ export interface IUserService {
   addUserBySnsAccount(snsAccountUserDto: snsAccountUserDto);
   addUserByLocal(localRegisterDto: LocalRegisterDto);
   isUserByEmail(email: string);
+  verifyUserAccountByUserId(userId: number);
 }

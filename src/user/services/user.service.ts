@@ -61,4 +61,8 @@ export class UserService implements IUserService {
   async isUserByEmail(email: string) {
     return (await this.userRepository.getLocalUserByEmail(email)).length > 0;
   }
+
+  async verifyUserAccountByUserId(userId: number) {
+    await this.userAccountRepository.updateUserAccountVerifyByUserId(userId);
+  }
 }

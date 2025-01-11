@@ -56,12 +56,30 @@ export class AuthService implements IAuthService {
     if (await this.userService.isUserByEmail(localRegisterDto.email)) {
       throw new BadRequestException('이미 가입된 계정 이메일입니다.', 'EmailAlreadyExists');
     }
+
     localRegisterDto.password = await this.cryptoService.passwordEcrypt(localRegisterDto.password);
     const userAccount = await this.userService.addUserByLocal(localRegisterDto);
-    const emailAuthToken = this.cryptoService.twoWayEncrypt(String(userAccount.user.id));
+
+    const nowtime = new Date();
+    const emailAuthTokenJson = {
+      userId: userAccount.user.id,
+      expire: nowtime.setMinutes(nowtime.getMinutes() + 30),
+    };
+
+    const emailAuthToken = this.cryptoService.twoWayEncrypt(JSON.stringify(emailAuthTokenJson));
     await this.emailService.sendLocalRegisterVerifyEmail(localRegisterDto.email, emailAuthToken);
 
     return this.getAuthToken(userAccount.user.id);
+  }
+
+  async verifyRegisterEmail(emailauthtoken: string) {
+    const emailAuthTokenJson = JSON.parse(this.cryptoService.twoWayDecrypt(emailauthtoken));
+
+    if (emailAuthTokenJson.expire < new Date().getMinutes()) {
+      throw new UnauthorizedException('인증 시간이 초과되었습니다.', 'TimeOut');
+    }
+
+    await this.userService.verifyUserAccountByUserId(emailAuthTokenJson.userId);
   }
 
   private async validateUserBySnsAcccountUser(snsAccountUser: snsAccountUserDto) {

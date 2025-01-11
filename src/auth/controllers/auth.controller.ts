@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Query, UseGuards } from '@nestjs/common';
 import { GoogleAuthGuard } from 'src/auth/guards/sns-google.auth.guard';
 import { KakaoAuthGuard } from 'src/auth/guards/sns-kakao.auth.guard';
 import { NaverAuthGuard } from 'src/auth/guards/sns-naver.auth.guard';
@@ -61,5 +61,10 @@ export class AuthController {
   @Post('/register')
   async localRegister(@Body() localRegisterDto: LocalRegisterDto) {
     return await this.authService.localRegister(localRegisterDto);
+  }
+
+  @Get('/email')
+  async verifyRegisterEmail(@Query('emailauthtoken') emailauthtoken: string) {
+    return await this.authService.verifyRegisterEmail(emailauthtoken);
   }
 }

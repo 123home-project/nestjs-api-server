@@ -8,4 +8,5 @@ export interface IAuthService {
   validateUserByLocalAccount(email: string, password: string);
   localLogin(userId: number);
   localRegister(localRegisterDto: LocalRegisterDto);
+  verifyRegisterEmail(emailauthcode: string);
 }
