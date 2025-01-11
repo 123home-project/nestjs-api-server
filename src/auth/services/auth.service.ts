@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { IAuthService } from '../interfaces/auth.service.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -53,6 +53,9 @@ export class AuthService implements IAuthService {
   }
 
   async localRegister(localRegisterDto: LocalRegisterDto) {
+    if (await this.userService.isUserByEmail(localRegisterDto.email)) {
+      throw new BadRequestException('이미 가입된 계정 이메일입니다.', 'EmailAlreadyExists');
+    }
     localRegisterDto.password = await this.cryptoService.passwordEcrypt(localRegisterDto.password);
     const userAccount = await this.userService.addUserByLocal(localRegisterDto);
     const emailAuthToken = this.cryptoService.twoWayEncrypt(String(userAccount.user.id));

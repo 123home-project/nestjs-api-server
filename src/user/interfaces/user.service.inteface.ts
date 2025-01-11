@@ -8,4 +8,5 @@ export interface IUserService {
   getUserAndAccountByAccountId(accountId: string): Promise<UserAccount>;
   addUserBySnsAccount(snsAccountUserDto: snsAccountUserDto);
   addUserByLocal(localRegisterDto: LocalRegisterDto);
+  isUserByEmail(email: string);
 }
