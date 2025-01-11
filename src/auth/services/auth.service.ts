@@ -11,6 +11,7 @@ import { JwtRefreshTokenDto } from '../dtos/jwt-refresh-token.dto';
 import { LocalRegisterDto } from '../dtos/local-register.dto';
 import { IEmailService } from 'src/email/interfaces/email.service.inteface';
 import { ICryptoService } from 'src/crypto/interfaces/crypto.service.interface';
+import { JwtAccessTokenDto } from '../dtos/jwt-access-token.dto';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -60,14 +61,7 @@ export class AuthService implements IAuthService {
     localRegisterDto.password = await this.cryptoService.passwordEcrypt(localRegisterDto.password);
     const userAccount = await this.userService.addUserByLocal(localRegisterDto);
 
-    const nowtime = new Date();
-    const emailAuthTokenJson = {
-      userId: userAccount.user.id,
-      expire: nowtime.setMinutes(nowtime.getMinutes() + 30),
-    };
-
-    const emailAuthToken = this.cryptoService.twoWayEncrypt(JSON.stringify(emailAuthTokenJson));
-    await this.emailService.sendLocalRegisterVerifyEmail(localRegisterDto.email, emailAuthToken);
+    await this.sendRegisterVerifyEmail(userAccount.user.id, localRegisterDto.email);
 
     return this.getAuthToken(userAccount.user.id);
   }
@@ -75,11 +69,25 @@ export class AuthService implements IAuthService {
   async verifyRegisterEmail(emailauthtoken: string) {
     const emailAuthTokenJson = JSON.parse(this.cryptoService.twoWayDecrypt(emailauthtoken));
 
-    if (emailAuthTokenJson.expire < new Date().getMinutes()) {
-      throw new UnauthorizedException('인증 시간이 초과되었습니다.', 'TimeOut');
+    if (emailAuthTokenJson.expire < Number(new Date())) {
+      throw new UnauthorizedException('인증 시간이 초과되었습니다.', 'VerifyTimeOut');
     }
 
     await this.userService.verifyUserAccountByUserId(emailAuthTokenJson.userId);
+  }
+
+  async addRefreshToken(refreshToken: string, user: User) {
+    const refreshTokenEntity = new RefreshToken();
+    refreshTokenEntity.token = refreshToken;
+    refreshTokenEntity.user = user;
+
+    await this.refreshTokenRepository.addRefreshToken(refreshTokenEntity);
+  }
+
+  async resendVerifyEmail(accessTokenUser: JwtAccessTokenDto) {
+    const user = await this.userService.getUserById(accessTokenUser.userId);
+    console.log(accessTokenUser.userId, user, user.email);
+    await this.sendRegisterVerifyEmail(accessTokenUser.userId, user.email);
   }
 
   private async validateUserBySnsAcccountUser(snsAccountUser: snsAccountUserDto) {
@@ -122,11 +130,14 @@ export class AuthService implements IAuthService {
     return authToken;
   }
 
-  async addRefreshToken(refreshToken: string, user: User) {
-    const refreshTokenEntity = new RefreshToken();
-    refreshTokenEntity.token = refreshToken;
-    refreshTokenEntity.user = user;
+  private async sendRegisterVerifyEmail(userId: number, email: string) {
+    const nowtime = new Date();
+    const emailAuthTokenJson = {
+      userId: userId,
+      expire: nowtime.setMinutes(nowtime.getMinutes() + 30),
+    };
 
-    await this.refreshTokenRepository.addRefreshToken(refreshTokenEntity);
+    const emailAuthToken = this.cryptoService.twoWayEncrypt(JSON.stringify(emailAuthTokenJson));
+    await this.emailService.sendLocalRegisterVerifyEmail(email, emailAuthToken);
   }
 }

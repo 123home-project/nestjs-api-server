@@ -11,6 +11,9 @@ import { RefreshTokenUser } from '../decorators/refresh-token.decorator';
 import { LocalAuthGuard } from '../guards/local.auth.guard';
 import { LocalUserId } from '../decorators/local-user-account.decorator';
 import { LocalRegisterDto } from '../dtos/local-register.dto';
+import { AccessTokenAuthGuard } from '../guards/jwt-access-token.auth.guard';
+import { AccessTokenUser } from '../decorators/access-token.decorator';
+import { JwtAccessTokenDto } from '../dtos/jwt-access-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -55,6 +58,7 @@ export class AuthController {
   @Post('/login')
   @UseGuards(LocalAuthGuard)
   localLogin(@LocalUserId() userId: number) {
+    console.log(userId);
     return this.authService.localLogin(userId);
   }
 
@@ -66,5 +70,11 @@ export class AuthController {
   @Get('/email')
   async verifyRegisterEmail(@Query('emailauthtoken') emailauthtoken: string) {
     return await this.authService.verifyRegisterEmail(emailauthtoken);
+  }
+
+  @Post('/email-resend')
+  @UseGuards(AccessTokenAuthGuard)
+  async resendEmail(@AccessTokenUser() accessTokenUser: JwtAccessTokenDto) {
+    return await this.authService.resendVerifyEmail(accessTokenUser);
   }
 }
