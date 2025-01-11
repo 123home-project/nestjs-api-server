@@ -15,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { EmailModule } from 'src/email/email.module';
 import { CryptoModule } from 'src/crypto/crypto.module';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CryptoModule } from 'src/crypto/crypto.module';
     NaverStrategy,
     JwtAccessTokenStrategy,
     JwtRefreshTokenStrategy,
+    LocalStrategy,
   ],
 })
 export class AuthModule {}
