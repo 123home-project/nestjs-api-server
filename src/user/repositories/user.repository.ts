@@ -25,8 +25,8 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     return await this.save(user);
   }
 
-  async getLocalUserByEmail(email: string): Promise<User[]> {
-    return await this.find({
+  async getLocalUserByEmail(email: string): Promise<User> {
+    return await this.findOne({
       where: {
         email: email,
         userAccount: {

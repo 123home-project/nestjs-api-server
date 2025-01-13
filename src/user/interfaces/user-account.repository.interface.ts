@@ -4,4 +4,5 @@ export interface IUserAccountRepository {
   getUserAndAccountByAccountId(accountId: string): Promise<UserAccount>;
   addUserAccount(userAccount: UserAccount): Promise<UserAccount>;
   updateUserAccountVerifyByUserId(userId: number);
+  updateUserAccountPasswordByUserId(userId: number, password: string);
 }

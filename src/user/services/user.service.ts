@@ -58,11 +58,15 @@ export class UserService implements IUserService {
     return await this.userAccountRepository.addUserAccount(userAccount);
   }
 
-  async isUserByEmail(email: string) {
-    return (await this.userRepository.getLocalUserByEmail(email)).length > 0;
-  }
-
   async verifyUserAccountByUserId(userId: number) {
     await this.userAccountRepository.updateUserAccountVerifyByUserId(userId);
+  }
+
+  async getLocalUserByEmail(email: string) {
+    return await this.userRepository.getLocalUserByEmail(email);
+  }
+
+  async resetUserAccountPasswordByUserId(userId: number, password: string) {
+    await this.userAccountRepository.updateUserAccountPasswordByUserId(userId, password);
   }
 }
