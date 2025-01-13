@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { GoogleAuthGuard } from 'src/auth/guards/sns-google.auth.guard';
 import { KakaoAuthGuard } from 'src/auth/guards/sns-kakao.auth.guard';
 import { NaverAuthGuard } from 'src/auth/guards/sns-naver.auth.guard';
@@ -15,6 +15,7 @@ import { AccessTokenAuthGuard } from '../guards/jwt-access-token.auth.guard';
 import { AccessTokenUser } from '../decorators/access-token.decorator';
 import { JwtAccessTokenDto } from '../dtos/jwt-access-token.dto';
 import { PasswordForgetDto } from '../dtos/password-forget.dto';
+import { PasswordResetDto } from '../dtos/password-reset.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -82,5 +83,10 @@ export class AuthController {
   @Post('/password-forget')
   async forgetPassword(@Body() passwordForgetDto: PasswordForgetDto) {
     return await this.authService.sendPasswordResetEmail(passwordForgetDto);
+  }
+
+  @Patch('/password-reset')
+  async resetPassword(@Body() passwordResetDto: PasswordResetDto) {
+    return await this.authService.resetPassword(passwordResetDto);
   }
 }

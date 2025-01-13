@@ -10,4 +10,5 @@ export interface IUserService {
   addUserByLocal(localRegisterDto: LocalRegisterDto);
   verifyUserAccountByUserId(userId: number);
   getLocalUserByEmail(email: string);
+  resetUserAccountPasswordByUserId(userId: number, password: string);
 }

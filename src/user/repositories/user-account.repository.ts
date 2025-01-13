@@ -27,4 +27,8 @@ export class UserAccountRepository extends Repository<UserAccount> implements IU
   async updateUserAccountVerifyByUserId(userId: number) {
     await this.update({ user: { id: userId } }, { verify: true });
   }
+
+  async updateUserAccountPasswordByUserId(userId: number, password: string) {
+    await this.update({ user: { id: userId } }, { password });
+  }
 }

@@ -13,6 +13,7 @@ import { IEmailService } from 'src/email/interfaces/email.service.inteface';
 import { ICryptoService } from 'src/crypto/interfaces/crypto.service.interface';
 import { JwtAccessTokenDto } from '../dtos/jwt-access-token.dto';
 import { PasswordForgetDto } from '../dtos/password-forget.dto';
+import { PasswordResetDto } from '../dtos/password-reset.dto';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -95,6 +96,17 @@ export class AuthService implements IAuthService {
     const user = await this.userService.getLocalUserByEmail(passwordForgetDto.email);
     const emailAuthCode = await this.createEmailSecretToken(user.id);
     await this.emailService.sendResetPasswordEmail(user.email, emailAuthCode);
+  }
+
+  async resetPassword(passwordResetDto: PasswordResetDto) {
+    const { emailAuthCode, password } = passwordResetDto;
+    const emailAuthTokenJson = JSON.parse(this.cryptoService.twoWayDecrypt(emailAuthCode));
+
+    if (emailAuthTokenJson.expire < Number(new Date())) {
+      throw new UnauthorizedException('인증 시간이 초과되었습니다.', 'VerifyTimeOut');
+    }
+    const passwordEcrypt = await this.cryptoService.passwordEcrypt(password);
+    await this.userService.resetUserAccountPasswordByUserId(emailAuthTokenJson.userId, passwordEcrypt);
   }
 
   private async validateUserBySnsAcccountUser(snsAccountUser: snsAccountUserDto) {
