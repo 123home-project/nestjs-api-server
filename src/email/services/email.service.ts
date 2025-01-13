@@ -17,4 +17,16 @@ export class EmailService implements IEmailService {
       `,
     });
   }
+
+  async sendResetPasswordEmail(email: string, emailAuthToken: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: '[일이삼홈] 일이삼홈 비밀번호 변경 안내',
+      html: `
+        비밀번호 변경을 위해 새로운 비밀번호를 입력해주세요 
+        <p><p>
+        <a href="https://www.naver.com?emailauthtoken=${emailAuthToken}">비밀 번호 입력</a>
+      `,
+    });
+  }
 }

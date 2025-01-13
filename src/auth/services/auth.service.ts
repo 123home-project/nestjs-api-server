@@ -12,6 +12,7 @@ import { LocalRegisterDto } from '../dtos/local-register.dto';
 import { IEmailService } from 'src/email/interfaces/email.service.inteface';
 import { ICryptoService } from 'src/crypto/interfaces/crypto.service.interface';
 import { JwtAccessTokenDto } from '../dtos/jwt-access-token.dto';
+import { PasswordForgetDto } from '../dtos/password-forget.dto';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -54,15 +55,15 @@ export class AuthService implements IAuthService {
   }
 
   async localRegister(localRegisterDto: LocalRegisterDto) {
-    if (await this.userService.isUserByEmail(localRegisterDto.email)) {
+    if (await this.userService.getLocalUserByEmail(localRegisterDto.email)) {
       throw new BadRequestException('이미 가입된 계정 이메일입니다.', 'EmailAlreadyExists');
     }
 
     localRegisterDto.password = await this.cryptoService.passwordEcrypt(localRegisterDto.password);
     const userAccount = await this.userService.addUserByLocal(localRegisterDto);
 
-    await this.sendRegisterVerifyEmail(userAccount.user.id, localRegisterDto.email);
-
+    const emailAuthCode = await this.createEmailSecretToken(userAccount.user.id);
+    await this.emailService.sendLocalRegisterVerifyEmail(localRegisterDto.email, emailAuthCode);
     return this.getAuthToken(userAccount.user.id);
   }
 
@@ -86,13 +87,18 @@ export class AuthService implements IAuthService {
 
   async resendVerifyEmail(accessTokenUser: JwtAccessTokenDto) {
     const user = await this.userService.getUserById(accessTokenUser.userId);
-    console.log(accessTokenUser.userId, user, user.email);
-    await this.sendRegisterVerifyEmail(accessTokenUser.userId, user.email);
+    const emailAuthCode = await this.createEmailSecretToken(accessTokenUser.userId);
+    await this.emailService.sendLocalRegisterVerifyEmail(user.email, emailAuthCode);
+  }
+
+  async sendPasswordResetEmail(passwordForgetDto: PasswordForgetDto) {
+    const user = await this.userService.getLocalUserByEmail(passwordForgetDto.email);
+    const emailAuthCode = await this.createEmailSecretToken(user.id);
+    await this.emailService.sendResetPasswordEmail(user.email, emailAuthCode);
   }
 
   private async validateUserBySnsAcccountUser(snsAccountUser: snsAccountUserDto) {
     const userAccount = await this.userService.getUserAndAccountByAccountId(snsAccountUser.accountId);
-
     if (!userAccount) {
       return await this.userService.addUserBySnsAccount(snsAccountUser);
     }
@@ -130,14 +136,13 @@ export class AuthService implements IAuthService {
     return authToken;
   }
 
-  private async sendRegisterVerifyEmail(userId: number, email: string) {
+  private async createEmailSecretToken(userId: number) {
     const nowtime = new Date();
     const emailAuthTokenJson = {
       userId: userId,
       expire: nowtime.setMinutes(nowtime.getMinutes() + 30),
     };
 
-    const emailAuthToken = this.cryptoService.twoWayEncrypt(JSON.stringify(emailAuthTokenJson));
-    await this.emailService.sendLocalRegisterVerifyEmail(email, emailAuthToken);
+    return this.cryptoService.twoWayEncrypt(JSON.stringify(emailAuthTokenJson));
   }
 }

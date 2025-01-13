@@ -14,6 +14,7 @@ import { LocalRegisterDto } from '../dtos/local-register.dto';
 import { AccessTokenAuthGuard } from '../guards/jwt-access-token.auth.guard';
 import { AccessTokenUser } from '../decorators/access-token.decorator';
 import { JwtAccessTokenDto } from '../dtos/jwt-access-token.dto';
+import { PasswordForgetDto } from '../dtos/password-forget.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -76,5 +77,10 @@ export class AuthController {
   @UseGuards(AccessTokenAuthGuard)
   async resendEmail(@AccessTokenUser() accessTokenUser: JwtAccessTokenDto) {
     return await this.authService.resendVerifyEmail(accessTokenUser);
+  }
+
+  @Post('/password-forget')
+  async forgetPassword(@Body() passwordForgetDto: PasswordForgetDto) {
+    return await this.authService.sendPasswordResetEmail(passwordForgetDto);
   }
 }
