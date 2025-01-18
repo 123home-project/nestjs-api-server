@@ -7,9 +7,11 @@ import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
 import { CryptoModule } from './crypto/crypto.module';
+import { TeamModule } from './team/team.module';
+import { PlayerModule } from './player/player.module';
 
 @Module({
-  imports: [AuthModule, SharedModule, UserModule, EmailModule, CryptoModule],
+  imports: [AuthModule, SharedModule, UserModule, EmailModule, CryptoModule, TeamModule, PlayerModule],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
 })

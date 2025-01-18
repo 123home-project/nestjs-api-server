@@ -1,0 +1,31 @@
+import { IsEnum, IsNumber, IsOptional, Min } from 'class-validator';
+import { TeamStatsSortType } from '../types/TeamStatsSortType';
+import { SortOrderType } from 'src/shared/types/SortOrderType';
+import { Transform } from 'class-transformer';
+
+export class TeamStatsDto {
+  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
+  year?: number = new Date().getFullYear();
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
+  limit: number = 100;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
+  offset?: number = 0;
+
+  @IsEnum(TeamStatsSortType)
+  @IsOptional()
+  sortBy: TeamStatsSortType = 'winRate';
+
+  @IsEnum(SortOrderType)
+  @IsOptional()
+  sortOrder: SortOrderType = 'desc';
+}
