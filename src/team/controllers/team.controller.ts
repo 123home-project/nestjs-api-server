@@ -7,7 +7,7 @@ export class TeamController {
   constructor(@Inject('ITeamService') private readonly teamService: ITeamService) {}
 
   @Get('/stat')
-  @UsePipes(new ValidationPipe({ transform: true }))
+  // @UsePipes(new ValidationPipe({ transform: true }))
   async getTeamStats(@Query() teamStatsDto: TeamStatsDto) {
     return await this.teamService.getTeamStats(teamStatsDto);
   }

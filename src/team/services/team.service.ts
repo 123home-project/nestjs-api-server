@@ -11,9 +11,7 @@ export class TeamService implements ITeamService {
 
   async getTeamStats(teamStatsDto: TeamStatsDto) {
     const { year, limit, offset, sortBy, sortOrder } = teamStatsDto;
-    console.log(teamStatsDto);
     const teamStats = await this.teamRepository.getTeamStats(year, sortBy, sortOrder, limit, offset);
-    console.log(teamStats);
     const results = teamStats.map((teamStats) => {
       return {
         ...teamStats,
@@ -22,6 +20,7 @@ export class TeamService implements ITeamService {
         gameCount: teamStats.win + teamStats.draw + teamStats.lose,
       };
     });
+
     return plainToInstance(TeamStatsResponse, results, { excludeExtraneousValues: true });
   }
 }
