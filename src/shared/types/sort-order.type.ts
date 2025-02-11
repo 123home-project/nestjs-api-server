@@ -1,6 +1,6 @@
 export const SortOrderType = {
-  asc: 'asc',
-  desc: 'desc',
+  asc: 'ASC',
+  desc: 'DESC',
 } as const;
 
 export type SortOrderType = (typeof SortOrderType)[keyof typeof SortOrderType];

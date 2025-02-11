@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { LoginPlatformType } from 'src/auth/types/LoginPlatformType';
+import { LoginPlatformType } from 'src/auth/types/login-platform.type';
 
 @Entity('user_account')
 export class UserAccount {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { IUserRepository } from '../interfaces/user.repository.interface';
-import { LoginPlatformType } from 'src/auth/types/LoginPlatformType';
+import { LoginPlatformType } from 'src/auth/types/login-platform.type';
 
 @Injectable()
 export class UserRepository extends Repository<User> implements IUserRepository {

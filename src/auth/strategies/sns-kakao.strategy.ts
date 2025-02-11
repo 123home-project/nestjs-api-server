@@ -1,6 +1,6 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-kakao';
-import { LoginPlatformType } from '../types/LoginPlatformType';
+import { LoginPlatformType } from '../types/login-platform.type';
 import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';

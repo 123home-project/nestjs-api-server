@@ -1,5 +1,5 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { LoginPlatformType } from '../types/LoginPlatformType';
+import { LoginPlatformType } from '../types/login-platform.type';
 import { Profile, Strategy } from 'passport-naver-v2';
 import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
 import { ConfigService } from '@nestjs/config';
