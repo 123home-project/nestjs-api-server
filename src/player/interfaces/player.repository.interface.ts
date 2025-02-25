@@ -10,6 +10,7 @@ export interface IPlayerRepository {
     limit: number,
     regulation: number,
     year: number,
+    offset: number,
   ): Promise<Player[]>;
 
   getPlayerPitcherStat(
@@ -18,5 +19,6 @@ export interface IPlayerRepository {
     limit: number,
     regulation: number,
     year: number,
+    offset: number,
   ): Promise<Player[]>;
 }

@@ -17,6 +17,7 @@ export class PlayerRepository extends Repository<Player> implements IPlayerRepos
     limit: number,
     regulation: number,
     year: number,
+    offset: number,
   ): Promise<Player[]> {
     return this.createQueryBuilder('p')
       .innerJoinAndSelect('p.playerPitcherStat', 'pps')
@@ -31,6 +32,7 @@ export class PlayerRepository extends Repository<Player> implements IPlayerRepos
         { regulation, year },
       )
       .orderBy(`pps.${sortBy}`, sortOrder)
+      .skip(offset)
       .take(limit)
       .getMany();
   }
@@ -41,6 +43,7 @@ export class PlayerRepository extends Repository<Player> implements IPlayerRepos
     limit: number,
     regulation: number,
     year: number,
+    offset: number,
   ): Promise<Player[]> {
     return this.createQueryBuilder('p')
       .innerJoinAndSelect('p.playerHitterStat', 'phs')
@@ -55,6 +58,7 @@ export class PlayerRepository extends Repository<Player> implements IPlayerRepos
         { regulation, year },
       )
       .orderBy(`phs.${sortBy}`, sortOrder)
+      .skip(offset)
       .take(limit)
       .getMany();
   }

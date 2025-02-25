@@ -65,10 +65,10 @@ export class PlayerPitcherStat {
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   whip?: number;
 
-  @Column({ type: 'decimal', precision: 7, scale: 1, nullable: true })
+  @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })
   k9?: number;
 
-  @Column({ type: 'decimal', precision: 7, scale: 1, nullable: true })
+  @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })
   bb9?: number;
 
   @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })

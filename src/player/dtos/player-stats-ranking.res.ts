@@ -62,7 +62,7 @@ export class HitterStatsRankingDto {
   war: PlayerRankingProfileDto[];
 }
 
-export class PlayerStatsTankingRes {
+export class PlayerStatsRankingRes {
   @ValidateNested()
   @Type(() => PitcherStatsRankingDto)
   pitcher: PitcherStatsRankingDto;
