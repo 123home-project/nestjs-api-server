@@ -1,16 +1,6 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { Team } from '../../team/entities/team.entity';
-import { PlayerPitcherStat } from './player-pitcher-stat';
-import { PlayerHitterStat } from './player-hitter-stat';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { PlayerPitcherStat } from './player-pitcher-stat.entity';
+import { PlayerHitterStat } from './player-hitter-stat.entity';
 
 @Entity('player')
 export class Player {
@@ -23,12 +13,8 @@ export class Player {
   @Column({ type: 'date' })
   birth: Date;
 
-  @Column({ length: 255, type: 'varchar' })
+  @Column({ length: 255, type: 'varchar', nullable: true })
   profile?: string;
-
-  @ManyToOne(() => Team, (team) => team.player, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'team_id' })
-  team: Team;
 
   @OneToMany(() => PlayerPitcherStat, (playerPitcherStat) => playerPitcherStat.player, { cascade: true })
   playerPitcherStat?: PlayerPitcherStat[];
