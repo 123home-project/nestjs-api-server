@@ -14,7 +14,7 @@ export class TeamStat {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Team, (team) => team.player, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Team, (team) => team.teamStat, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'team_id' })
   team: Team;
 
@@ -30,7 +30,7 @@ export class TeamStat {
   @Column({ type: 'int', nullable: true })
   lose: number;
 
-  @Column({ type: 'float', nullable: true })
+  @Column({ name: 'win_rate', type: 'float', nullable: true })
   winRate: number;
 
   @Column({ type: 'float', nullable: true })
@@ -42,7 +42,7 @@ export class TeamStat {
   @Column({ type: 'float', nullable: true })
   ops: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'strike_out', type: 'int', nullable: true })
   strikeOut: number;
 
   @Column({ type: 'int', nullable: true })

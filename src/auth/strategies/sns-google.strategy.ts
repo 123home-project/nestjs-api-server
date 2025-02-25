@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
-import { LoginPlatformType } from '../types/LoginPlatformType';
+import { LoginPlatformType } from '../types/login-platform.type';
 import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
 import { Injectable } from '@nestjs/common';
 

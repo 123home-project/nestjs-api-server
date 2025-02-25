@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { ITeamStatRepository } from '../interfaces/team-stat.repository.interface';
-import { SortOrderType } from 'src/shared/types/SortOrderType';
+import { SortOrderType } from 'src/shared/types/sort-order.type';
 import { TeamStat } from '../entities/team-stat.entity';
-import { TeamStatsSortType } from '../types/TeamStatsSortType';
+import { TeamStatsType } from '../types/team-stats.type';
 
 @Injectable()
 export class TeamStatRepository extends Repository<TeamStat> implements ITeamStatRepository {
@@ -13,7 +13,7 @@ export class TeamStatRepository extends Repository<TeamStat> implements ITeamSta
 
   async getTeamStats(
     year: number,
-    sortBy: TeamStatsSortType,
+    sortBy: TeamStatsType,
     sortOrder: SortOrderType,
     limit: number,
     offset: number,

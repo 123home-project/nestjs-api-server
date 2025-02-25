@@ -8,23 +8,28 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Player } from './player.entity';
+import { Team } from 'src/team/entities/team.entity';
 
 @Entity('player_hitter_stat')
 export class PlayerHitterStat {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Player, (player) => player.playerHitterStat, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Player, (player) => player.playerHitterStat, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'player_id' })
   player: Player;
+
+  @ManyToOne(() => Team, (team) => team.playerHitterStat, { onDelete: 'CASCADE', nullable: false })
+  @JoinColumn({ name: 'team_id' })
+  team: Team;
 
   @Column({ type: 'int' })
   year: number;
 
-  @Column({ type: 'float', nullable: true })
-  avg?: number;
+  @Column({ type: 'decimal', precision: 4, scale: 3, nullable: true })
+  avg?: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'game_count', type: 'int', nullable: true })
   gameCount?: number;
 
   @Column({ type: 'int', nullable: true })
@@ -33,11 +38,17 @@ export class PlayerHitterStat {
   @Column({ type: 'int', nullable: true })
   ab?: number;
 
-  @Column({ type: 'float', nullable: true })
-  obp?: number;
+  @Column({ type: 'decimal', precision: 4, scale: 3, nullable: true })
+  obp?: string;
 
-  @Column({ type: 'float', nullable: true })
-  slg?: number;
+  @Column({ type: 'decimal', precision: 4, scale: 3, nullable: true })
+  slg?: string;
+
+  @Column({ type: 'decimal', precision: 4, scale: 3, nullable: true })
+  ops?: string;
+
+  @Column({ name: 'wrc_plus', type: 'decimal', precision: 5, scale: 1, nullable: true })
+  wrcPlus?: string;
 
   @Column({ type: 'int', nullable: true })
   hits?: number;
@@ -51,12 +62,6 @@ export class PlayerHitterStat {
   @Column({ type: 'int', nullable: true })
   homerun?: number;
 
-  @Column({ type: 'float', nullable: true })
-  ops?: number;
-
-  @Column({ type: 'float', nullable: true })
-  wrcPlus?: number;
-
   @Column({ type: 'int', nullable: true })
   walks?: number;
 
@@ -69,8 +74,8 @@ export class PlayerHitterStat {
   @Column({ type: 'int', nullable: true })
   runs?: number;
 
-  @Column({ type: 'float', nullable: true })
-  war?: number;
+  @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })
+  war?: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

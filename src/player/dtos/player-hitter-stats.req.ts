@@ -1,9 +1,9 @@
 import { IsEnum, IsNumber, IsOptional, Min } from 'class-validator';
-import { TeamStatsType } from '../types/team-stats.type';
-import { SortOrderType } from 'src/shared/types/sort-order.type';
 import { Transform } from 'class-transformer';
+import { SortOrderType } from 'src/shared/types/sort-order.type';
+import { HitterStatType } from '../types/hitter-stat.type';
 
-export class TeamStatsDto {
+export class PlayerHitterStatsReq {
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
@@ -21,11 +21,11 @@ export class TeamStatsDto {
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   offset?: number = 0;
 
-  @IsEnum(TeamStatsType)
+  @IsEnum(HitterStatType)
   @IsOptional()
-  sortBy: TeamStatsType = 'winRate';
+  sortBy: HitterStatType = 'avg';
 
   @IsEnum(SortOrderType)
   @IsOptional()
-  sortOrder: SortOrderType = 'DESC';
+  sortOrder?: SortOrderType;
 }

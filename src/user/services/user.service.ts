@@ -7,7 +7,7 @@ import { User } from '../entities/user.entity';
 import { DEFAULT_USER_NICKNAME } from '../constants/nickname';
 import { UserAccount } from '../entities/user-account.entity';
 import { LocalRegisterDto } from 'src/auth/dtos/local-register.dto';
-import { LoginPlatformType } from 'src/auth/types/LoginPlatformType';
+import { LoginPlatformType } from 'src/auth/types/login-platform.type';
 
 @Injectable()
 export class UserService implements IUserService {

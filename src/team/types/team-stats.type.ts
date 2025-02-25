@@ -1,4 +1,4 @@
-export const TeamStatsSortType = {
+export const TeamStatsType = {
   win: 'win',
   draw: 'draw',
   lose: 'lose',
@@ -12,4 +12,4 @@ export const TeamStatsSortType = {
   wrcPlus: 'wrcPlus',
 } as const;
 
-export type TeamStatsSortType = (typeof TeamStatsSortType)[keyof typeof TeamStatsSortType];
+export type TeamStatsType = (typeof TeamStatsType)[keyof typeof TeamStatsType];

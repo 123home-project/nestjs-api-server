@@ -6,7 +6,6 @@ declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(4321);
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
@@ -14,5 +13,7 @@ async function bootstrap() {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
+
+  await app.listen(4321);
 }
 bootstrap();
