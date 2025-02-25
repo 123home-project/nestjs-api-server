@@ -1,7 +1,8 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Player } from '../../player/entities/player.entity';
 import { TeamHistory } from './team-history.entity';
 import { TeamStat } from './team-stat.entity';
+import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
+import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
 
 @Entity('team')
 export class Team {
@@ -17,14 +18,17 @@ export class Team {
   @Column({ type: 'int', name: 'establishment_year' })
   establishmentYear: number;
 
-  @OneToMany(() => Player, (player) => player.team, { cascade: true })
-  player?: Player[];
-
   @OneToMany(() => TeamHistory, (teamHistory) => teamHistory.team, { cascade: true })
   teamHistory?: TeamHistory[];
 
   @OneToMany(() => TeamStat, (teamStat) => teamStat.team, { cascade: true })
   teamStat?: TeamStat[];
+
+  @OneToMany(() => PlayerHitterStat, (playerHitterStat) => playerHitterStat.team, { cascade: true })
+  playerHitterStat?: PlayerHitterStat[];
+
+  @OneToMany(() => PlayerPitcherStat, (playerPitcherStat) => playerPitcherStat.team, { cascade: true })
+  playerPitcherStat?: PlayerPitcherStat[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

@@ -14,7 +14,7 @@ export class TeamHistory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Team, (team) => team.player, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Team, (team) => team.teamHistory, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'team_id' })
   team: Team;
 
