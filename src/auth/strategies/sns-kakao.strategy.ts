@@ -12,7 +12,6 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       clientID: configService.get('kakao.auth.clientId'),
       clientSecret: configService.get('kakao.auth.clientSecret'),
       callbackURL: configService.get('kakao.auth.redirectUrl'),
-      scope: ['profile_nickname'],
     });
   }
 
