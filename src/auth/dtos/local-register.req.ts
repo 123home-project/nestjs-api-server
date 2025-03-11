@@ -1,6 +1,6 @@
 import { IsEmail, IsString } from 'class-validator';
 
-export class LocalRegisterDto {
+export class LocalRegisterReq {
   @IsEmail()
   email: string;
 

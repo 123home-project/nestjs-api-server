@@ -3,7 +3,7 @@ import { TeamStatsType } from '../types/team-stats.type';
 import { SortOrderType } from 'src/shared/types/sort-order.type';
 import { Transform } from 'class-transformer';
 
-export class TeamStatsDto {
+export class TeamStatsReq {
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })

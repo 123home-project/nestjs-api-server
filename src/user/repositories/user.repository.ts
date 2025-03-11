@@ -21,6 +21,17 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     });
   }
 
+  async getUserByAccountId(accountId: string): Promise<User> {
+    return await this.findOne({
+      where: {
+        userAccount: { accountId: accountId },
+      },
+      relations: {
+        userAccount: true,
+      },
+    });
+  }
+
   async addUser(user: User): Promise<User> {
     return await this.save(user);
   }

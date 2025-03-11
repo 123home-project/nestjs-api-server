@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { LoginPlatformType } from '../types/login-platform.type';
 import { Profile, Strategy } from 'passport-naver-v2';
-import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
+import { SnsAccountUserReq } from '../dtos/sns-account-user.req';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 
@@ -15,7 +15,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<snsAccountUserDto> {
+  async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<SnsAccountUserReq> {
     try {
       const snsAccountUser = {
         platform: LoginPlatformType.Naver,

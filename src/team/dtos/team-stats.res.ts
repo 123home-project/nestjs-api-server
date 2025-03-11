@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class TeamStatsResponse {
+export class TeamStatsRes {
   @Expose()
   name: string;
 

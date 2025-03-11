@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class PasswordResetDto {
+export class PasswordResetReq {
   @IsString()
   emailAuthCode: string;
 

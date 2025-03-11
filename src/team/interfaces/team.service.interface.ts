@@ -1,5 +1,6 @@
-import { TeamStatsDto } from '../dtos/team-stats.dto';
+import { TeamStatsReq } from '../dtos/team-stats.req';
+import { TeamStatsRes } from '../dtos/team-stats.res';
 
 export interface ITeamService {
-  getTeamStats(teamStatsDto: TeamStatsDto);
+  getTeamStats(teamStatsReq: TeamStatsReq): Promise<TeamStatsRes[]>;
 }

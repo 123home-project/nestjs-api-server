@@ -2,12 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IUserService } from '../interfaces/user.service.inteface';
 import { IUserRepository } from '../interfaces/user.repository.interface';
 import { IUserAccountRepository } from '../interfaces/user-account.repository.interface';
-import { snsAccountUserDto } from 'src/auth/dtos/sns-account-user.dto';
 import { User } from '../entities/user.entity';
 import { DEFAULT_USER_NICKNAME } from '../constants/nickname';
 import { UserAccount } from '../entities/user-account.entity';
-import { LocalRegisterDto } from 'src/auth/dtos/local-register.dto';
+import { LocalRegisterReq } from 'src/auth/dtos/local-register.req';
 import { LoginPlatformType } from 'src/auth/types/login-platform.type';
+import { UserRes } from '../dtos/user.res';
+import { plainToInstance } from 'class-transformer';
+import { SnsAccountUserReq } from 'src/auth/dtos/sns-account-user.req';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -16,54 +18,76 @@ export class UserService implements IUserService {
     @Inject('IUserAccountRepository') private readonly userAccountRepository: IUserAccountRepository,
   ) {}
 
-  async getUserById(userId: number) {
-    return await this.userRepository.getUserById(userId);
+  async getUserById(userId: number): Promise<UserRes> {
+    const user = await this.userRepository.getUserById(userId);
+    return plainToInstance(UserRes, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
-  async getUserAndAccountByAccountId(accountId: string) {
-    return await this.userAccountRepository.getUserAndAccountByAccountId(accountId);
+  async getUserByAccountId(accountId: string): Promise<UserRes> {
+    const user = await this.userRepository.getUserByAccountId(accountId);
+    return plainToInstance(UserRes, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
-  async addUserBySnsAccount(snsAccountUserDto: snsAccountUserDto) {
+  async addUserBySnsAccount(snsAccountUserReq: SnsAccountUserReq): Promise<UserRes> {
     const user = new User();
-    user.email = snsAccountUserDto.email;
-    user.name = snsAccountUserDto.name;
+    user.email = snsAccountUserReq.email;
+    user.name = snsAccountUserReq.name;
     user.nickname = DEFAULT_USER_NICKNAME;
 
     await this.userRepository.addUser(user);
 
     const userAccount = new UserAccount();
-    userAccount.accountId = snsAccountUserDto.accountId;
-    userAccount.platform = snsAccountUserDto.platform;
-    userAccount.verify = snsAccountUserDto.verify;
+    userAccount.accountId = snsAccountUserReq.accountId;
+    userAccount.platform = snsAccountUserReq.platform;
+    userAccount.verify = snsAccountUserReq.verify;
     userAccount.user = user;
 
-    return await this.userAccountRepository.addUserAccount(userAccount);
+    await this.userAccountRepository.addUserAccount(userAccount);
+
+    return plainToInstance(UserRes, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
-  async addUserByLocal(localRegisterDto: LocalRegisterDto) {
+  async addUserByLocal(localRegisterReq: LocalRegisterReq): Promise<UserRes> {
     const user = new User();
-    user.email = localRegisterDto.email;
+    user.email = localRegisterReq.email;
     user.nickname = DEFAULT_USER_NICKNAME;
 
     await this.userRepository.addUser(user);
 
     const userAccount = new UserAccount();
-    userAccount.accountId = localRegisterDto.email;
+    userAccount.accountId = localRegisterReq.email;
     userAccount.platform = LoginPlatformType.Normal;
     userAccount.verify = false;
     userAccount.user = user;
-    userAccount.password = localRegisterDto.password;
+    userAccount.password = localRegisterReq.password;
 
-    return await this.userAccountRepository.addUserAccount(userAccount);
+    await this.userAccountRepository.addUserAccount(userAccount);
+
+    return plainToInstance(UserRes, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
   async verifyUserAccountByUserId(userId: number) {
     await this.userAccountRepository.updateUserAccountVerifyByUserId(userId);
   }
 
-  async getLocalUserByEmail(email: string) {
-    return await this.userRepository.getLocalUserByEmail(email);
+  async getLocalUserByEmail(email: string): Promise<UserRes> {
+    const user = await this.userRepository.getLocalUserByEmail(email);
+    return plainToInstance(UserRes, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
   async resetUserAccountPasswordByUserId(userId: number, password: string) {
