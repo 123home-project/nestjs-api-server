@@ -9,17 +9,6 @@ export class UserAccountRepository extends Repository<UserAccount> implements IU
     super(UserAccount, dataSource.createEntityManager());
   }
 
-  async getUserAndAccountByAccountId(accountId: string): Promise<UserAccount> {
-    return await this.findOne({
-      where: {
-        accountId: accountId,
-      },
-      relations: {
-        user: true,
-      },
-    });
-  }
-
   async addUserAccount(userAccount: UserAccount): Promise<UserAccount> {
     return await this.save(userAccount);
   }

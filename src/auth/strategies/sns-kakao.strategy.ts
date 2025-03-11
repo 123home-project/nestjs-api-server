@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-kakao';
 import { LoginPlatformType } from '../types/login-platform.type';
-import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
+import { SnsAccountUserReq } from '../dtos/sns-account-user.req';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 
@@ -12,13 +12,12 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       clientID: configService.get('kakao.auth.clientId'),
       clientSecret: configService.get('kakao.auth.clientSecret'),
       callbackURL: configService.get('kakao.auth.redirectUrl'),
-      scope: ['profile_nickname'],
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<snsAccountUserDto> {
+  async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<SnsAccountUserReq> {
     try {
-      const snsAccountUser: snsAccountUserDto = {
+      const snsAccountUser: SnsAccountUserReq = {
         platform: LoginPlatformType.Kakao,
         name: profile._json.properties.nickname,
         accountId: profile._json.id,

@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
 import { LoginPlatformType } from '../types/login-platform.type';
-import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
+import { SnsAccountUserReq } from '../dtos/sns-account-user.req';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<snsAccountUserDto> {
+  async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<SnsAccountUserReq> {
     try {
       const snsAccountUser = {
         platform: LoginPlatformType.Google,

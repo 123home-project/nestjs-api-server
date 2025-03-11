@@ -3,17 +3,20 @@ import { IAuthService } from '../interfaces/auth.service.interface';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { IUserService } from 'src/user/interfaces/user.service.inteface';
-import { snsAccountUserDto } from '../dtos/sns-account-user.dto';
+import { SnsAccountUserReq } from '../dtos/sns-account-user.req';
 import { IRefreshTokenRepository } from '../interfaces/refresh-token.repository.interface';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import { User } from 'src/user/entities/user.entity';
-import { JwtRefreshTokenDto } from '../dtos/jwt-refresh-token.dto';
-import { LocalRegisterDto } from '../dtos/local-register.dto';
 import { IEmailService } from 'src/email/interfaces/email.service.inteface';
 import { ICryptoService } from 'src/crypto/interfaces/crypto.service.interface';
-import { JwtAccessTokenDto } from '../dtos/jwt-access-token.dto';
-import { PasswordForgetDto } from '../dtos/password-forget.dto';
-import { PasswordResetDto } from '../dtos/password-reset.dto';
+import { AuthTokenRes } from '../dtos/auth-token.res';
+import { plainToInstance } from 'class-transformer';
+import { UserRes } from 'src/user/dtos/user.res';
+import { JwtRefreshTokenReq } from '../dtos/jwt-refresh-token.req';
+import { LocalRegisterReq } from '../dtos/local-register.req';
+import { JwtAccessTokenReq } from '../dtos/jwt-access-token.req';
+import { PasswordForgetReq } from '../dtos/password-forget.req';
+import { PasswordResetReq } from '../dtos/password-reset.req';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -25,47 +28,50 @@ export class AuthService implements IAuthService {
     @Inject('IEmailService') private readonly emailService: IEmailService,
     @Inject('ICryptoService') private readonly cryptoService: ICryptoService,
   ) {}
-  async snsLogin(snsAccountUser: snsAccountUserDto) {
-    const userAccount = await this.validateUserBySnsAcccountUser(snsAccountUser);
+  async snsLogin(snsAccountUser: SnsAccountUserReq): Promise<AuthTokenRes> {
+    const user = await this.validateUserBySnsAcccountUser(snsAccountUser);
 
-    return await this.getAuthToken(userAccount.userId);
+    return await this.getAuthToken(user.id);
   }
 
-  async convertRefreshToken(refreshToken: JwtRefreshTokenDto) {
+  async convertRefreshToken(refreshToken: JwtRefreshTokenReq): Promise<AuthTokenRes> {
     return await this.getAuthToken(refreshToken.userId);
   }
 
-  async validateUserByLocalAccount(email: string, password: string) {
-    const userAccount = await this.userService.getUserAndAccountByAccountId(email);
+  async validateUserByLocalAccount(email: string, password: string): Promise<UserRes> {
+    const user = await this.userService.getUserByAccountId(email);
 
-    if (!userAccount) {
+    if (!user) {
       throw new UnauthorizedException('올바르지 않은 아이디 혹은 비밀번호');
     }
 
-    const match = await this.cryptoService.passwordMatch(password, userAccount.password);
+    const match = await this.cryptoService.passwordMatch(password, user.userAccount.password);
 
     if (!match) {
       throw new UnauthorizedException('올바르지 않은 아이디 혹은 비밀번호');
     }
 
-    return userAccount;
+    return plainToInstance(UserRes, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
-  localLogin(userId: number) {
+  localLogin(userId: number): Promise<AuthTokenRes> {
     return this.getAuthToken(userId);
   }
 
-  async localRegister(localRegisterDto: LocalRegisterDto) {
-    if (await this.userService.getLocalUserByEmail(localRegisterDto.email)) {
+  async localRegister(localRegisterReq: LocalRegisterReq): Promise<AuthTokenRes> {
+    if (await this.userService.getLocalUserByEmail(localRegisterReq.email)) {
       throw new BadRequestException('이미 가입된 계정 이메일입니다.', 'EmailAlreadyExists');
     }
 
-    localRegisterDto.password = await this.cryptoService.passwordEcrypt(localRegisterDto.password);
-    const userAccount = await this.userService.addUserByLocal(localRegisterDto);
+    localRegisterReq.password = await this.cryptoService.passwordEcrypt(localRegisterReq.password);
+    const user = await this.userService.addUserByLocal(localRegisterReq);
 
-    const emailAuthCode = await this.createEmailSecretToken(userAccount.user.id);
-    await this.emailService.sendLocalRegisterVerifyEmail(localRegisterDto.email, emailAuthCode);
-    return this.getAuthToken(userAccount.user.id);
+    const emailAuthCode = this.createEmailSecretToken(user.id);
+    await this.emailService.sendLocalRegisterVerifyEmail(localRegisterReq.email, emailAuthCode);
+    return this.getAuthToken(user.id);
   }
 
   async verifyRegisterEmail(emailauthtoken: string) {
@@ -78,28 +84,31 @@ export class AuthService implements IAuthService {
     await this.userService.verifyUserAccountByUserId(emailAuthTokenJson.userId);
   }
 
-  async addRefreshToken(refreshToken: string, user: User) {
+  async addRefreshToken(refreshToken: string, user: UserRes) {
     const refreshTokenEntity = new RefreshToken();
     refreshTokenEntity.token = refreshToken;
-    refreshTokenEntity.user = user;
+    refreshTokenEntity.user = plainToInstance(User, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
 
     await this.refreshTokenRepository.addRefreshToken(refreshTokenEntity);
   }
 
-  async resendVerifyEmail(accessTokenUser: JwtAccessTokenDto) {
+  async resendVerifyEmail(accessTokenUser: JwtAccessTokenReq) {
     const user = await this.userService.getUserById(accessTokenUser.userId);
-    const emailAuthCode = await this.createEmailSecretToken(accessTokenUser.userId);
+    const emailAuthCode = this.createEmailSecretToken(accessTokenUser.userId);
     await this.emailService.sendLocalRegisterVerifyEmail(user.email, emailAuthCode);
   }
 
-  async sendPasswordResetEmail(passwordForgetDto: PasswordForgetDto) {
-    const user = await this.userService.getLocalUserByEmail(passwordForgetDto.email);
-    const emailAuthCode = await this.createEmailSecretToken(user.id);
+  async sendPasswordResetEmail(passwordForgetReq: PasswordForgetReq) {
+    const user = await this.userService.getLocalUserByEmail(passwordForgetReq.email);
+    const emailAuthCode = this.createEmailSecretToken(user.id);
     await this.emailService.sendResetPasswordEmail(user.email, emailAuthCode);
   }
 
-  async resetPassword(passwordResetDto: PasswordResetDto) {
-    const { emailAuthCode, password } = passwordResetDto;
+  async resetPassword(passwordResetReq: PasswordResetReq) {
+    const { emailAuthCode, password } = passwordResetReq;
     const emailAuthTokenJson = JSON.parse(this.cryptoService.twoWayDecrypt(emailAuthCode));
 
     if (emailAuthTokenJson.expire < Number(new Date())) {
@@ -109,16 +118,19 @@ export class AuthService implements IAuthService {
     await this.userService.resetUserAccountPasswordByUserId(emailAuthTokenJson.userId, passwordEcrypt);
   }
 
-  private async validateUserBySnsAcccountUser(snsAccountUser: snsAccountUserDto) {
-    const userAccount = await this.userService.getUserAndAccountByAccountId(snsAccountUser.accountId);
-    if (!userAccount) {
+  private async validateUserBySnsAcccountUser(snsAccountUser: SnsAccountUserReq): Promise<UserRes> {
+    const user = await this.userService.getUserByAccountId(snsAccountUser.accountId);
+    if (!user) {
       return await this.userService.addUserBySnsAccount(snsAccountUser);
     }
 
-    return userAccount;
+    return plainToInstance(UserRes, user, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
-  private async getAuthToken(userId: number) {
+  private async getAuthToken(userId: number): Promise<AuthTokenRes> {
     const user = await this.userService.getUserById(userId);
 
     const accessTokenPayload = {
@@ -145,10 +157,13 @@ export class AuthService implements IAuthService {
 
     await this.addRefreshToken(authToken.refreshToken, user);
 
-    return authToken;
+    return plainToInstance(AuthTokenRes, authToken, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
-  private async createEmailSecretToken(userId: number) {
+  private createEmailSecretToken(userId: number): string {
     const nowtime = new Date();
     const emailAuthTokenJson = {
       userId: userId,
