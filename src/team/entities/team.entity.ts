@@ -3,6 +3,7 @@ import { TeamHistory } from './team-history.entity';
 import { TeamStat } from './team-stat.entity';
 import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
 import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
+import { TeamSchedule } from './team-schedule.entity';
 
 @Entity('team')
 export class Team {
@@ -23,6 +24,12 @@ export class Team {
 
   @OneToMany(() => TeamStat, (teamStat) => teamStat.team, { cascade: true })
   teamStat?: TeamStat[];
+
+  @OneToMany(() => TeamSchedule, (teamSchedule) => teamSchedule.homeTeam, { cascade: true })
+  homeTeamSchedule?: TeamSchedule[];
+
+  @OneToMany(() => TeamSchedule, (teamSchedule) => teamSchedule.awayTeam, { cascade: true })
+  awayTeamSchedule?: TeamSchedule[];
 
   @OneToMany(() => PlayerHitterStat, (playerHitterStat) => playerHitterStat.team, { cascade: true })
   playerHitterStat?: PlayerHitterStat[];

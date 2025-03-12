@@ -27,7 +27,7 @@ export class UserAccount {
   @Column({ type: 'boolean' })
   verify: boolean;
 
-  @OneToOne(() => User, (user) => user.userAccount, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.userAccount, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

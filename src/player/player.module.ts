@@ -6,9 +6,10 @@ import { PlayerPitcherStat } from './entities/player-pitcher-stat.entity';
 import { PlayerService } from './services/player.service';
 import { PlayerRepository } from './repositories/player.repository';
 import { PlayerController } from './controllers/player.controller';
+import { PlayerFirstTeam } from './entities/player-first-team.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Player, PlayerHitterStat, PlayerPitcherStat])],
+  imports: [TypeOrmModule.forFeature([Player, PlayerHitterStat, PlayerPitcherStat, PlayerFirstTeam])],
   controllers: [PlayerController],
   providers: [
     { provide: 'IPlayerService', useClass: PlayerService },
