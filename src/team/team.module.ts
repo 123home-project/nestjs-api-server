@@ -6,9 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Team } from './entities/team.entity';
 import { TeamHistory } from './entities/team-history.entity';
 import { TeamStat } from './entities/team-stat.entity';
+import { TeamSchedule } from './entities/team-schedule.entity';
+import { TeamScheduleHitter } from './entities/team-schedule-hitter.entity';
+import { TeamSchedulePitcher } from './entities/team-schedule-pitcher.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team, TeamHistory, TeamStat])],
+  imports: [
+    TypeOrmModule.forFeature([Team, TeamHistory, TeamStat, TeamSchedule, TeamScheduleHitter, TeamSchedulePitcher]),
+  ],
   controllers: [TeamController],
   providers: [
     { provide: 'ITeamService', useClass: TeamService },
