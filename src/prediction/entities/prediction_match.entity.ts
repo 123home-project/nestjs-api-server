@@ -11,16 +11,16 @@ import { TeamSchedule } from 'src/team/entities/team-schedule.entity';
 import { GameResultType } from 'src/team/types/game-result.type';
 import { User } from 'src/user/entities/user.entity';
 
-@Entity('prediction_victory')
-export class PredictionVictory {
+@Entity('prediction_match')
+export class PredictionMatch {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.predictionVictory, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => User, (user) => user.predictionMatch, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => TeamSchedule, (teamSchedule) => teamSchedule.predictionVictory, {
+  @ManyToOne(() => TeamSchedule, (teamSchedule) => teamSchedule.predictionMatch, {
     onDelete: 'CASCADE',
     nullable: false,
   })

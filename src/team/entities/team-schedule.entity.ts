@@ -12,7 +12,7 @@ import { Team } from './team.entity';
 import { GameResultType } from '../types/game-result.type';
 import { TeamScheduleHitter } from './team-schedule-hitter.entity';
 import { TeamSchedulePitcher } from './team-schedule-pitcher.entity';
-import { PredictionVictory } from 'src/prediction/entities/prediction_victory.entity';
+import { PredictionMatch } from 'src/prediction/entities/prediction_match.entity';
 
 @Entity('team_schedule')
 export class TeamSchedule {
@@ -27,13 +27,13 @@ export class TeamSchedule {
   @JoinColumn({ name: 'away_team_id' })
   awayTeam: Team;
 
-  @Column({ type: 'datetime' })
+  @Column({ name: 'start_date', type: 'datetime' })
   startDate: Date;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'home_team_score', nullable: true })
   homeTeamScore: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'away_team_score', type: 'int', nullable: true })
   awayTeamScore: number;
 
   @Column({ type: 'varchar', length: 10, nullable: true })
@@ -45,8 +45,8 @@ export class TeamSchedule {
   @OneToMany(() => TeamSchedulePitcher, (teamSchedulePitcher) => teamSchedulePitcher.teamSchedule, { cascade: true })
   teamSchedulePitcher?: TeamSchedulePitcher[];
 
-  @OneToMany(() => PredictionVictory, (predictionVictory) => predictionVictory.teamSchedule, { cascade: true })
-  predictionVictory?: PredictionVictory[];
+  @OneToMany(() => PredictionMatch, (predictionMatch) => predictionMatch.teamSchedule, { cascade: true })
+  predictionMatch?: PredictionMatch[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

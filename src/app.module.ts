@@ -10,6 +10,7 @@ import { CryptoModule } from './crypto/crypto.module';
 import { TeamModule } from './team/team.module';
 import { PlayerModule } from './player/player.module';
 import { PredictionModule } from './prediction/prediction.module';
+import { TimeModule } from './time/time.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PredictionModule } from './prediction/prediction.module';
     TeamModule,
     PlayerModule,
     PredictionModule,
+    TimeModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],

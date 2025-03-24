@@ -8,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Player } from 'src/player/entities/player.entity';
 import { TeamSchedule } from './team-schedule.entity';
 import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
+import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
 
 @Entity('team_schedule_pitcher')
 export class TeamSchedulePitcher {
@@ -21,33 +21,36 @@ export class TeamSchedulePitcher {
     onDelete: 'CASCADE',
     nullable: false,
   })
-  @JoinColumn({ name: 'home_team_id' })
+  @JoinColumn({ name: 'team_schedule_id' })
   teamSchedule: TeamSchedule;
 
-  @ManyToOne(() => Player, (player) => player.teamScheduleHitter, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({ name: 'player_id' })
-  player: Player;
+  @ManyToOne(() => PlayerPitcherStat, (playerPitcherStat) => playerPitcherStat.teamSchedulePitcher, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'player_pitcher_stat_id' })
+  playerPitcherStat: PlayerPitcherStat;
 
   @Column({ type: 'float', nullable: true })
   inning: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'hits_allowed', type: 'int', nullable: true })
   hitsAllowed: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'runs_allowed', type: 'int', nullable: true })
   runsAllowed: number;
 
   @Column({ type: 'int', nullable: true })
   er: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'walks_allowed', type: 'int', nullable: true })
   walksAllowed: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'homerun_allowed', type: 'int', nullable: true })
   homerunAllowed: number;
 
-  @Column({ type: 'int', nullable: true })
-  strikeOuts: number;
+  @Column({ name: 'strike_out', type: 'int', nullable: true })
+  strikeOut: number;
 
   @Column({ type: 'int', nullable: true })
   bf: number;

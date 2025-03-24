@@ -4,11 +4,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Player } from './player.entity';
 import { Team } from 'src/team/entities/team.entity';
+import { PlayerHitterFirstTeam } from './player-hitter-first-team.entity';
+import { TeamScheduleHitter } from 'src/team/entities/team-schedule-hitter.entity';
 
 @Entity('player_hitter_stat')
 export class PlayerHitterStat {
@@ -22,6 +26,16 @@ export class PlayerHitterStat {
   @ManyToOne(() => Team, (team) => team.playerHitterStat, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'team_id' })
   team: Team;
+
+  @OneToOne(() => PlayerHitterFirstTeam, (playerHitterFirstTeam) => playerHitterFirstTeam.playerHitterStat, {
+    cascade: true,
+  })
+  playerHitterFirstTeam: PlayerHitterFirstTeam;
+
+  @OneToMany(() => TeamScheduleHitter, (teamScheduleHitter) => teamScheduleHitter.playerHitterStat, {
+    cascade: true,
+  })
+  teamScheduleHitter?: TeamScheduleHitter[];
 
   @Column({ type: 'int' })
   year: number;

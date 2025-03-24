@@ -8,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Player } from 'src/player/entities/player.entity';
 import { TeamSchedule } from './team-schedule.entity';
 import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
+import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
 
 @Entity('team_schedule_hitter')
 export class TeamScheduleHitter {
@@ -21,12 +21,15 @@ export class TeamScheduleHitter {
     onDelete: 'CASCADE',
     nullable: false,
   })
-  @JoinColumn({ name: 'home_team_id' })
+  @JoinColumn({ name: 'team_schedule_id' })
   teamSchedule: TeamSchedule;
 
-  @ManyToOne(() => Player, (player) => player.teamScheduleHitter, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({ name: 'player_id' })
-  player: Player;
+  @ManyToOne(() => PlayerHitterStat, (playerHitterStat) => playerHitterStat.teamScheduleHitter, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'player_hitter_stat_id' })
+  playerHitterStat: PlayerHitterStat;
 
   @Column({ type: 'int', nullable: true })
   ab: number;
@@ -49,8 +52,8 @@ export class TeamScheduleHitter {
   @Column({ type: 'int', nullable: true })
   rbi: number;
 
-  @Column({ type: 'int', nullable: true })
-  strikeOuts: number;
+  @Column({ name: 'strike_out', type: 'int', nullable: true })
+  strikeOut: number;
 
   @Column({ type: 'int', nullable: true })
   sb: number;
