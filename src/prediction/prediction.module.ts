@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PredictionVictory } from './entities/prediction_victory.entity';
+import { PredictionMatch } from './entities/prediction_match.entity';
 import { PredictionPlayer } from './entities/prediction_player.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PredictionVictory, PredictionPlayer])],
+  imports: [TypeOrmModule.forFeature([PredictionMatch, PredictionPlayer])],
   controllers: [],
   providers: [],
 })

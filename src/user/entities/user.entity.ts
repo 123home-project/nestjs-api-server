@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PredictionVictory } from 'src/prediction/entities/prediction_victory.entity';
+import { PredictionMatch } from 'src/prediction/entities/prediction_match.entity';
 import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
 
 @Entity('user')
@@ -32,8 +32,8 @@ export class User {
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user, { cascade: true })
   refreshToken?: RefreshToken[];
 
-  @OneToMany(() => PredictionVictory, (predictionVictory) => predictionVictory.user, { cascade: true })
-  predictionVictory?: PredictionVictory[];
+  @OneToMany(() => PredictionMatch, (predictionMatch) => predictionMatch.user, { cascade: true })
+  predictionMatch?: PredictionMatch[];
 
   @OneToMany(() => PredictionPlayer, (predictionPlayer) => predictionPlayer.user, { cascade: true })
   predictionPlayer?: PredictionPlayer[];
