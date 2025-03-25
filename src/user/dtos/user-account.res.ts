@@ -1,6 +1,7 @@
-import { Expose } from 'class-transformer';
-import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { LoginPlatformType } from 'src/auth/types/login-platform.type';
+import { UserRes } from './user.res';
 
 export class UserAccountRes {
   @IsNumber()
@@ -23,6 +24,12 @@ export class UserAccountRes {
   @IsBoolean()
   @Expose()
   verify: boolean;
+
+  @ValidateNested()
+  @Type(() => UserRes)
+  @IsOptional()
+  @Expose()
+  user?: UserRes;
 
   @IsString()
   @Expose()

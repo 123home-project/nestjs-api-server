@@ -77,16 +77,16 @@ export class PlayerPitcherStat {
   winningRate?: string;
 
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  whip?: number;
+  whip?: string;
 
   @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })
-  k9?: number;
+  k9?: string;
 
   @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })
-  bb9?: number;
+  bb9?: string;
 
   @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })
-  war?: number;
+  war?: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
