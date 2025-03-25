@@ -87,10 +87,7 @@ export class AuthService implements IAuthService {
   async addRefreshToken(refreshToken: string, user: UserRes) {
     const refreshTokenEntity = new RefreshToken();
     refreshTokenEntity.token = refreshToken;
-    refreshTokenEntity.user = plainToInstance(User, user, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
+    refreshTokenEntity.user = plainToInstance(User, user);
 
     await this.refreshTokenRepository.addRefreshToken(refreshTokenEntity);
   }
