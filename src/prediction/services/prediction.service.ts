@@ -12,6 +12,8 @@ import { User } from 'src/user/entities/user.entity';
 import { TeamSchedule } from 'src/team/entities/team-schedule.entity';
 import { ITeamService } from 'src/team/interfaces/team.service.interface';
 import { UpdateMatchPredictionReq } from '../dtos/update-match-prediction.req';
+import { MyMatchPredictionResultReq } from '../dtos/my-match-prediction-result.req';
+import { MyMatchPredictionResultRes } from '../dtos/my-match-prediction-result.res';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -75,5 +77,26 @@ export class PredictionService implements IPredictionService {
     }
 
     await this.predictionMatchRepository.updateMatchPrediction(userId, teamScheduleId, prediction);
+  }
+
+  async getMyMatchPredictionResult(
+    accessTokenUser: JwtAccessTokenReq,
+    myMatchPredictionResultReq: MyMatchPredictionResultReq,
+  ): Promise<MyMatchPredictionResultRes> {
+    const { userId } = accessTokenUser;
+    const { year } = myMatchPredictionResultReq;
+
+    const predictionMatch = await this.predictionMatchRepository.getmyMatchPredictionResultByUserId(userId, year);
+
+    if (!predictionMatch) {
+      return plainToInstance(MyMatchPredictionResultRes, {
+        userId: userId,
+        tryCount: 0,
+        correctCount: 0,
+        correctPercent: 0,
+      });
+    }
+
+    return predictionMatch;
   }
 }

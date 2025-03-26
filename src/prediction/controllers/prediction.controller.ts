@@ -8,6 +8,7 @@ import { AccessTokenAuthGuard } from 'src/auth/guards/jwt-access-token.auth.guar
 import { AccessTokenUser } from 'src/auth/decorators/access-token.decorator';
 import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 import { UpdateMatchPredictionReq } from '../dtos/update-match-prediction.req';
+import { MyMatchPredictionResultReq } from '../dtos/my-match-prediction-result.req';
 
 @Controller('prediction')
 export class PredictionController {
@@ -38,5 +39,15 @@ export class PredictionController {
     @Body() updateMatchPredictionReq: UpdateMatchPredictionReq,
   ) {
     return await this.predictionService.updateMatchPrediction(accessTokenUser, updateMatchPredictionReq);
+  }
+
+  @Get('/match/my-result')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '나의 승패 예측 결과' })
+  async getMyMatchPredictionResult(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Query() myMatchPredictionResultReq: MyMatchPredictionResultReq,
+  ) {
+    return await this.predictionService.getMyMatchPredictionResult(accessTokenUser, myMatchPredictionResultReq);
   }
 }
