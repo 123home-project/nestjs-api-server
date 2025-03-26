@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { IsDate, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { UserAccountRes } from './user-account.res';
-import { PredictionMatchRes } from 'src/prediction/dtos/prediction-matche.res';
+import { PredictionMatchRes } from 'src/prediction/dtos/prediction-match.res';
 import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
 import { RefreshTokenRes } from 'src/auth/dtos/refresh-token.res';
 

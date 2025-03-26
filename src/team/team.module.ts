@@ -23,5 +23,6 @@ import { TimeModule } from 'src/time/time.module';
     { provide: 'ITeamStatRepository', useClass: TeamStatRepository },
     { provide: 'ITeamScheduleRepository', useClass: TeamScheduleRepository },
   ],
+  exports: [{ provide: 'ITeamService', useClass: TeamService }],
 })
 export class TeamModule {}

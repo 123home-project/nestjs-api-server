@@ -5,9 +5,11 @@ import { PredictionPlayer } from './entities/prediction_player.entity';
 import { PredictionController } from './controllers/prediction.controller';
 import { PredictionService } from './services/prediction.service';
 import { PredictionMatchRepository } from './repositories/prediction-match.repository';
+import { UserModule } from 'src/user/user.module';
+import { TeamModule } from 'src/team/team.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PredictionMatch, PredictionPlayer])],
+  imports: [TypeOrmModule.forFeature([PredictionMatch, PredictionPlayer]), UserModule, TeamModule],
   controllers: [PredictionController],
   providers: [
     { provide: 'IPredictionService', useClass: PredictionService },

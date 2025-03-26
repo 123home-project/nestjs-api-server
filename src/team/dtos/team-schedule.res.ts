@@ -4,7 +4,7 @@ import { TeamRes } from './team.res';
 import { GameResultType } from '../types/game-result.type';
 import { TeamScheduleHitterRes } from './team-schedule-hitter.res';
 import { TeamSchedulePitcherRes } from './team-schedule-pitcher.res';
-import { PredictionMatchRes } from 'src/prediction/dtos/prediction-matche.res';
+import { PredictionMatchRes } from 'src/prediction/dtos/prediction-match.res';
 
 export class TeamScheduleRes {
   @IsNumber()
