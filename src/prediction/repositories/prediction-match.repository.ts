@@ -84,4 +84,15 @@ export class PredictionMatchRepository extends Repository<PredictionMatch> imple
       excludeExtraneousValues: true,
     });
   }
+
+  async getPredictionMatchByUserId(userId: number, year: number): Promise<PredictionMatch[]> {
+    return await this.createQueryBuilder('prm')
+      .innerJoinAndSelect('prm.user', 'u')
+      .innerJoinAndSelect('prm.teamSchedule', 'ts')
+      .innerJoinAndSelect('ts.homeTeam', 'ht')
+      .innerJoinAndSelect('ts.awayTeam', 'at')
+      .where(`prm.user_id = :userId AND YEAR(ts.start_date) = :year`, { year: year, userId: userId })
+      .orderBy('ts.start_date', 'DESC')
+      .getMany();
+  }
 }

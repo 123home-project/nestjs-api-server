@@ -14,4 +14,5 @@ export interface IPredictionMatchRepository {
   getPredictionMatchByUserIdAndTeamScheduleId(userId: number, teamScheduleId: number): Promise<PredictionMatch>;
   updateMatchPrediction(userId: number, teamScheduleId: number, prediction: GameResultType);
   getmyMatchPredictionResultByUserId(userId: number, year: number): Promise<MyMatchPredictionResultRes>;
+  getPredictionMatchByUserId(userId: number, year: number): Promise<PredictionMatch[]>;
 }

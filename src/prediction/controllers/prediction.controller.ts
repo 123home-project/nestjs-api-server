@@ -9,6 +9,9 @@ import { AccessTokenUser } from 'src/auth/decorators/access-token.decorator';
 import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 import { UpdateMatchPredictionReq } from '../dtos/update-match-prediction.req';
 import { MyMatchPredictionResultReq } from '../dtos/my-match-prediction-result.req';
+import { MyMatchPredictionHistoryReq } from '../dtos/my-match-prediction-history.req';
+import { MyMatchPredictionHistoryRes } from '../dtos/my-match-prediction-history.res';
+import { MyMatchPredictionResultRes } from '../dtos/my-match-prediction-result.res';
 
 @Controller('prediction')
 export class PredictionController {
@@ -43,11 +46,21 @@ export class PredictionController {
 
   @Get('/match/my-result')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiOkResponse({ description: '나의 승패 예측 결과' })
+  @ApiOkResponse({ description: '나의 승패 예측 결과', type: MyMatchPredictionResultRes })
   async getMyMatchPredictionResult(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Query() myMatchPredictionResultReq: MyMatchPredictionResultReq,
-  ) {
+  ): Promise<MyMatchPredictionResultRes> {
     return await this.predictionService.getMyMatchPredictionResult(accessTokenUser, myMatchPredictionResultReq);
+  }
+
+  @Get('/match/my-history')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '나의 승패 예측 내역', type: [MyMatchPredictionHistoryRes] })
+  async getMyMatchPredictionHistory(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Query() myMatchPredictionHistoryReq: MyMatchPredictionHistoryReq,
+  ): Promise<MyMatchPredictionHistoryRes[]> {
+    return await this.predictionService.getMyMatchPredictionHistory(accessTokenUser, myMatchPredictionHistoryReq);
   }
 }

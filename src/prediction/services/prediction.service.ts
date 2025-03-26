@@ -14,6 +14,8 @@ import { ITeamService } from 'src/team/interfaces/team.service.interface';
 import { UpdateMatchPredictionReq } from '../dtos/update-match-prediction.req';
 import { MyMatchPredictionResultReq } from '../dtos/my-match-prediction-result.req';
 import { MyMatchPredictionResultRes } from '../dtos/my-match-prediction-result.res';
+import { MyMatchPredictionHistoryReq } from '../dtos/my-match-prediction-history.req';
+import { MyMatchPredictionHistoryRes } from '../dtos/my-match-prediction-history.res';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -98,5 +100,43 @@ export class PredictionService implements IPredictionService {
     }
 
     return predictionMatch;
+  }
+
+  async getMyMatchPredictionHistory(
+    accessTokenUser: JwtAccessTokenReq,
+    myMatchPredictionHistoryReq: MyMatchPredictionHistoryReq,
+  ): Promise<MyMatchPredictionHistoryRes[]> {
+    const { userId } = accessTokenUser;
+    const { year } = myMatchPredictionHistoryReq;
+
+    const predictionMatch = await this.predictionMatchRepository.getPredictionMatchByUserId(userId, year);
+    const results = predictionMatch.map((prm) => {
+      return {
+        predictionMatchId: prm.id,
+        userId: prm.user.id,
+        teamScheduleId: prm.teamSchedule.id,
+        prediction: prm.prediction,
+        startDate: prm.teamSchedule.startDate,
+        result: prm.teamSchedule.result,
+        homeTeam: {
+          id: prm.teamSchedule.homeTeam.id,
+          name: prm.teamSchedule.homeTeam.name,
+          logo: prm.teamSchedule.homeTeam.logo,
+          score: prm.teamSchedule.homeTeamScore,
+        },
+        awayTeam: {
+          teamId: prm.teamSchedule.awayTeam.id,
+          name: prm.teamSchedule.awayTeam.name,
+          logo: prm.teamSchedule.awayTeam.logo,
+          score: prm.teamSchedule.awayTeamScore,
+        },
+      };
+    });
+    console.log(results);
+
+    return plainToInstance(MyMatchPredictionHistoryRes, results, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 }
