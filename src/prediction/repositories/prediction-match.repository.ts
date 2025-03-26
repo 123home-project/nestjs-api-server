@@ -45,4 +45,12 @@ export class PredictionMatchRepository extends Repository<PredictionMatch> imple
       excludeExtraneousValues: true,
     });
   }
+
+  async addPredictionMatch(predictionMatch: PredictionMatch): Promise<PredictionMatch> {
+    return await this.save(predictionMatch);
+  }
+
+  async getPredictionMatchByUserIdAndTeamScheduleId(userId: number, teamScheduleId: number): Promise<PredictionMatch> {
+    return await this.findOne({ where: { user: { id: userId }, teamSchedule: { id: teamScheduleId } } });
+  }
 }

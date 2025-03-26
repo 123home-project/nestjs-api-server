@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { Between, DataSource, Repository } from 'typeorm';
 import { TeamSchedule } from '../entities/team-schedule.entity';
 import { ITeamScheduleRepository } from '../interfaces/team-schedule.repository.interface';
 
@@ -16,5 +16,18 @@ export class TeamScheduleRepository extends Repository<TeamSchedule> implements 
       .where('YEAR(ts.start_date) = :year', { year })
       .orderBy('ts.start_date', 'ASC')
       .getMany();
+  }
+
+  async getTeamScheduleByIdWithinDate(teamScheduleId: number): Promise<TeamSchedule> {
+    const now = new Date();
+    const after24 = new Date();
+    after24.setHours(now.getHours() + 24);
+    console.log(now, after24);
+    return await this.findOne({
+      where: {
+        id: teamScheduleId,
+        startDate: Between(now, after24),
+      },
+    });
   }
 }

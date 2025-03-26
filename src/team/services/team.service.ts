@@ -9,6 +9,7 @@ import { ITeamScheduleRepository } from '../interfaces/team-schedule.repository.
 import { ITimeService } from 'src/time/interfaces/time.service.interface';
 import moment from 'moment';
 import { TeamMatchDateRes } from '../dtos/team-match-date.res';
+import { TeamScheduleRes } from '../dtos/team-schedule.res';
 
 @Injectable()
 export class TeamService implements ITeamService {
@@ -39,7 +40,7 @@ export class TeamService implements ITeamService {
   async getTeamMatchSchedule(teamMatchScheduleReq: TeamMatchScheduleReq): Promise<TeamMatchDateRes[]> {
     const { year } = teamMatchScheduleReq;
     const teamSchedule = await this.teamScheduleRepository.getTeamMatchSchedule(year);
-    console.log(teamSchedule);
+
     const result: TeamMatchDateRes[] = [];
     let dateIndex = 0;
     let tsIndex = 0;
@@ -76,5 +77,14 @@ export class TeamService implements ITeamService {
     }
 
     return result;
+  }
+
+  async getTeamScheduleWithinDate(teamScheduleId: number): Promise<TeamScheduleRes> {
+    const teamSchedule = await this.teamScheduleRepository.getTeamScheduleByIdWithinDate(teamScheduleId);
+
+    return plainToInstance(TeamScheduleRes, teamSchedule, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 }
