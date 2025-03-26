@@ -4,6 +4,7 @@ import { PredictionMatch } from '../entities/prediction_match.entity';
 import { IPredictionMatchRepository } from '../interfaces/prediction-match.repository.interface';
 import { MatchPredictionRankingRes } from '../dtos/match-prediction-ranking.res';
 import { plainToInstance } from 'class-transformer';
+import { GameResultType } from 'src/team/types/game-result.type';
 
 @Injectable()
 export class PredictionMatchRepository extends Repository<PredictionMatch> implements IPredictionMatchRepository {
@@ -52,5 +53,9 @@ export class PredictionMatchRepository extends Repository<PredictionMatch> imple
 
   async getPredictionMatchByUserIdAndTeamScheduleId(userId: number, teamScheduleId: number): Promise<PredictionMatch> {
     return await this.findOne({ where: { user: { id: userId }, teamSchedule: { id: teamScheduleId } } });
+  }
+
+  async updateMatchPrediction(userId: number, teamScheduleId: number, prediction: GameResultType) {
+    await this.update({ user: { id: userId }, teamSchedule: { id: teamScheduleId } }, { prediction: prediction });
   }
 }

@@ -22,7 +22,7 @@ export class TeamScheduleRepository extends Repository<TeamSchedule> implements 
     const now = new Date();
     const after24 = new Date();
     after24.setHours(now.getHours() + 24);
-    console.log(now, after24);
+
     return await this.findOne({
       where: {
         id: teamScheduleId,

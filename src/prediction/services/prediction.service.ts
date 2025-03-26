@@ -11,6 +11,7 @@ import { plainToInstance } from 'class-transformer';
 import { User } from 'src/user/entities/user.entity';
 import { TeamSchedule } from 'src/team/entities/team-schedule.entity';
 import { ITeamService } from 'src/team/interfaces/team.service.interface';
+import { UpdateMatchPredictionReq } from '../dtos/update-match-prediction.req';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -55,5 +56,24 @@ export class PredictionService implements IPredictionService {
     predictMatch.prediction = prediction;
 
     await this.predictionMatchRepository.addPredictionMatch(predictMatch);
+  }
+
+  async updateMatchPrediction(accessTokenUser: JwtAccessTokenReq, updateMatchPredictionReq: UpdateMatchPredictionReq) {
+    const { userId } = accessTokenUser;
+    const { teamScheduleId, prediction } = updateMatchPredictionReq;
+
+    const user = await this.userService.getUserById(userId);
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 유저입니다.', 'UserDoesNotExists');
+    }
+
+    const teamSchedule = await this.teamService.getTeamScheduleWithinDate(teamScheduleId);
+
+    if (!teamSchedule) {
+      throw new BadRequestException('예측 수정 할 수 없는 경기 일정입니다.', 'TeamScheduleDoesNotExists');
+    }
+
+    await this.predictionMatchRepository.updateMatchPrediction(userId, teamScheduleId, prediction);
   }
 }
