@@ -47,6 +47,9 @@ export class TeamScheduleHitter {
   homerun: number;
 
   @Column({ type: 'int', nullable: true })
+  walks: number;
+
+  @Column({ type: 'int', nullable: true })
   runs: number;
 
   @Column({ type: 'int', nullable: true })

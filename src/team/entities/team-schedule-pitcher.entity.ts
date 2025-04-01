@@ -31,6 +31,9 @@ export class TeamSchedulePitcher {
   @JoinColumn({ name: 'player_pitcher_stat_id' })
   playerPitcherStat: PlayerPitcherStat;
 
+  @Column({ type: 'tinyint', nullable: true })
+  win: number;
+
   @Column({ type: 'float', nullable: true })
   inning: number;
 
@@ -42,6 +45,12 @@ export class TeamSchedulePitcher {
 
   @Column({ type: 'int', nullable: true })
   er: number;
+
+  @Column({ type: 'tinyint', nullable: true })
+  save: number;
+
+  @Column({ type: 'tinyint', nullable: true })
+  hold: number;
 
   @Column({ name: 'walks_allowed', type: 'int', nullable: true })
   walksAllowed: number;

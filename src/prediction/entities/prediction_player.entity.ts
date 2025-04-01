@@ -1,4 +1,12 @@
-import { CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { TeamScheduleHitter } from 'src/team/entities/team-schedule-hitter.entity';
 import { TeamSchedulePitcher } from 'src/team/entities/team-schedule-pitcher.entity';
@@ -11,6 +19,9 @@ export class PredictionPlayer {
   @ManyToOne(() => User, (user) => user.predictionPlayer, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @Column({ name: 'prediction_date', type: 'date', nullable: false })
+  predictionDate: Date;
 
   @ManyToOne(() => TeamScheduleHitter, (teamScheduleHitter) => teamScheduleHitter.predictionPlayer, {
     onDelete: 'CASCADE',
