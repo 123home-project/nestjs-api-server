@@ -7,6 +7,7 @@ import { PredictionService } from './services/prediction.service';
 import { PredictionMatchRepository } from './repositories/prediction-match.repository';
 import { UserModule } from 'src/user/user.module';
 import { TeamModule } from 'src/team/team.module';
+import { PredictionPlayerRepository } from './repositories/prediction-player.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PredictionMatch, PredictionPlayer]), UserModule, TeamModule],
@@ -14,6 +15,7 @@ import { TeamModule } from 'src/team/team.module';
   providers: [
     { provide: 'IPredictionService', useClass: PredictionService },
     { provide: 'IPredictionMatchRepository', useClass: PredictionMatchRepository },
+    { provide: 'IPredictionPlayerRepository', useClass: PredictionPlayerRepository },
   ],
 })
 export class PredictionModule {}

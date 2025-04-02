@@ -12,6 +12,8 @@ import { MyMatchPredictionResultReq } from '../dtos/my-match-prediction-result.r
 import { MyMatchPredictionHistoryReq } from '../dtos/my-match-prediction-history.req';
 import { MyMatchPredictionHistoryRes } from '../dtos/my-match-prediction-history.res';
 import { MyMatchPredictionResultRes } from '../dtos/my-match-prediction-result.res';
+import { PlayerPredictionRankingReq } from '../dtos/player-prediction-ranking.req';
+import { PlayerPredictionRankingRes } from '../dtos/player-prediction-ranking.res';
 
 @Controller('prediction')
 export class PredictionController {
@@ -62,5 +64,13 @@ export class PredictionController {
     @Query() myMatchPredictionHistoryReq: MyMatchPredictionHistoryReq,
   ): Promise<MyMatchPredictionHistoryRes[]> {
     return await this.predictionService.getMyMatchPredictionHistory(accessTokenUser, myMatchPredictionHistoryReq);
+  }
+
+  @Get('/player/ranking')
+  @ApiOkResponse({ description: '선수 예측 순위', type: PlayerPredictionRankingRes })
+  async getPlayerPredictionRankings(
+    @Query() playerPredictionRankingReq: PlayerPredictionRankingReq,
+  ): Promise<PlayerPredictionRankingRes> {
+    return await this.predictionService.getPlayerPredictionRankings(playerPredictionRankingReq);
   }
 }
