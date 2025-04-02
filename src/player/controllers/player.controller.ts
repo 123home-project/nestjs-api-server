@@ -39,7 +39,7 @@ export class PlayerController {
   }
 
   @Get('/first-team/hitter')
-  @ApiOkResponse({ description: '1군 투수 리스트', type: [HitterFirstTeamRes] })
+  @ApiOkResponse({ description: '1군 타자 리스트', type: [HitterFirstTeamRes] })
   async getHitterFirstTeam(): Promise<HitterFirstTeamRes[]> {
     return await this.playerService.getHitterFirstTeam();
   }
