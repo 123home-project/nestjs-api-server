@@ -83,7 +83,7 @@ export class PlayerStatsRankingRes {
   @Type(() => PitcherStatsRankingDto)
   pitcher: PitcherStatsRankingDto;
 
-  @ApiProperty({ description: '타자자 기록', type: HitterStatsRankingDto })
+  @ApiProperty({ description: '타자 기록', type: HitterStatsRankingDto })
   @ValidateNested()
   @Type(() => PitcherStatsRankingDto)
   hitter: HitterStatsRankingDto;
