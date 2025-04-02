@@ -1,5 +1,6 @@
 import { PlayerHitterStatsReq } from '../dtos/player-hitter-stats.req';
 import { PlayerHitterStatsRes } from '../dtos/player-hitter-stats.res';
+import { PlayerPitcherFirstTeamRes } from '../dtos/player-pitcher-first-team.res';
 import { PlayerPitcherStatsReq } from '../dtos/player-pitcher-stats.req';
 import { PlayerPitcherStatsRes } from '../dtos/player-pitcher-stats.res';
 import { PlayerStatsRankingReq } from '../dtos/player-stats-ranking.req';
@@ -9,5 +10,5 @@ export interface IPlayerService {
   getPlayerStatsRanking(playerStatsRankingReq: PlayerStatsRankingReq): Promise<PlayerStatsRankingRes>;
   getPlayerPitcherStats(playerPitcherStatsReq: PlayerPitcherStatsReq): Promise<PlayerPitcherStatsRes[]>;
   getPlayerHitterStats(playerHitterStatsReq: PlayerHitterStatsReq): Promise<PlayerHitterStatsRes[]>;
-  getPitcherFirstTeam();
+  getPitcherFirstTeam(): Promise<PlayerPitcherFirstTeamRes[]>;
 }

@@ -118,7 +118,7 @@ export class PlayerService implements IPlayerService {
     return plainToInstance(PlayerStatsRankingRes, playerStatRanking);
   }
 
-  async getPitcherFirstTeam() {
+  async getPitcherFirstTeam(): Promise<PlayerPitcherFirstTeamRes[]> {
     const player = await this.playerRepository.getPlayerPitcherFirstTeam();
     const result = player.map((p) => {
       return {

@@ -7,6 +7,7 @@ import { PlayerHitterStatsReq } from '../dtos/player-hitter-stats.req';
 import { PlayerPitcherStatsRes } from '../dtos/player-pitcher-stats.res';
 import { PlayerHitterStatsRes } from '../dtos/player-hitter-stats.res';
 import { ApiOkResponse } from '@nestjs/swagger';
+import { PlayerPitcherFirstTeamRes } from '../dtos/player-pitcher-first-team.res';
 
 @Controller('player')
 export class PlayerController {
@@ -31,8 +32,8 @@ export class PlayerController {
   }
 
   @Get('/first-team/pitcher')
-  @ApiOkResponse({ description: '1군 투수 리스트', type: PlayerStatsRankingRes })
-  async getPitcherFirstTeam(): Promise<PlayerStatsRankingRes> {
+  @ApiOkResponse({ description: '1군 투수 리스트', type: PlayerPitcherFirstTeamRes })
+  async getPitcherFirstTeam(): Promise<PlayerPitcherFirstTeamRes[]> {
     return await this.playerService.getPitcherFirstTeam();
   }
 }
