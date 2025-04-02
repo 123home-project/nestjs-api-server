@@ -9,4 +9,5 @@ export interface IPlayerService {
   getPlayerStatsRanking(playerStatsRankingReq: PlayerStatsRankingReq): Promise<PlayerStatsRankingRes>;
   getPlayerPitcherStats(playerPitcherStatsReq: PlayerPitcherStatsReq): Promise<PlayerPitcherStatsRes[]>;
   getPlayerHitterStats(playerHitterStatsReq: PlayerHitterStatsReq): Promise<PlayerHitterStatsRes[]>;
+  getPitcherFirstTeam();
 }

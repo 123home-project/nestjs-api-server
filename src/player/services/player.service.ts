@@ -14,6 +14,7 @@ import { HITTER_STAT_CONDITION, PITCHER_STAT_CONDITION } from '../constants/play
 import { PlayerHitterStatsReq } from '../dtos/player-hitter-stats.req';
 import { PlayerPitcherStatsRes } from '../dtos/player-pitcher-stats.res';
 import { PlayerHitterStatsRes } from '../dtos/player-hitter-stats.res';
+import { PlayerPitcherFirstTeamRes } from '../dtos/player-pitcher-first-team.res';
 
 @Injectable()
 export class PlayerService implements IPlayerService {
@@ -115,5 +116,21 @@ export class PlayerService implements IPlayerService {
     }
 
     return plainToInstance(PlayerStatsRankingRes, playerStatRanking);
+  }
+
+  async getPitcherFirstTeam() {
+    const player = await this.playerRepository.getPlayerPitcherFirstTeam();
+    const result = player.map((p) => {
+      return {
+        pitcherStatId: p.playerPitcherStat[0].id,
+        name: p.name,
+        profile: p.profile,
+        teamId: p.playerPitcherStat[0].team.id,
+        teamName: p.playerPitcherStat[0].team.name,
+        teamLogo: p.playerPitcherStat[0].team.logo,
+      };
+    });
+
+    return plainToInstance(PlayerPitcherFirstTeamRes, result);
   }
 }

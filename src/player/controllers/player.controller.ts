@@ -29,4 +29,10 @@ export class PlayerController {
   async getPlayerStatsRanking(@Query() playerStatsRankingReq: PlayerStatsRankingReq): Promise<PlayerStatsRankingRes> {
     return await this.playerService.getPlayerStatsRanking(playerStatsRankingReq);
   }
+
+  @Get('/first-team/pitcher')
+  @ApiOkResponse({ description: '1군 투수 리스트', type: PlayerStatsRankingRes })
+  async getPitcherFirstTeam(): Promise<PlayerStatsRankingRes> {
+    return await this.playerService.getPitcherFirstTeam();
+  }
 }
