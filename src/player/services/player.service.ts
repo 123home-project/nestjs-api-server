@@ -14,7 +14,8 @@ import { HITTER_STAT_CONDITION, PITCHER_STAT_CONDITION } from '../constants/play
 import { PlayerHitterStatsReq } from '../dtos/player-hitter-stats.req';
 import { PlayerPitcherStatsRes } from '../dtos/player-pitcher-stats.res';
 import { PlayerHitterStatsRes } from '../dtos/player-hitter-stats.res';
-import { PlayerPitcherFirstTeamRes } from '../dtos/player-pitcher-first-team.res';
+import { PitcherFirstTeamRes } from '../dtos/pitcher-first-team.res';
+import { HitterFirstTeamRes } from '../dtos/hitter-first-team.res';
 
 @Injectable()
 export class PlayerService implements IPlayerService {
@@ -118,7 +119,7 @@ export class PlayerService implements IPlayerService {
     return plainToInstance(PlayerStatsRankingRes, playerStatRanking);
   }
 
-  async getPitcherFirstTeam(): Promise<PlayerPitcherFirstTeamRes[]> {
+  async getPitcherFirstTeam(): Promise<PitcherFirstTeamRes[]> {
     const player = await this.playerRepository.getPlayerPitcherFirstTeam();
     const result = player.map((p) => {
       return {
@@ -131,6 +132,22 @@ export class PlayerService implements IPlayerService {
       };
     });
 
-    return plainToInstance(PlayerPitcherFirstTeamRes, result);
+    return plainToInstance(PitcherFirstTeamRes, result);
+  }
+
+  async getHitterFirstTeam(): Promise<HitterFirstTeamRes[]> {
+    const player = await this.playerRepository.getPlayerHitterFirstTeam();
+    const result = player.map((p) => {
+      return {
+        hitterStatId: p.playerHitterStat[0].id,
+        name: p.name,
+        profile: p.profile,
+        teamId: p.playerHitterStat[0].team.id,
+        teamName: p.playerHitterStat[0].team.name,
+        teamLogo: p.playerHitterStat[0].team.logo,
+      };
+    });
+
+    return plainToInstance(HitterFirstTeamRes, result);
   }
 }

@@ -22,4 +22,5 @@ export interface IPlayerRepository {
     offset: number,
   ): Promise<Player[]>;
   getPlayerPitcherFirstTeam(): Promise<Player[]>;
+  getPlayerHitterFirstTeam(): Promise<Player[]>;
 }

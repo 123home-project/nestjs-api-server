@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsNumber, IsString } from 'class-validator';
 
-export class PitcherFirstTeamRes {
-  @ApiProperty({ description: '투수 id' })
+export class HitterFirstTeamRes {
+  @ApiProperty({ description: '타자 id' })
   @IsNumber()
   @Expose()
-  pitcherStatId: number;
+  hitterStatId: number;
 
   @ApiProperty({ description: '선수 명' })
   @IsString()

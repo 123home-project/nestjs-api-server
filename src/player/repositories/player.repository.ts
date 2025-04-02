@@ -71,4 +71,13 @@ export class PlayerRepository extends Repository<Player> implements IPlayerRepos
       .orderBy('pps.team_id')
       .getMany();
   }
+
+  async getPlayerHitterFirstTeam(): Promise<Player[]> {
+    return this.createQueryBuilder('p')
+      .innerJoinAndSelect('p.playerHitterStat', 'phs')
+      .innerJoinAndSelect('phs.team', 't')
+      .innerJoin('phs.playerHitterFirstTeam', 'phft')
+      .orderBy('phs.team_id')
+      .getMany();
+  }
 }
