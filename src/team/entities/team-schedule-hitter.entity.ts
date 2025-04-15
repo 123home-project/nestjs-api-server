@@ -4,12 +4,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { TeamSchedule } from './team-schedule.entity';
-import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
 import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
 
 @Entity('team_schedule_hitter')
@@ -47,6 +45,9 @@ export class TeamScheduleHitter {
   homerun: number;
 
   @Column({ type: 'int', nullable: true })
+  walks: number;
+
+  @Column({ type: 'int', nullable: true })
   runs: number;
 
   @Column({ type: 'int', nullable: true })
@@ -57,9 +58,6 @@ export class TeamScheduleHitter {
 
   @Column({ type: 'int', nullable: true })
   sb: number;
-
-  @OneToMany(() => PredictionPlayer, (predictionPlayer) => predictionPlayer.teamScheduleHitter, { cascade: true })
-  predictionPlayer?: PredictionPlayer[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

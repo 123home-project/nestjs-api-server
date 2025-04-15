@@ -62,4 +62,22 @@ export class PlayerRepository extends Repository<Player> implements IPlayerRepos
       .take(limit)
       .getMany();
   }
+
+  async getPlayerPitcherFirstTeam(): Promise<Player[]> {
+    return this.createQueryBuilder('p')
+      .innerJoinAndSelect('p.playerPitcherStat', 'pps')
+      .innerJoinAndSelect('pps.team', 't')
+      .innerJoin('pps.playerPitcherFirstTeam', 'ppft')
+      .orderBy('pps.team_id')
+      .getMany();
+  }
+
+  async getPlayerHitterFirstTeam(): Promise<Player[]> {
+    return this.createQueryBuilder('p')
+      .innerJoinAndSelect('p.playerHitterStat', 'phs')
+      .innerJoinAndSelect('phs.team', 't')
+      .innerJoin('phs.playerHitterFirstTeam', 'phft')
+      .orderBy('phs.team_id')
+      .getMany();
+  }
 }

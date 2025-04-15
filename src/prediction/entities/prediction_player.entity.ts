@@ -1,7 +1,15 @@
-import { CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { TeamScheduleHitter } from 'src/team/entities/team-schedule-hitter.entity';
-import { TeamSchedulePitcher } from 'src/team/entities/team-schedule-pitcher.entity';
+import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
+import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
 
 @Entity('prediction_player')
 export class PredictionPlayer {
@@ -12,19 +20,22 @@ export class PredictionPlayer {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => TeamScheduleHitter, (teamScheduleHitter) => teamScheduleHitter.predictionPlayer, {
-    onDelete: 'CASCADE',
-    nullable: false,
-  })
-  @JoinColumn({ name: 'team_schedule_hitter_id' })
-  teamScheduleHitter: TeamScheduleHitter;
+  @Column({ name: 'prediction_date', type: 'date', nullable: false })
+  predictionDate: Date;
 
-  @ManyToOne(() => TeamSchedulePitcher, (teamSchedulePitcher) => teamSchedulePitcher.predictionPlayer, {
+  @ManyToOne(() => PlayerHitterStat, (playerHitterStat) => playerHitterStat.predictionPlayer, {
     onDelete: 'CASCADE',
-    nullable: false,
+    nullable: true,
   })
-  @JoinColumn({ name: 'team_schedule_pitcher_id' })
-  teamSchedulePitcher: TeamSchedulePitcher;
+  @JoinColumn({ name: 'player_hitter_stat_id' })
+  playerHitterStat: PlayerHitterStat;
+
+  @ManyToOne(() => PlayerPitcherStat, (playerPitcherStat) => playerPitcherStat.predictionPlayer, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'player_pitcher_stat_id' })
+  playerPitcherStat: PlayerPitcherStat;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

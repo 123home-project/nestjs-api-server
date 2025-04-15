@@ -14,10 +14,20 @@ import { HITTER_STAT_CONDITION, PITCHER_STAT_CONDITION } from '../constants/play
 import { PlayerHitterStatsReq } from '../dtos/player-hitter-stats.req';
 import { PlayerPitcherStatsRes } from '../dtos/player-pitcher-stats.res';
 import { PlayerHitterStatsRes } from '../dtos/player-hitter-stats.res';
+import { PitcherFirstTeamRes } from '../dtos/pitcher-first-team.res';
+import { HitterFirstTeamRes } from '../dtos/hitter-first-team.res';
+import { IPlayerHitterStatRepository } from '../interfaces/player-hitter-stat.repository.interface';
+import { PlayerHitterStatRes } from '../dtos/player-hitter-stat.res';
+import { IPlayerPitcherStatRepository } from '../interfaces/player-pitcher-stat.repository.interface';
+import { PlayerPitcherStatRes } from '../dtos/player-pitcher-stat.res';
 
 @Injectable()
 export class PlayerService implements IPlayerService {
-  constructor(@Inject('IPlayerRepository') private readonly playerRepository: IPlayerRepository) {}
+  constructor(
+    @Inject('IPlayerRepository') private readonly playerRepository: IPlayerRepository,
+    @Inject('IPlayerHitterStatRepository') private readonly playerHitterStatRepository: IPlayerHitterStatRepository,
+    @Inject('IPlayerPitcherStatRepository') private readonly playerPitcherStatRepository: IPlayerPitcherStatRepository,
+  ) {}
 
   async getPlayerPitcherStats(playerPitcherStatsReq: PlayerPitcherStatsReq): Promise<PlayerPitcherStatsRes[]> {
     const { year, limit, offset, sortBy, sortOrder } = playerPitcherStatsReq;
@@ -115,5 +125,55 @@ export class PlayerService implements IPlayerService {
     }
 
     return plainToInstance(PlayerStatsRankingRes, playerStatRanking);
+  }
+
+  async getPitcherFirstTeam(): Promise<PitcherFirstTeamRes[]> {
+    const player = await this.playerRepository.getPlayerPitcherFirstTeam();
+    const result = player.map((p) => {
+      return {
+        pitcherStatId: p.playerPitcherStat[0].id,
+        name: p.name,
+        profile: p.profile,
+        teamId: p.playerPitcherStat[0].team.id,
+        teamName: p.playerPitcherStat[0].team.name,
+        teamLogo: p.playerPitcherStat[0].team.logo,
+      };
+    });
+
+    return plainToInstance(PitcherFirstTeamRes, result);
+  }
+
+  async getHitterFirstTeam(): Promise<HitterFirstTeamRes[]> {
+    const player = await this.playerRepository.getPlayerHitterFirstTeam();
+    const result = player.map((p) => {
+      return {
+        hitterStatId: p.playerHitterStat[0].id,
+        name: p.name,
+        profile: p.profile,
+        teamId: p.playerHitterStat[0].team.id,
+        teamName: p.playerHitterStat[0].team.name,
+        teamLogo: p.playerHitterStat[0].team.logo,
+      };
+    });
+
+    return plainToInstance(HitterFirstTeamRes, result);
+  }
+
+  async getPlayerHitterStatById(playerHitterStatId: number): Promise<PlayerHitterStatRes> {
+    const playerHitterStat = await this.playerHitterStatRepository.getPlayerHitterStatById(playerHitterStatId);
+
+    return plainToInstance(PlayerHitterStatRes, playerHitterStat, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getPlayerPitcherStatById(playerPitcherStatId?: number): Promise<PlayerPitcherStatRes> {
+    const playerPitcherStat = await this.playerPitcherStatRepository.getPlayerPitcherStatById(playerPitcherStatId);
+
+    return plainToInstance(PlayerPitcherStatRes, playerPitcherStat, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 }

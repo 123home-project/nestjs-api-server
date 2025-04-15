@@ -8,6 +8,8 @@ import { PlayerRepository } from './repositories/player.repository';
 import { PlayerController } from './controllers/player.controller';
 import { PlayerHitterFirstTeam } from './entities/player-hitter-first-team.entity';
 import { PlayerPitcherFirstTeam } from './entities/player-pitcher-first-team.entity';
+import { PlayerHitterStatRepository } from './repositories/player-hitter-stat.repository';
+import { PlayerPitcherStatRepository } from './repositories/player-pitcher-stat.repository';
 
 @Module({
   imports: [
@@ -23,6 +25,9 @@ import { PlayerPitcherFirstTeam } from './entities/player-pitcher-first-team.ent
   providers: [
     { provide: 'IPlayerService', useClass: PlayerService },
     { provide: 'IPlayerRepository', useClass: PlayerRepository },
+    { provide: 'IPlayerHitterStatRepository', useClass: PlayerHitterStatRepository },
+    { provide: 'IPlayerPitcherStatRepository', useClass: PlayerPitcherStatRepository },
   ],
+  exports: [{ provide: 'IPlayerService', useClass: PlayerService }],
 })
 export class PlayerModule {}
