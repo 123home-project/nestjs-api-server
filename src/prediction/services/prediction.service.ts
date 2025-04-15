@@ -25,6 +25,11 @@ import { HITTER_STAT_CONDITION, PITCHER_STAT_CONDITION } from 'src/player/consta
 import { PlayerPredictionRankingReq } from '../dtos/player-prediction-ranking.req';
 import { PredictionRankingProfileRes } from '../dtos/prediction-ranking-profile.res';
 import { PlayerPredictionRankingRes } from '../dtos/player-prediction-ranking.res';
+import { PredictPlayerReq } from '../dtos/predict-player.req';
+import { PredictionPlayer } from '../entities/prediction_player.entity';
+import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
+import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
+import { IPlayerService } from 'src/player/interfaces/player.service.interface';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -33,6 +38,7 @@ export class PredictionService implements IPredictionService {
     @Inject('IPredictionPlayerRepository') private readonly predictionPlayerRepository: IPredictionPlayerRepository,
     @Inject('IUserService') private readonly userService: IUserService,
     @Inject('ITeamService') private readonly teamService: ITeamService,
+    @Inject('IPlayerService') private readonly playerService: IPlayerService,
   ) {}
 
   async getMatchPredictionRankings(
@@ -201,5 +207,34 @@ export class PredictionService implements IPredictionService {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
+  }
+
+  async predictPlayer(accessTokenUser: JwtAccessTokenReq, predictPlayerReq: PredictPlayerReq) {
+    const { userId } = accessTokenUser;
+    const { playerHitterStatId, playerPitcherStatId, predictionDate } = predictPlayerReq;
+    console.log(playerHitterStatId, playerPitcherStatId);
+
+    const teamSchedule = await this.teamService.getTeamScheduleByDate(predictionDate);
+
+    if (!teamSchedule) {
+      throw new BadRequestException('현재 해당 날짜에 선수 예측이 불가능합니다.', 'TeamScheduleDoesNotExists');
+    }
+
+    if (await this.predictionPlayerRepository.getPredictionPlayerByPredictionDate(predictionDate, userId)) {
+      throw new BadRequestException('이미 해당 날짜의 예측을 완료하셨습니다.', 'PredictPlayerAlreadyCompleted');
+    }
+
+    const predictionPlayer = new PredictionPlayer();
+
+    const user = await this.userService.getUserById(userId);
+    const playerHitterStat = await this.playerService.getPlayerHitterStatById(playerHitterStatId);
+    const playerPitcherStat = await this.playerService.getPlayerPitcherStatById(playerPitcherStatId);
+
+    predictionPlayer.user = plainToInstance(User, user);
+    predictionPlayer.playerHitterStat = plainToInstance(PlayerHitterStat, playerHitterStat);
+    predictionPlayer.playerPitcherStat = plainToInstance(PlayerPitcherStat, playerPitcherStat);
+    predictionPlayer.predictionDate = new Date(predictionDate);
+
+    await this.predictionPlayerRepository.addPredictionPlayer(predictionPlayer);
   }
 }

@@ -8,4 +8,5 @@ export interface ITeamService {
   getTeamStats(teamStatsReq: TeamStatsReq): Promise<TeamStatsRes[]>;
   getTeamMatchSchedule(teamMatchScheduleReq: TeamMatchScheduleReq): Promise<TeamMatchDateRes[]>;
   getTeamScheduleWithinDate(teamScheduleId: number): Promise<TeamScheduleRes>;
+  getTeamScheduleByDate(predictionDate: string): Promise<TeamScheduleRes>;
 }

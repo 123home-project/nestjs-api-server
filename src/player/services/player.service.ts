@@ -16,10 +16,18 @@ import { PlayerPitcherStatsRes } from '../dtos/player-pitcher-stats.res';
 import { PlayerHitterStatsRes } from '../dtos/player-hitter-stats.res';
 import { PitcherFirstTeamRes } from '../dtos/pitcher-first-team.res';
 import { HitterFirstTeamRes } from '../dtos/hitter-first-team.res';
+import { IPlayerHitterStatRepository } from '../interfaces/player-hitter-stat.repository.interface';
+import { PlayerHitterStatRes } from '../dtos/player-hitter-stat.res';
+import { IPlayerPitcherStatRepository } from '../interfaces/player-pitcher-stat.repository.interface';
+import { PlayerPitcherStatRes } from '../dtos/player-pitcher-stat.res';
 
 @Injectable()
 export class PlayerService implements IPlayerService {
-  constructor(@Inject('IPlayerRepository') private readonly playerRepository: IPlayerRepository) {}
+  constructor(
+    @Inject('IPlayerRepository') private readonly playerRepository: IPlayerRepository,
+    @Inject('IPlayerHitterStatRepository') private readonly playerHitterStatRepository: IPlayerHitterStatRepository,
+    @Inject('IPlayerPitcherStatRepository') private readonly playerPitcherStatRepository: IPlayerPitcherStatRepository,
+  ) {}
 
   async getPlayerPitcherStats(playerPitcherStatsReq: PlayerPitcherStatsReq): Promise<PlayerPitcherStatsRes[]> {
     const { year, limit, offset, sortBy, sortOrder } = playerPitcherStatsReq;
@@ -149,5 +157,23 @@ export class PlayerService implements IPlayerService {
     });
 
     return plainToInstance(HitterFirstTeamRes, result);
+  }
+
+  async getPlayerHitterStatById(playerHitterStatId: number): Promise<PlayerHitterStatRes> {
+    const playerHitterStat = await this.playerHitterStatRepository.getPlayerHitterStatById(playerHitterStatId);
+
+    return plainToInstance(PlayerHitterStatRes, playerHitterStat, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getPlayerPitcherStatById(playerPitcherStatId?: number): Promise<PlayerPitcherStatRes> {
+    const playerPitcherStat = await this.playerPitcherStatRepository.getPlayerPitcherStatById(playerPitcherStatId);
+
+    return plainToInstance(PlayerPitcherStatRes, playerPitcherStat, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 }

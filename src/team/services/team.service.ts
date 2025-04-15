@@ -87,4 +87,13 @@ export class TeamService implements ITeamService {
       excludeExtraneousValues: true,
     });
   }
+
+  async getTeamScheduleByDate(predictionDate: string): Promise<TeamScheduleRes> {
+    const teamSchedule = await this.teamScheduleRepository.getTeamScheduleByDateWithinDate(predictionDate);
+
+    return plainToInstance(TeamScheduleRes, teamSchedule, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
 }

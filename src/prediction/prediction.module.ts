@@ -8,9 +8,10 @@ import { PredictionMatchRepository } from './repositories/prediction-match.repos
 import { UserModule } from 'src/user/user.module';
 import { TeamModule } from 'src/team/team.module';
 import { PredictionPlayerRepository } from './repositories/prediction-player.repository';
+import { PlayerModule } from 'src/player/player.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PredictionMatch, PredictionPlayer]), UserModule, TeamModule],
+  imports: [TypeOrmModule.forFeature([PredictionMatch, PredictionPlayer]), UserModule, TeamModule, PlayerModule],
   controllers: [PredictionController],
   providers: [
     { provide: 'IPredictionService', useClass: PredictionService },

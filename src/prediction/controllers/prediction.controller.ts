@@ -14,6 +14,7 @@ import { MyMatchPredictionHistoryRes } from '../dtos/my-match-prediction-history
 import { MyMatchPredictionResultRes } from '../dtos/my-match-prediction-result.res';
 import { PlayerPredictionRankingReq } from '../dtos/player-prediction-ranking.req';
 import { PlayerPredictionRankingRes } from '../dtos/player-prediction-ranking.res';
+import { PredictPlayerReq } from '../dtos/predict-player.req';
 
 @Controller('prediction')
 export class PredictionController {
@@ -72,5 +73,16 @@ export class PredictionController {
     @Query() playerPredictionRankingReq: PlayerPredictionRankingReq,
   ): Promise<PlayerPredictionRankingRes> {
     return await this.predictionService.getPlayerPredictionRankings(playerPredictionRankingReq);
+  }
+
+  @Post('/player')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '선수 예측' })
+  @ApiBadRequestResponse({ description: '존재하지 않는 유저입니다.' })
+  async predictPlayer(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Body() predictPlayerReq: PredictPlayerReq,
+  ) {
+    return await this.predictionService.predictPlayer(accessTokenUser, predictPlayerReq);
   }
 }

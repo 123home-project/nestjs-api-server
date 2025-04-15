@@ -13,6 +13,7 @@ import { Player } from './player.entity';
 import { Team } from 'src/team/entities/team.entity';
 import { PlayerHitterFirstTeam } from './player-hitter-first-team.entity';
 import { TeamScheduleHitter } from 'src/team/entities/team-schedule-hitter.entity';
+import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
 
 @Entity('player_hitter_stat')
 export class PlayerHitterStat {
@@ -90,6 +91,9 @@ export class PlayerHitterStat {
 
   @Column({ type: 'decimal', precision: 7, scale: 2, nullable: true })
   war?: string;
+
+  @OneToMany(() => PredictionPlayer, (predictionPlayer) => predictionPlayer.playerHitterStat, { cascade: true })
+  predictionPlayer?: PredictionPlayer[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

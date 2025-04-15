@@ -109,4 +109,13 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
       excludeExtraneousValues: true,
     });
   }
+
+  async addPredictionPlayer(predictionPlayer: PredictionPlayer): Promise<PredictionPlayer> {
+    return this.save(predictionPlayer);
+  }
+
+  async getPredictionPlayerByPredictionDate(predictionDate: string, userId: number): Promise<PredictionPlayer> {
+    const date = new Date(predictionDate);
+    return this.findOne({ where: { predictionDate: date, user: { id: userId } } });
+  }
 }
