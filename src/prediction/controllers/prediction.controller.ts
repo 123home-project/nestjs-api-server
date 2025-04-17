@@ -15,6 +15,7 @@ import { MyMatchPredictionResultRes } from '../dtos/my-match-prediction-result.r
 import { PlayerPredictionRankingReq } from '../dtos/player-prediction-ranking.req';
 import { PlayerPredictionRankingRes } from '../dtos/player-prediction-ranking.res';
 import { PredictPlayerReq } from '../dtos/predict-player.req';
+import { UpdatePlayerPredictionReq } from '../dtos/update-player-prediction.req';
 
 @Controller('prediction')
 export class PredictionController {
@@ -77,12 +78,23 @@ export class PredictionController {
 
   @Post('/player')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '선수 예측' })
+  @ApiCreatedResponse({ description: '선수 예측 성공' })
   @ApiBadRequestResponse({ description: '존재하지 않는 유저입니다.' })
   async predictPlayer(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() predictPlayerReq: PredictPlayerReq,
   ) {
     return await this.predictionService.predictPlayer(accessTokenUser, predictPlayerReq);
+  }
+
+  @Patch('/player')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '선수 예측 수정 성공' })
+  @ApiBadRequestResponse({ description: '존재하지 않는 유저입니다.' })
+  async updatePlayerPrediction(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Body() updatePlayerPredictionReq: UpdatePlayerPredictionReq,
+  ) {
+    return await this.predictionService.updatePlayerPrediction(accessTokenUser, updatePlayerPredictionReq);
   }
 }

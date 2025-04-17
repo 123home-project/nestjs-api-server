@@ -118,4 +118,17 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
     const date = new Date(predictionDate);
     return this.findOne({ where: { predictionDate: date, user: { id: userId } } });
   }
+
+  async updatePredictionPlayer(
+    userId: number,
+    playerHitterStatId: number,
+    playerPitcherStatId: number,
+    predictionDate: string,
+  ) {
+    const date = new Date(predictionDate);
+    await this.update(
+      { user: { id: userId }, predictionDate: date },
+      { playerHitterStat: { id: playerHitterStatId }, playerPitcherStat: { id: playerPitcherStatId } },
+    );
+  }
 }

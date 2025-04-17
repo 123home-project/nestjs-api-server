@@ -24,4 +24,10 @@ export interface IPredictionPlayerRepository {
   ): Promise<PitcherPredictionRankingRes[]>;
   addPredictionPlayer(predictionPlayer: PredictionPlayer): Promise<PredictionPlayer>;
   getPredictionPlayerByPredictionDate(predictionDate: string, userId: number): Promise<PredictionPlayer>;
+  updatePredictionPlayer(
+    userId: number,
+    playerHitterStatId: number,
+    playerPitcherStatId: number,
+    predictionDate: string,
+  );
 }
