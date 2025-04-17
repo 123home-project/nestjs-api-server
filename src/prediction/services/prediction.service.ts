@@ -30,6 +30,7 @@ import { PredictionPlayer } from '../entities/prediction_player.entity';
 import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
 import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
 import { IPlayerService } from 'src/player/interfaces/player.service.interface';
+import { UpdatePlayerPredictionReq } from '../dtos/update-player-prediction.req';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -212,7 +213,6 @@ export class PredictionService implements IPredictionService {
   async predictPlayer(accessTokenUser: JwtAccessTokenReq, predictPlayerReq: PredictPlayerReq) {
     const { userId } = accessTokenUser;
     const { playerHitterStatId, playerPitcherStatId, predictionDate } = predictPlayerReq;
-    console.log(playerHitterStatId, playerPitcherStatId);
 
     const teamSchedule = await this.teamService.getTeamScheduleByDate(predictionDate);
 
@@ -236,5 +236,30 @@ export class PredictionService implements IPredictionService {
     predictionPlayer.predictionDate = new Date(predictionDate);
 
     await this.predictionPlayerRepository.addPredictionPlayer(predictionPlayer);
+  }
+
+  async updatePlayerPrediction(
+    accessTokenUser: JwtAccessTokenReq,
+    updatePlayerPredictionReq: UpdatePlayerPredictionReq,
+  ) {
+    const { userId } = accessTokenUser;
+    const { playerHitterStatId, playerPitcherStatId, predictionDate } = updatePlayerPredictionReq;
+
+    const teamSchedule = await this.teamService.getTeamScheduleByDate(predictionDate);
+
+    if (!teamSchedule) {
+      throw new BadRequestException('현재 해당 날짜에 선수 예측이 불가능합니다.', 'TeamScheduleDoesNotExists');
+    }
+
+    if (!(await this.predictionPlayerRepository.getPredictionPlayerByPredictionDate(predictionDate, userId))) {
+      throw new BadRequestException('해당 날짜의 예측이 존재하지 않습니다.', 'PredictPlayerNotCompleted');
+    }
+
+    await this.predictionPlayerRepository.updatePredictionPlayer(
+      userId,
+      playerHitterStatId,
+      playerPitcherStatId,
+      predictionDate,
+    );
   }
 }
