@@ -144,7 +144,7 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
     });
   }
 
-  async getPlayerPredictionPitcherByUserId(userId: number): Promise<PitcherPredictionRankingRes> {
+  async getPlayerPredictionPitcherByUserId(userId: number, year: number): Promise<PitcherPredictionRankingRes> {
     const query = await this.createQueryBuilder('prp')
       .select('u.id', 'userId')
       .addSelect('u.nickname', 'nickname')
@@ -163,8 +163,9 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
       .where(
         `
           prp.user_id = :userId
+          AND YEAR(prp.prediction_date) = :year
         `,
-        { userId },
+        { userId, year },
       )
       .groupBy('u.id')
       .getRawOne();
@@ -205,7 +206,7 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
           prp.user_id = :userId
           AND YEAR(prp.prediction_date) = :year
         `,
-        { year: year, userId: userId },
+        { year, userId },
       )
       .groupBy('u.id')
       .getRawOne();
