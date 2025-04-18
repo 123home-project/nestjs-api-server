@@ -33,4 +33,5 @@ export interface IPredictionPlayerRepository {
     regulation: number,
   ): Promise<HitterPredictionRankingRes[]>;
   getPlayerPredictionPitcherByUserId(userId: number, year: number): Promise<PitcherPredictionRankingRes>;
+  getPlayerPredictionHitterByUserId(userId: number, year: number): Promise<HitterPredictionRankingRes>;
 }

@@ -174,4 +174,45 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
       excludeExtraneousValues: true,
     });
   }
+
+  async getPlayerPredictionHitterByUserId(userId: number, year: number): Promise<HitterPredictionRankingRes> {
+    const query = await this.createQueryBuilder('prp')
+      .select('u.id', 'userId')
+      .addSelect('u.nickname', 'nickname')
+      .addSelect('ROUND(SUM(tsh.hits) / SUM(tsh.ab), 3)', 'avg')
+      .addSelect('SUM(tsh.homerun)', 'homerun')
+      .addSelect('SUM(tsh.rbi)', 'rbi')
+      .addSelect('SUM(tsh.sb)', 'sb')
+      .addSelect(
+        `
+          ROUND(
+            ((SUM(tsh.hits) + SUM(tsh.walks)) / (SUM(tsh.ab) + SUM(tsh.walks))) +
+            (((SUM(tsh.homerun) * 3) + (SUM(tsh.triples) * 2) + SUM(tsh.doubles) + SUM(tsh.hits)) / SUM(tsh.ab)),
+            3
+          )
+        `,
+        'ops',
+      )
+      .innerJoin('prp.user', 'u')
+      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
+      .innerJoin(
+        'team_schedule_hitter',
+        'tsh',
+        'tsh.player_hitter_stat_id = prp.player_hitter_stat_id AND tsh.team_schedule_id = ts.id',
+      )
+      .where(
+        `
+          prp.user_id = :userId
+          AND YEAR(prp.prediction_date) = :year
+        `,
+        { year: year, userId: userId },
+      )
+      .groupBy('u.id')
+      .getRawOne();
+
+    return plainToInstance(HitterPredictionRankingRes, query, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
 }

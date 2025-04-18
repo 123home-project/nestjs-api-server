@@ -21,6 +21,7 @@ import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.
 import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req';
 import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
 import { MyPlayerPredictionPitcherReq } from '../dtos/my-player-prediction-pitcher.req';
+import { MyPlayerPredictionHitterReq } from '../dtos/my-player-prediction-hitter.req';
 
 @Controller('prediction')
 export class PredictionController {
@@ -127,5 +128,15 @@ export class PredictionController {
     @Query() myPlayerPredictionPitcherReq: MyPlayerPredictionPitcherReq,
   ): Promise<PitcherPredictionRankingRes> {
     return await this.predictionService.getMyPlayerPredictionPitcher(accessTokenUser, myPlayerPredictionPitcherReq);
+  }
+
+  @Get('/player/hitter/my')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '나의 타자 예측 검색', type: HitterPredictionRankingRes })
+  async getMyPlayerPredictionHitter(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Query() myPlayerPredictionHitterReq: MyPlayerPredictionHitterReq,
+  ): Promise<HitterPredictionRankingRes> {
+    return await this.predictionService.getMyPlayerPredictionHitter(accessTokenUser, myPlayerPredictionHitterReq);
   }
 }

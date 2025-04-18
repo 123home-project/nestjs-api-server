@@ -16,6 +16,7 @@ import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.
 import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req';
 import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
 import { MyPlayerPredictionPitcherReq } from '../dtos/my-player-prediction-pitcher.req';
+import { MyPlayerPredictionHitterReq } from '../dtos/my-player-prediction-hitter.req';
 
 export interface IPredictionService {
   getMatchPredictionRankings(
@@ -44,4 +45,8 @@ export interface IPredictionService {
     accessTokenUser: JwtAccessTokenReq,
     myPlayerPredictionPitcherReq: MyPlayerPredictionPitcherReq,
   ): Promise<PitcherPredictionRankingRes>;
+  getMyPlayerPredictionHitter(
+    accessTokenUser: JwtAccessTokenReq,
+    myPlayerPredictionHitterReq: MyPlayerPredictionHitterReq,
+  ): Promise<HitterPredictionRankingRes>;
 }
