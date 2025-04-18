@@ -33,6 +33,8 @@ import { IPlayerService } from 'src/player/interfaces/player.service.interface';
 import { UpdatePlayerPredictionReq } from '../dtos/update-player-prediction.req';
 import { PlayerPredictionPitcherReq } from '../dtos/player-prediction-pitcher.req';
 import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
+import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req';
+import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -277,6 +279,22 @@ export class PredictionService implements IPredictionService {
       sortOrder ?? PITCHER_STAT_CONDITION[sortBy].sortOrder,
       nickname,
       PITCHER_STAT_CONDITION[sortBy].regulation ? 1 : 0,
+    );
+  }
+
+  async getPlayerPredictionHitter(
+    playerPredictionHitterReq: PlayerPredictionHitterReq,
+  ): Promise<HitterPredictionRankingRes[]> {
+    const { year, limit, offset, sortBy, sortOrder, nickname } = playerPredictionHitterReq;
+
+    return await this.predictionPlayerRepository.getPlayerPredictionHitter(
+      year,
+      limit,
+      offset,
+      sortBy,
+      sortOrder ?? HITTER_STAT_CONDITION[sortBy].sortOrder,
+      nickname,
+      HITTER_STAT_CONDITION[sortBy].regulation ? 1 : 0,
     );
   }
 }

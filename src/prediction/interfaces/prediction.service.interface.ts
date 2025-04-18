@@ -13,6 +13,7 @@ import { PredictPlayerReq } from '../dtos/predict-player.req';
 import { UpdatePlayerPredictionReq } from '../dtos/update-player-prediction.req';
 import { PlayerPredictionPitcherReq } from '../dtos/player-prediction-pitcher.req';
 import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
+import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req';
 
 export interface IPredictionService {
   getMatchPredictionRankings(
@@ -36,4 +37,5 @@ export interface IPredictionService {
   getPlayerPredictionPitcher(
     playerPredictionPitcher: PlayerPredictionPitcherReq,
   ): Promise<PitcherPredictionRankingRes[]>;
+  getPlayerPredictionHitter(playerPredictionHitter: PlayerPredictionHitterReq);
 }
