@@ -41,8 +41,12 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
         'ops',
       )
       .innerJoin('prp.user', 'u')
-      .innerJoin('prp.teamScheduleHitter', 'tsh')
-      .innerJoin('tsh.teamSchedule', 'ts')
+      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
+      .innerJoin(
+        'team_schedule_hitter',
+        'tsh',
+        'tsh.player_hitter_stat_id = prp.player_hitter_stat_id AND tsh.team_schedule_id = ts.id',
+      )
       .where(
         `
           ts.result IS NOT NULL
@@ -84,8 +88,12 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
       .addSelect('SUM(tsp.hold)', 'hold')
       .addSelect('SUM(tsp.strike_out)', 'strikeOut')
       .innerJoin('prp.user', 'u')
-      .innerJoin('prp.teamSchedulePitcher', 'tsp')
-      .innerJoin('tsp.teamSchedule', 'ts')
+      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
+      .innerJoin(
+        'team_schedule_pitcher',
+        'tsp',
+        'tsp.player_pitcher_stat_id = prp.player_pitcher_stat_id AND tsp.team_schedule_id = ts.id',
+      )
       .where(
         `
           ts.result IS NOT NULL
