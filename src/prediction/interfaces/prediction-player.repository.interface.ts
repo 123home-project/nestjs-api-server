@@ -4,6 +4,8 @@ import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.re
 import { PitcherStatType } from 'src/player/types/pitcher-stat.type';
 import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
 import { PredictionPlayer } from '../entities/prediction_player.entity';
+import { HitterStatHistoryRes } from '../dtos/hitter-stat-history.res';
+import { PitcherStatHistoryRes } from '../dtos/pitcher-stat-history.res';
 
 export interface IPredictionPlayerRepository {
   addPredictionPlayer(predictionPlayer: PredictionPlayer): Promise<PredictionPlayer>;
@@ -34,4 +36,6 @@ export interface IPredictionPlayerRepository {
   ): Promise<HitterPredictionRankingRes[]>;
   getPlayerPredictionPitcherByUserId(userId: number, year: number): Promise<PitcherPredictionRankingRes>;
   getPlayerPredictionHitterByUserId(userId: number, year: number): Promise<HitterPredictionRankingRes>;
+  getPlayerPredictionHitterHistoryByUserId(userId: number, year: number): Promise<HitterStatHistoryRes[]>;
+  getPlayerPredictionPitcherHistoryByUserId(userId: number, year: number): Promise<PitcherStatHistoryRes[]>;
 }

@@ -37,6 +37,8 @@ import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req'
 import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
 import { MyPlayerPredictionPitcherReq } from '../dtos/my-player-prediction-pitcher.req';
 import { MyPlayerPredictionHitterReq } from '../dtos/my-player-prediction-hitter.req';
+import { MyPlayerPredictionHistoryReq } from '../dtos/player-prediction-history.req';
+import { PlayerPredictionHistoryRes } from '../dtos/player-prediction-history.res';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -309,7 +311,7 @@ export class PredictionService implements IPredictionService {
     const { userId } = accessTokenUser;
     const { year } = myPlayerPredictionPitcherReq;
 
-    return this.predictionPlayerRepository.getPlayerPredictionPitcherByUserId(userId, year);
+    return await this.predictionPlayerRepository.getPlayerPredictionPitcherByUserId(userId, year);
   }
 
   async getMyPlayerPredictionHitter(
@@ -319,6 +321,26 @@ export class PredictionService implements IPredictionService {
     const { userId } = accessTokenUser;
     const { year } = myPlayerPredictionHitterReq;
 
-    return this.predictionPlayerRepository.getPlayerPredictionHitterByUserId(userId, year);
+    return await this.predictionPlayerRepository.getPlayerPredictionHitterByUserId(userId, year);
+  }
+
+  async getPlayerPredictionHistory(
+    accessTokenUser: JwtAccessTokenReq,
+    myPlayerPredictionHistoryReq: MyPlayerPredictionHistoryReq,
+  ): Promise<PlayerPredictionHistoryRes> {
+    const { userId } = accessTokenUser;
+    const { year } = myPlayerPredictionHistoryReq;
+
+    const hitter = await this.predictionPlayerRepository.getPlayerPredictionHitterHistoryByUserId(userId, year);
+    const pitcher = await this.predictionPlayerRepository.getPlayerPredictionPitcherHistoryByUserId(userId, year);
+
+    return plainToInstance(
+      PlayerPredictionHistoryRes,
+      { hitter, pitcher },
+      {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      },
+    );
   }
 }

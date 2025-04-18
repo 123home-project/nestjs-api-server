@@ -8,6 +8,8 @@ import { IPredictionPlayerRepository } from '../interfaces/prediction-player.rep
 import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
 import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
 import { PitcherStatType } from 'src/player/types/pitcher-stat.type';
+import { HitterStatHistoryRes } from '../dtos/hitter-stat-history.res';
+import { PitcherStatHistoryRes } from '../dtos/pitcher-stat-history.res';
 
 @Injectable()
 export class PredictionPlayerRepository extends Repository<PredictionPlayer> implements IPredictionPlayerRepository {
@@ -212,6 +214,79 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
       .getRawOne();
 
     return plainToInstance(HitterPredictionRankingRes, query, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getPlayerPredictionHitterHistoryByUserId(userId: number, year: number): Promise<HitterStatHistoryRes[]> {
+    const query = await this.createQueryBuilder('prp')
+      .select('prp.prediction_date', 'predictionDate')
+      .addSelect('phs.id', 'hitterStatId')
+      .addSelect('p.name', 'name')
+      .addSelect('p.profile', 'profile')
+      .addSelect('tsh.ab', 'ab')
+      .addSelect('tsh.hits', 'hits')
+      .addSelect('tsh.homerun', 'homerun')
+      .addSelect('tsh.walks', 'walks')
+      .addSelect('tsh.rbi', 'rbi')
+      .addSelect('tsh.sb', 'sb')
+      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
+      .innerJoin('prp.playerHitterStat', 'phs')
+      .innerJoin('phs.player', 'p')
+      .leftJoin(
+        'team_schedule_hitter',
+        'tsh',
+        'tsh.player_hitter_stat_id = prp.player_hitter_stat_id AND tsh.team_schedule_id = ts.id',
+      )
+      .where(
+        `
+          prp.user_id = :userId
+          AND YEAR(prp.prediction_date) = :year
+        `,
+        { year, userId },
+      )
+      .orderBy('prp.prediction_date', 'DESC')
+      .getRawMany();
+
+    return plainToInstance(HitterStatHistoryRes, query, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getPlayerPredictionPitcherHistoryByUserId(userId: number, year: number): Promise<PitcherStatHistoryRes[]> {
+    const query = await this.createQueryBuilder('prp')
+      .select('prp.prediction_date', 'predictionDate')
+      .addSelect('pps.id', 'pitcherStatId')
+      .addSelect('p.name', 'name')
+      .addSelect('p.profile', 'profile')
+      .addSelect('tsp.win', 'win')
+      .addSelect('tsp.inning', 'inning')
+      .addSelect('tsp.runsAllowed', 'runsAllowed')
+      .addSelect('tsp.er', 'er')
+      .addSelect('tsp.save', 'save')
+      .addSelect('tsp.hold', 'hold')
+      .addSelect('tsp.strikeOut', 'strikeOut')
+      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
+      .innerJoin('prp.playerPitcherStat', 'pps')
+      .innerJoin('pps.player', 'p')
+      .leftJoin(
+        'team_schedule_pitcher',
+        'tsp',
+        'tsp.player_pitcher_stat_id = prp.player_pitcher_stat_id AND tsp.team_schedule_id = ts.id',
+      )
+      .where(
+        `
+          prp.user_id = :userId
+          AND YEAR(prp.prediction_date) = :year
+        `,
+        { year, userId },
+      )
+      .orderBy('prp.prediction_date', 'DESC')
+      .getRawMany();
+
+    return plainToInstance(PitcherStatHistoryRes, query, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
