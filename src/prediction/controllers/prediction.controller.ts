@@ -16,6 +16,8 @@ import { PlayerPredictionRankingReq } from '../dtos/player-prediction-ranking.re
 import { PlayerPredictionRankingRes } from '../dtos/player-prediction-ranking.res';
 import { PredictPlayerReq } from '../dtos/predict-player.req';
 import { UpdatePlayerPredictionReq } from '../dtos/update-player-prediction.req';
+import { PlayerPredictionPitcherReq } from '../dtos/player-prediction-pitcher.req';
+import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
 
 @Controller('prediction')
 export class PredictionController {
@@ -96,5 +98,13 @@ export class PredictionController {
     @Body() updatePlayerPredictionReq: UpdatePlayerPredictionReq,
   ) {
     return await this.predictionService.updatePlayerPrediction(accessTokenUser, updatePlayerPredictionReq);
+  }
+
+  @Get('/player/pitcher')
+  @ApiOkResponse({ description: '투수 예측 검색', type: [PitcherPredictionRankingRes] })
+  async getPlayerPredictionPitcher(
+    @Query() playerPredictionPitcher: PlayerPredictionPitcherReq,
+  ): Promise<PitcherPredictionRankingRes[]> {
+    return await this.predictionService.getPlayerPredictionPitcher(playerPredictionPitcher);
   }
 }

@@ -131,4 +131,53 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
       { playerHitterStat: { id: playerHitterStatId }, playerPitcherStat: { id: playerPitcherStatId } },
     );
   }
+
+  async getPlayerPredictionPitcher(
+    year: number,
+    limit: number,
+    offset: number,
+    sortBy: string,
+    sortOrder: SortOrderType,
+    nickname: string,
+    regulation: number,
+  ): Promise<PitcherPredictionRankingRes[]> {
+    const query = await this.createQueryBuilder('prp')
+      .select('u.id', 'userId')
+      .addSelect('u.nickname', 'nickname')
+      .addSelect('SUM(tsp.win)', 'win')
+      .addSelect('ROUND((SUM(tsp.er) * 9) / SUM(tsp.inning), 2)', 'era')
+      .addSelect('SUM(tsp.save)', 'save')
+      .addSelect('SUM(tsp.hold)', 'hold')
+      .addSelect('SUM(tsp.strike_out)', 'strikeOut')
+      .innerJoin('prp.user', 'u')
+      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
+      .innerJoin(
+        'team_schedule_pitcher',
+        'tsp',
+        'tsp.player_pitcher_stat_id = prp.player_pitcher_stat_id AND tsp.team_schedule_id = ts.id',
+      )
+      .where(
+        `
+          ts.result IS NOT NULL
+          AND YEAR(prp.prediction_date) = :year
+          AND u.nickname LIKE :nickname 
+        `,
+        { year: year, nickname: '%' + (nickname ?? '') + '%' },
+      )
+      .groupBy('u.id')
+      .having(
+        `COUNT(DISTINCT prp.id) > 
+        ((SELECT COUNT(*) FROM 123home.team_schedule WHERE YEAR(start_date) = :year and result IS NOT NULL) / 10) * :regulation`,
+        { year: year, regulation: regulation },
+      )
+      .orderBy(`${sortBy}`, sortOrder)
+      .skip(offset)
+      .take(limit)
+      .getRawMany();
+
+    return plainToInstance(PitcherPredictionRankingRes, query, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
 }
