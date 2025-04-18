@@ -35,6 +35,7 @@ import { PlayerPredictionPitcherReq } from '../dtos/player-prediction-pitcher.re
 import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
 import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req';
 import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
+import { MyPlayerPredictionPitcherReq } from '../dtos/my-player-prediction-pitcher.req';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -298,5 +299,15 @@ export class PredictionService implements IPredictionService {
       nickname,
       HITTER_STAT_CONDITION[sortBy].regulation ? 1 : 0,
     );
+  }
+
+  async getMyPlayerPredictionPitcher(
+    accessTokenUser: JwtAccessTokenReq,
+    myPlayerPredictionPitcherReq: MyPlayerPredictionPitcherReq,
+  ): Promise<PitcherPredictionRankingRes> {
+    const { userId } = accessTokenUser;
+    const { year } = myPlayerPredictionPitcherReq;
+
+    return this.predictionPlayerRepository.getPlayerPredictionPitcherByUserId(userId, year);
   }
 }
