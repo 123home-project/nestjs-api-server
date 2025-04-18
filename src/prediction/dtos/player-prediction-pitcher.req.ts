@@ -25,7 +25,7 @@ export class PlayerPredictionPitcherReq {
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   offset?: number = 0;
 
-  @ApiPropertyOptional({ description: '정렬 기록', default: 'avg', enum: PredictionPitcherStatType })
+  @ApiPropertyOptional({ description: '정렬 기록', default: 'era', enum: PredictionPitcherStatType })
   @IsEnum(PredictionPitcherStatType)
   @IsOptional()
   sortBy?: PredictionPitcherStatType = 'era';
