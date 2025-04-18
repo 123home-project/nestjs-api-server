@@ -15,109 +15,6 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
     super(PredictionPlayer, dataSource.createEntityManager());
   }
 
-  async getHitterPredictionRanking(
-    year: number,
-    limit: number,
-    offset: number,
-    sortBy: HitterStatType,
-    sortOrder: SortOrderType,
-    regulation: number,
-  ): Promise<HitterPredictionRankingRes[]> {
-    const query = await this.createQueryBuilder('prp')
-      .select('u.id', 'userId')
-      .addSelect('u.nickname', 'nickname')
-      .addSelect('ROUND(SUM(tsh.hits) / SUM(tsh.ab), 3)', 'avg')
-      .addSelect('SUM(tsh.homerun)', 'homerun')
-      .addSelect('SUM(tsh.rbi)', 'rbi')
-      .addSelect('SUM(tsh.sb)', 'sb')
-      .addSelect(
-        `
-          ROUND(
-            ((SUM(tsh.hits) + SUM(tsh.walks)) / (SUM(tsh.ab) + SUM(tsh.walks))) +
-            (((SUM(tsh.homerun) * 3) + (SUM(tsh.triples) * 2) + SUM(tsh.doubles) + SUM(tsh.hits)) / SUM(tsh.ab)),
-            3
-          )
-        `,
-        'ops',
-      )
-      .innerJoin('prp.user', 'u')
-      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
-      .innerJoin(
-        'team_schedule_hitter',
-        'tsh',
-        'tsh.player_hitter_stat_id = prp.player_hitter_stat_id AND tsh.team_schedule_id = ts.id',
-      )
-      .where(
-        `
-          ts.result IS NOT NULL
-          AND YEAR(prp.prediction_date) = :year 
-        `,
-        { year: year },
-      )
-      .groupBy('u.id')
-      .having(
-        `COUNT(prp.id) > 
-        ((SELECT COUNT(*) FROM 123home.team_schedule WHERE YEAR(start_date) = :year and result IS NOT NULL) / 10) * :regulation`,
-        { year: year, regulation: regulation },
-      )
-      .orderBy(`${sortBy}`, sortOrder)
-      .skip(offset)
-      .take(limit)
-      .getRawMany();
-
-    return plainToInstance(HitterPredictionRankingRes, query, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
-  }
-
-  async getPitcherPredictionRanking(
-    year: number,
-    limit: number,
-    offset: number,
-    sortBy: PitcherStatType,
-    sortOrder: SortOrderType,
-    regulation: number,
-  ): Promise<PitcherPredictionRankingRes[]> {
-    const query = await this.createQueryBuilder('prp')
-      .select('u.id', 'userId')
-      .addSelect('u.nickname', 'nickname')
-      .addSelect('SUM(tsp.win)', 'win')
-      .addSelect('ROUND((SUM(tsp.er) * 9) / SUM(tsp.inning), 2)', 'era')
-      .addSelect('SUM(tsp.save)', 'save')
-      .addSelect('SUM(tsp.hold)', 'hold')
-      .addSelect('SUM(tsp.strike_out)', 'strikeOut')
-      .innerJoin('prp.user', 'u')
-      .innerJoin('team_schedule', 'ts', 'prp.prediction_date = DATE(ts.start_date)')
-      .innerJoin(
-        'team_schedule_pitcher',
-        'tsp',
-        'tsp.player_pitcher_stat_id = prp.player_pitcher_stat_id AND tsp.team_schedule_id = ts.id',
-      )
-      .where(
-        `
-          ts.result IS NOT NULL
-          AND YEAR(prp.prediction_date) = :year 
-        `,
-        { year: year },
-      )
-      .groupBy('u.id')
-      .having(
-        `COUNT(prp.id) > 
-        ((SELECT COUNT(*) FROM 123home.team_schedule WHERE YEAR(start_date) = :year and result IS NOT NULL) / 10) * :regulation`,
-        { year: year, regulation: regulation },
-      )
-      .orderBy(`${sortBy}`, sortOrder)
-      .skip(offset)
-      .take(limit)
-      .getRawMany();
-
-    return plainToInstance(PitcherPredictionRankingRes, query, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
-  }
-
   async addPredictionPlayer(predictionPlayer: PredictionPlayer): Promise<PredictionPlayer> {
     return this.save(predictionPlayer);
   }
@@ -144,7 +41,7 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
     year: number,
     limit: number,
     offset: number,
-    sortBy: string,
+    sortBy: PitcherStatType,
     sortOrder: SortOrderType,
     nickname: string,
     regulation: number,
@@ -193,7 +90,7 @@ export class PredictionPlayerRepository extends Repository<PredictionPlayer> imp
     year: number,
     limit: number,
     offset: number,
-    sortBy: string,
+    sortBy: HitterStatType,
     sortOrder: SortOrderType,
     nickname: string,
     regulation: number,

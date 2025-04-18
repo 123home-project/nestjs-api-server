@@ -6,22 +6,6 @@ import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.
 import { PredictionPlayer } from '../entities/prediction_player.entity';
 
 export interface IPredictionPlayerRepository {
-  getHitterPredictionRanking(
-    year: number,
-    limit: number,
-    offset: number,
-    sortBy: HitterStatType,
-    sortOrder: SortOrderType,
-    regulation: number,
-  ): Promise<HitterPredictionRankingRes[]>;
-  getPitcherPredictionRanking(
-    year: number,
-    limit: number,
-    offset: number,
-    sortBy: PitcherStatType,
-    sortOrder: SortOrderType,
-    regulation: number,
-  ): Promise<PitcherPredictionRankingRes[]>;
   addPredictionPlayer(predictionPlayer: PredictionPlayer): Promise<PredictionPlayer>;
   getPredictionPlayerByPredictionDate(predictionDate: string, userId: number): Promise<PredictionPlayer>;
   updatePredictionPlayer(
@@ -34,7 +18,7 @@ export interface IPredictionPlayerRepository {
     year: number,
     limit: number,
     offset: number,
-    sortBy: string,
+    sortBy: PitcherStatType,
     sortOrder: SortOrderType,
     nickname: string,
     regulation: number,
@@ -43,7 +27,7 @@ export interface IPredictionPlayerRepository {
     year: number,
     limit: number,
     offset: number,
-    sortBy: string,
+    sortBy: HitterStatType,
     sortOrder: SortOrderType,
     nickname: string,
     regulation: number,

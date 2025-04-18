@@ -167,12 +167,13 @@ export class PredictionService implements IPredictionService {
     const playerPredictionRanking = { pitcher: {}, hitter: {} };
 
     for (const hitterPrediction of USER_PREDICTION_HITTER_STAT_RANKING_LIST) {
-      const predictionHitter = await this.predictionPlayerRepository.getHitterPredictionRanking(
+      const predictionHitter = await this.predictionPlayerRepository.getPlayerPredictionHitter(
         year,
         limit,
         offset,
         hitterPrediction,
         HITTER_STAT_CONDITION[hitterPrediction].sortOrder,
+        '',
         HITTER_STAT_CONDITION[hitterPrediction].regulation ? 1 : 0,
       );
 
@@ -188,12 +189,13 @@ export class PredictionService implements IPredictionService {
     }
 
     for (const pitcherPrediction of USER_PREDICTION_PITCHER_STAT_RANKING_LIST) {
-      const predictionPitcher = await this.predictionPlayerRepository.getPitcherPredictionRanking(
+      const predictionPitcher = await this.predictionPlayerRepository.getPlayerPredictionPitcher(
         year,
         limit,
         offset,
         pitcherPrediction,
         PITCHER_STAT_CONDITION[pitcherPrediction].sortOrder,
+        '',
         PITCHER_STAT_CONDITION[pitcherPrediction].regulation ? 1 : 0,
       );
 
