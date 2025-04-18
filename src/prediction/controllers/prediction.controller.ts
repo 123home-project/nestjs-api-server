@@ -16,6 +16,14 @@ import { PlayerPredictionRankingReq } from '../dtos/player-prediction-ranking.re
 import { PlayerPredictionRankingRes } from '../dtos/player-prediction-ranking.res';
 import { PredictPlayerReq } from '../dtos/predict-player.req';
 import { UpdatePlayerPredictionReq } from '../dtos/update-player-prediction.req';
+import { PlayerPredictionPitcherReq } from '../dtos/player-prediction-pitcher.req';
+import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
+import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req';
+import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
+import { MyPlayerPredictionPitcherReq } from '../dtos/my-player-prediction-pitcher.req';
+import { MyPlayerPredictionHitterReq } from '../dtos/my-player-prediction-hitter.req';
+import { MyPlayerPredictionHistoryReq } from '../dtos/player-prediction-history.req';
+import { PlayerPredictionHistoryRes } from '../dtos/player-prediction-history.res';
 
 @Controller('prediction')
 export class PredictionController {
@@ -96,5 +104,51 @@ export class PredictionController {
     @Body() updatePlayerPredictionReq: UpdatePlayerPredictionReq,
   ) {
     return await this.predictionService.updatePlayerPrediction(accessTokenUser, updatePlayerPredictionReq);
+  }
+
+  @Get('/player/pitcher')
+  @ApiOkResponse({ description: '투수 예측 검색', type: [PitcherPredictionRankingRes] })
+  async getPlayerPredictionPitcher(
+    @Query() playerPredictionPitcher: PlayerPredictionPitcherReq,
+  ): Promise<PitcherPredictionRankingRes[]> {
+    return await this.predictionService.getPlayerPredictionPitcher(playerPredictionPitcher);
+  }
+
+  @Get('/player/hitter')
+  @ApiOkResponse({ description: '타자 예측 검색', type: [HitterPredictionRankingRes] })
+  async getPlayerPredictionHitter(
+    @Query() playerPredictionHitterReq: PlayerPredictionHitterReq,
+  ): Promise<HitterPredictionRankingRes[]> {
+    return await this.predictionService.getPlayerPredictionHitter(playerPredictionHitterReq);
+  }
+
+  @Get('/player/pitcher/my')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '나의 투수 예측 검색', type: PitcherPredictionRankingRes })
+  async getMyPlayerPredictionPitcher(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Query() myPlayerPredictionPitcherReq: MyPlayerPredictionPitcherReq,
+  ): Promise<PitcherPredictionRankingRes> {
+    return await this.predictionService.getMyPlayerPredictionPitcher(accessTokenUser, myPlayerPredictionPitcherReq);
+  }
+
+  @Get('/player/hitter/my')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '나의 타자 예측 검색', type: HitterPredictionRankingRes })
+  async getMyPlayerPredictionHitter(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Query() myPlayerPredictionHitterReq: MyPlayerPredictionHitterReq,
+  ): Promise<HitterPredictionRankingRes> {
+    return await this.predictionService.getMyPlayerPredictionHitter(accessTokenUser, myPlayerPredictionHitterReq);
+  }
+
+  @Get('/player/history')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '선수 예측 내역', type: PlayerPredictionHistoryRes })
+  async getPlayerPredictionHistory(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Query() myyPlayerPredictionHistoryReq: MyPlayerPredictionHistoryReq,
+  ): Promise<PlayerPredictionHistoryRes> {
+    return await this.predictionService.getPlayerPredictionHistory(accessTokenUser, myyPlayerPredictionHistoryReq);
   }
 }

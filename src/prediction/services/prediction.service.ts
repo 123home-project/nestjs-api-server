@@ -31,6 +31,14 @@ import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity'
 import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
 import { IPlayerService } from 'src/player/interfaces/player.service.interface';
 import { UpdatePlayerPredictionReq } from '../dtos/update-player-prediction.req';
+import { PlayerPredictionPitcherReq } from '../dtos/player-prediction-pitcher.req';
+import { PitcherPredictionRankingRes } from '../dtos/pitcher-prediction-ranking.res';
+import { PlayerPredictionHitterReq } from '../dtos/player-prediction-hitter.req';
+import { HitterPredictionRankingRes } from '../dtos/hitter-prediction-ranking.res';
+import { MyPlayerPredictionPitcherReq } from '../dtos/my-player-prediction-pitcher.req';
+import { MyPlayerPredictionHitterReq } from '../dtos/my-player-prediction-hitter.req';
+import { MyPlayerPredictionHistoryReq } from '../dtos/player-prediction-history.req';
+import { PlayerPredictionHistoryRes } from '../dtos/player-prediction-history.res';
 
 @Injectable()
 export class PredictionService implements IPredictionService {
@@ -163,12 +171,13 @@ export class PredictionService implements IPredictionService {
     const playerPredictionRanking = { pitcher: {}, hitter: {} };
 
     for (const hitterPrediction of USER_PREDICTION_HITTER_STAT_RANKING_LIST) {
-      const predictionHitter = await this.predictionPlayerRepository.getHitterPredictionRanking(
+      const predictionHitter = await this.predictionPlayerRepository.getPlayerPredictionHitter(
         year,
         limit,
         offset,
         hitterPrediction,
         HITTER_STAT_CONDITION[hitterPrediction].sortOrder,
+        '',
         HITTER_STAT_CONDITION[hitterPrediction].regulation ? 1 : 0,
       );
 
@@ -184,12 +193,13 @@ export class PredictionService implements IPredictionService {
     }
 
     for (const pitcherPrediction of USER_PREDICTION_PITCHER_STAT_RANKING_LIST) {
-      const predictionPitcher = await this.predictionPlayerRepository.getPitcherPredictionRanking(
+      const predictionPitcher = await this.predictionPlayerRepository.getPlayerPredictionPitcher(
         year,
         limit,
         offset,
         pitcherPrediction,
         PITCHER_STAT_CONDITION[pitcherPrediction].sortOrder,
+        '',
         PITCHER_STAT_CONDITION[pitcherPrediction].regulation ? 1 : 0,
       );
 
@@ -260,6 +270,77 @@ export class PredictionService implements IPredictionService {
       playerHitterStatId,
       playerPitcherStatId,
       predictionDate,
+    );
+  }
+
+  async getPlayerPredictionPitcher(
+    playerPredictionPitcher: PlayerPredictionPitcherReq,
+  ): Promise<PitcherPredictionRankingRes[]> {
+    const { year, limit, offset, sortBy, sortOrder, nickname } = playerPredictionPitcher;
+    return await this.predictionPlayerRepository.getPlayerPredictionPitcher(
+      year,
+      limit,
+      offset,
+      sortBy,
+      sortOrder ?? PITCHER_STAT_CONDITION[sortBy].sortOrder,
+      nickname,
+      PITCHER_STAT_CONDITION[sortBy].regulation ? 1 : 0,
+    );
+  }
+
+  async getPlayerPredictionHitter(
+    playerPredictionHitterReq: PlayerPredictionHitterReq,
+  ): Promise<HitterPredictionRankingRes[]> {
+    const { year, limit, offset, sortBy, sortOrder, nickname } = playerPredictionHitterReq;
+
+    return await this.predictionPlayerRepository.getPlayerPredictionHitter(
+      year,
+      limit,
+      offset,
+      sortBy,
+      sortOrder ?? HITTER_STAT_CONDITION[sortBy].sortOrder,
+      nickname,
+      HITTER_STAT_CONDITION[sortBy].regulation ? 1 : 0,
+    );
+  }
+
+  async getMyPlayerPredictionPitcher(
+    accessTokenUser: JwtAccessTokenReq,
+    myPlayerPredictionPitcherReq: MyPlayerPredictionPitcherReq,
+  ): Promise<PitcherPredictionRankingRes> {
+    const { userId } = accessTokenUser;
+    const { year } = myPlayerPredictionPitcherReq;
+
+    return await this.predictionPlayerRepository.getPlayerPredictionPitcherByUserId(userId, year);
+  }
+
+  async getMyPlayerPredictionHitter(
+    accessTokenUser: JwtAccessTokenReq,
+    myPlayerPredictionHitterReq: MyPlayerPredictionHitterReq,
+  ): Promise<HitterPredictionRankingRes> {
+    const { userId } = accessTokenUser;
+    const { year } = myPlayerPredictionHitterReq;
+
+    return await this.predictionPlayerRepository.getPlayerPredictionHitterByUserId(userId, year);
+  }
+
+  async getPlayerPredictionHistory(
+    accessTokenUser: JwtAccessTokenReq,
+    myPlayerPredictionHistoryReq: MyPlayerPredictionHistoryReq,
+  ): Promise<PlayerPredictionHistoryRes> {
+    const { userId } = accessTokenUser;
+    const { year } = myPlayerPredictionHistoryReq;
+
+    const hitter = await this.predictionPlayerRepository.getPlayerPredictionHitterHistoryByUserId(userId, year);
+    const pitcher = await this.predictionPlayerRepository.getPlayerPredictionPitcherHistoryByUserId(userId, year);
+
+    return plainToInstance(
+      PlayerPredictionHistoryRes,
+      { hitter, pitcher },
+      {
+        enableImplicitConversion: true,
+        excludeExtraneousValues: true,
+      },
     );
   }
 }
