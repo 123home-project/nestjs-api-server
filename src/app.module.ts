@@ -11,6 +11,7 @@ import { TeamModule } from './team/team.module';
 import { PlayerModule } from './player/player.module';
 import { PredictionModule } from './prediction/prediction.module';
 import { TimeModule } from './time/time.module';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { TimeModule } from './time/time.module';
     PlayerModule,
     PredictionModule,
     TimeModule,
+    BoardModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
