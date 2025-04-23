@@ -11,6 +11,9 @@ import {
 } from 'typeorm';
 import { PredictionMatch } from 'src/prediction/entities/prediction_match.entity';
 import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
+import { Board } from 'src/board/entities/board.entity';
+import { BoardComment } from 'src/board/entities/board-comment.entity';
+import { BoardLike } from 'src/board/entities/board-like.entity';
 
 @Entity('user')
 export class User {
@@ -37,6 +40,15 @@ export class User {
 
   @OneToMany(() => PredictionPlayer, (predictionPlayer) => predictionPlayer.user, { cascade: true })
   predictionPlayer?: PredictionPlayer[];
+
+  @OneToMany(() => Board, (board) => board.user, { cascade: true })
+  board?: Board[];
+
+  @OneToMany(() => BoardComment, (boardComment) => boardComment.user, { cascade: true })
+  boardComment?: BoardComment[];
+
+  @OneToMany(() => BoardLike, (boardLike) => boardLike.user, { cascade: true })
+  boardLike?: BoardLike[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
