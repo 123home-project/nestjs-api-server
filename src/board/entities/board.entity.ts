@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { boardType } from '../types/board.type';
+import { BoardType } from '../types/board.type';
 import { BoardTag } from './board-tag.entity';
 import { BoardComment } from './board-comment.entity';
 import { BoardLike } from './board-like.entity';
@@ -41,7 +41,7 @@ export class Board {
   views: number;
 
   @Column({ name: 'board_type', type: 'varchar', length: 45 })
-  boardTypes: boardType;
+  boardTypes: BoardType;
 
   @OneToMany(() => BoardComment, (boardComment) => boardComment.board, { cascade: true })
   boardComment?: BoardComment[];

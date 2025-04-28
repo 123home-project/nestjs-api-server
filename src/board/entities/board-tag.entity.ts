@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { boardType } from '../types/board.type';
+import { BoardType } from '../types/board.type';
 import { Board } from './board.entity';
 
 @Entity('board_tag')
@@ -16,7 +16,7 @@ export class BoardTag {
   name: string;
 
   @Column({ name: 'tag_type', type: 'varchar', length: 45 })
-  tagTypes: boardType;
+  tagTypes: BoardType;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
