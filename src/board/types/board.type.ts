@@ -1,6 +1,6 @@
-export const boardType = {
+export const BoardType = {
   free: 'free',
   team: 'team',
 } as const;
 
-export type boardType = (typeof boardType)[keyof typeof boardType];
+export type BoardType = (typeof BoardType)[keyof typeof BoardType];
