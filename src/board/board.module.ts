@@ -9,6 +9,8 @@ import { UserModule } from 'src/user/user.module';
 import { BoardRepository } from './repositories/board.repository';
 import { BoardController } from './controllers/board.controller';
 import { BoardTagRepository } from './repositories/board-tag.repository';
+import { BoardLikeRepository } from './repositories/board-like.repository';
+import { BoardCommentRepository } from './repositories/board-comment.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Board, BoardComment, BoardLike, BoardTag]), UserModule],
@@ -17,6 +19,8 @@ import { BoardTagRepository } from './repositories/board-tag.repository';
     { provide: 'IBoardService', useClass: BoardService },
     { provide: 'IBoardRepository', useClass: BoardRepository },
     { provide: 'IBoardTagRepository', useClass: BoardTagRepository },
+    { provide: 'IBoardCommentRepository', useClass: BoardCommentRepository },
+    { provide: 'IBoardLikeRepository', useClass: BoardLikeRepository },
   ],
 })
 export class BoardModule {}

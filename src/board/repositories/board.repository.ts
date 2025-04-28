@@ -12,4 +12,18 @@ export class BoardRepository extends Repository<Board> implements IBoardReposito
   async addBoard(board: Board) {
     await this.save(board);
   }
+
+  async getBoardById(boardId: number): Promise<Board> {
+    return this.findOne({ where: { id: boardId }, relations: ['user'] });
+  }
+
+  async updateBoard(boardId: number, boardTagId: number, title: string, contents: string) {
+    const whereCondition: any = {};
+
+    if (boardTagId) whereCondition.boardTag = { id: boardTagId };
+    if (title) whereCondition.title = title;
+    if (contents) whereCondition.contents = contents;
+
+    await this.update({ id: boardId }, whereCondition);
+  }
 }
