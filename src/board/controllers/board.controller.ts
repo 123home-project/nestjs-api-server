@@ -72,7 +72,7 @@ export class BoardController {
 
   @Post('/like')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 댓글 쓰기' })
+  @ApiCreatedResponse({ description: '게시판 좋아요/싫어요' })
   async likeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() likeBoardReq: LikeBoardReq) {
     return await this.boardService.likeBoard(accessTokenUser, likeBoardReq);
   }
