@@ -78,7 +78,7 @@ export class BoardService implements IBoardService {
     });
 
     await this.checkBoardCanBeDeleted(boardRes);
-    console.log(boardId, boardTagId, title, contents);
+
     await this.boardRepository.updateBoard(boardId, boardTagId, title, contents);
   }
 
@@ -86,12 +86,35 @@ export class BoardService implements IBoardService {
     const boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
     const boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id);
     const boardViewCount = board.views;
-    console.log(boardCommentCount, boardLikeCount, boardViewCount);
+
     const { comment, like, view } =
       board.boardTypes === BoardType.free ? FREE_STAR_BOARD_CONDITION : TEAM_STAR_BOARD_CONDITION;
 
     if (boardCommentCount >= comment || boardLikeCount >= like || boardViewCount >= view) {
-      throw new BadRequestException('스타 게시물은 수정할 수 없습니다.', 'StarBoardCanNotBeModified');
+      throw new BadRequestException('스타 게시물은 수정/삭제 할 수 없습니다.', 'StarBoardCanNotBeModified');
     }
+  }
+
+  async deleteBoard(accessTokenUser: JwtAccessTokenReq, boardId: number) {
+    const { userId } = accessTokenUser;
+
+    const board = await this.boardRepository.getBoardById(boardId);
+
+    if (!board) {
+      throw new BadRequestException('존재하지 않는 게시물입니다.', 'DoesNotExistsBoard');
+    }
+
+    if (board.user.id !== userId) {
+      throw new UnauthorizedException('해당 게시물을 삭제할 권한이 존재하지 않습니다.', 'DoesNotHavePermission');
+    }
+
+    const boardRes = plainToInstance(BoardRes, board, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+
+    await this.checkBoardCanBeDeleted(boardRes);
+
+    await this.boardRepository.softDeleteBoard(boardId);
   }
 }

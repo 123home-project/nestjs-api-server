@@ -5,4 +5,5 @@ import { UpdateBoardReq } from '../dtos/update-board.req';
 export interface IBoardService {
   writeBoard(accessTokenUser: JwtAccessTokenReq, writeBoardReq: WriteBoardReq);
   updateBoard(accessTokenUser: JwtAccessTokenReq, updateBoard: UpdateBoardReq);
+  deleteBoard(accessTokenUser: JwtAccessTokenReq, boardId: number);
 }

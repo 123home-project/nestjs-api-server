@@ -26,4 +26,8 @@ export class BoardRepository extends Repository<Board> implements IBoardReposito
 
     await this.update({ id: boardId }, whereCondition);
   }
+
+  async softDeleteBoard(boardId: number) {
+    await this.softDelete(boardId);
+  }
 }

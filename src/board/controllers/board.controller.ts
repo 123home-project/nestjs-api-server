@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Inject, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse } from '@nestjs/swagger';
 import { IBoardService } from '../interfaces/board.service.interface';
 import { WriteBoardReq } from '../dtos/write-board.req';
@@ -23,5 +23,12 @@ export class BoardController {
   @ApiCreatedResponse({ description: '게시판 글수정' })
   async updateBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() updateBoardReq: UpdateBoardReq) {
     return await this.boardService.updateBoard(accessTokenUser, updateBoardReq);
+  }
+
+  @Delete('/:boardId')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 글삭제' })
+  async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
+    return await this.boardService.deleteBoard(accessTokenUser, boardId);
   }
 }
