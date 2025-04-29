@@ -58,9 +58,9 @@ export class BoardService implements IBoardService {
     });
   }
 
-  async updateBoard(accessTokenUser: JwtAccessTokenReq, updateBoard: UpdateBoardReq) {
+  async updateBoard(accessTokenUser: JwtAccessTokenReq, updateBoard: UpdateBoardReq, boardId: number) {
     const { userId } = accessTokenUser;
-    const { boardId, boardTagId, title, contents } = updateBoard;
+    const { boardTagId, title, contents } = updateBoard;
 
     const board = await this.boardRepository.getBoardById(boardId);
 

@@ -18,11 +18,15 @@ export class BoardController {
     return await this.boardService.writeBoard(accessTokenUser, writeBoardReq);
   }
 
-  @Patch('/')
+  @Patch('/:boardId')
   @UseGuards(AccessTokenAuthGuard)
   @ApiCreatedResponse({ description: '게시판 글수정' })
-  async updateBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() updateBoardReq: UpdateBoardReq) {
-    return await this.boardService.updateBoard(accessTokenUser, updateBoardReq);
+  async updateBoard(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Body() updateBoardReq: UpdateBoardReq,
+    @Param('boardId') boardId: number,
+  ) {
+    return await this.boardService.updateBoard(accessTokenUser, updateBoardReq, boardId);
   }
 
   @Delete('/:boardId')
