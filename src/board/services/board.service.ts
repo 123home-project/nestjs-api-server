@@ -158,6 +158,25 @@ export class BoardService implements IBoardService {
     await this.boardCommentRepository.updateBoardComment(boardCommentId, tagUserId, comment);
   }
 
+  async deleteBoardComment(accessTokenUser: JwtAccessTokenReq, boardCommentId: number) {
+    const { userId } = accessTokenUser;
+
+    const boardComment = await this.getBoardCommentById(boardCommentId);
+
+    if (!boardComment) {
+      throw new BadRequestException('존재하지 않는 댓글입니다.', 'DoesNotExistsBoardComment');
+    }
+
+    if (boardComment.user.id !== userId) {
+      throw new BadRequestException(
+        '해당 댓글을 삭제할 권한이 존재하지 않습니다.',
+        'DoesNotHavePermissionDeleteBoardComment',
+      );
+    }
+
+    await this.boardCommentRepository.softDeleteBoardComment(boardCommentId);
+  }
+
   async checkBoardCanBeDeleted(board: BoardRes) {
     const boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
     const boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id);

@@ -5,4 +5,5 @@ export interface IBoardCommentRepository {
   getBoardCommentById(boardCommentId: number): Promise<BoardComment>;
   addBoardComment(boardComment: BoardComment): Promise<BoardComment>;
   updateBoardComment(boardCommentId: number, tagUserId: number, comment: string);
+  softDeleteBoardComment(boardCommentId: number);
 }

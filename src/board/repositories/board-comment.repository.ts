@@ -41,4 +41,8 @@ export class BoardCommentRepository extends Repository<BoardComment> implements 
 
     await this.update({ id: boardCommentId }, updateElements);
   }
+
+  async softDeleteBoardComment(boardCommentId: number) {
+    await this.softDelete(boardCommentId);
+  }
 }

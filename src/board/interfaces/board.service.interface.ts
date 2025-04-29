@@ -14,4 +14,5 @@ export interface IBoardService {
     updateBoardCommentReq: UpdateBoardCommentReq,
     boardCommentId: number,
   );
+  deleteBoardComment(accessTokenUser: JwtAccessTokenReq, boardCommentId: number);
 }

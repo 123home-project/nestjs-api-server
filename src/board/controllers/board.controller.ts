@@ -58,4 +58,14 @@ export class BoardController {
   ) {
     return await this.boardService.updateBoardComment(accessTokenUser, updateBoardCommentReq, boardCommentId);
   }
+
+  @Delete('/comment/:boardCommentId')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 댓글 삭제' })
+  async deleteBoardComment(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Param('boardCommentId') boardCommentId: number,
+  ) {
+    return await this.boardService.deleteBoardComment(accessTokenUser, boardCommentId);
+  }
 }
