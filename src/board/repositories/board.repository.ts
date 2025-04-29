@@ -14,6 +14,10 @@ export class BoardRepository extends Repository<Board> implements IBoardReposito
   }
 
   async getBoardById(boardId: number): Promise<Board> {
+    if (!boardId) {
+      return null;
+    }
+
     return this.findOne({ where: { id: boardId }, relations: ['user'] });
   }
 
@@ -25,5 +29,9 @@ export class BoardRepository extends Repository<Board> implements IBoardReposito
     if (contents) whereCondition.contents = contents;
 
     await this.update({ id: boardId }, whereCondition);
+  }
+
+  async softDeleteBoard(boardId: number) {
+    await this.softDelete(boardId);
   }
 }

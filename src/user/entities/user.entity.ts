@@ -47,6 +47,9 @@ export class User {
   @OneToMany(() => BoardComment, (boardComment) => boardComment.user, { cascade: true })
   boardComment?: BoardComment[];
 
+  @OneToMany(() => BoardComment, (boardComment) => boardComment.tagUser, { cascade: true })
+  boardCommentTag?: BoardComment[];
+
   @OneToMany(() => BoardLike, (boardLike) => boardLike.user, { cascade: true })
   boardLike?: BoardLike[];
 

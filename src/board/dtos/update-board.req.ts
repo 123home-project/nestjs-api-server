@@ -1,11 +1,7 @@
 import { IsNumber, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateBoardReq {
-  @ApiProperty({ description: '게시판 id' })
-  @IsNumber()
-  boardId: number;
-
   @ApiPropertyOptional({ description: '게시판 태그 id' })
   @IsOptional()
   @IsNumber()
