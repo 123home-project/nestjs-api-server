@@ -2,8 +2,11 @@ import { Expose, Type } from 'class-transformer';
 import { IsDate, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { UserAccountRes } from './user-account.res';
 import { PredictionMatchRes } from 'src/prediction/dtos/prediction-match.res';
-import { PredictionPlayer } from 'src/prediction/entities/prediction_player.entity';
 import { RefreshTokenRes } from 'src/auth/dtos/refresh-token.res';
+import { PredictionPlayerRes } from 'src/prediction/dtos/prediction-player.res';
+import { BoardRes } from 'src/board/dtos/board.res';
+import { BoardCommentRes } from 'src/board/dtos/board-comment.res';
+import { BoardLikeRes } from 'src/board/dtos/board-like.res';
 
 export class UserRes {
   @IsNumber()
@@ -43,10 +46,28 @@ export class UserRes {
   predictionMatch?: PredictionMatchRes[];
 
   @ValidateNested()
-  @Type(() => PredictionPlayer)
+  @Type(() => PredictionPlayerRes)
   @IsOptional()
   @Expose()
-  predictionPlayer?: PredictionPlayer[];
+  predictionPlayer?: PredictionPlayerRes[];
+
+  @ValidateNested()
+  @Type(() => BoardRes)
+  @IsOptional()
+  @Expose()
+  board?: BoardRes[];
+
+  @ValidateNested()
+  @Type(() => BoardCommentRes)
+  @IsOptional()
+  @Expose()
+  boardComment?: BoardCommentRes[];
+
+  @ValidateNested()
+  @Type(() => BoardLikeRes)
+  @IsOptional()
+  @Expose()
+  boardLike?: BoardLikeRes[];
 
   @IsDate()
   @Expose()
