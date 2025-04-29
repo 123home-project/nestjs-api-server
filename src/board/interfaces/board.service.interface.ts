@@ -3,6 +3,8 @@ import { WriteBoardReq } from '../dtos/write-board.req';
 import { UpdateBoardReq } from '../dtos/update-board.req';
 import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
+import { LikeBoardReq } from '../dtos/like-board.req';
+import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
 
 export interface IBoardService {
   writeBoard(accessTokenUser: JwtAccessTokenReq, writeBoardReq: WriteBoardReq);
@@ -15,4 +17,6 @@ export interface IBoardService {
     boardCommentId: number,
   );
   deleteBoardComment(accessTokenUser: JwtAccessTokenReq, boardCommentId: number);
+  likeBoard(accessTokenUser: JwtAccessTokenReq, likeBoardReq: LikeBoardReq);
+  likeCancelBoard(accessTokenUser: JwtAccessTokenReq, likeCancelBoardReq: LikeCancelBoardReq);
 }
