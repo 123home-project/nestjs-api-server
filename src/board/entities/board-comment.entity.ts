@@ -25,6 +25,10 @@ export class BoardComment {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @ManyToOne(() => User, (user) => user.boardCommentTag, { onDelete: 'CASCADE', nullable: true })
+  @JoinColumn({ name: 'tag_user_id' })
+  tagUser?: User;
+
   @ManyToOne(() => BoardComment, (parentComment) => parentComment.reply, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'parent_comment_id' })
   parentComment?: BoardComment;
