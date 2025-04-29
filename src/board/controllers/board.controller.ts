@@ -9,35 +9,11 @@ import { UpdateBoardReq } from '../dtos/update-board.req';
 import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
 import { LikeBoardReq } from '../dtos/like-board.req';
+import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
 
 @Controller('board')
 export class BoardController {
   constructor(@Inject('IBoardService') private readonly boardService: IBoardService) {}
-
-  @Post('/')
-  @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 글쓰기' })
-  async writeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() writeBoardReq: WriteBoardReq) {
-    return await this.boardService.writeBoard(accessTokenUser, writeBoardReq);
-  }
-
-  @Patch('/:boardId')
-  @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 글수정' })
-  async updateBoard(
-    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
-    @Body() updateBoardReq: UpdateBoardReq,
-    @Param('boardId') boardId: number,
-  ) {
-    return await this.boardService.updateBoard(accessTokenUser, updateBoardReq, boardId);
-  }
-
-  @Delete('/:boardId')
-  @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 글삭제' })
-  async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
-    return await this.boardService.deleteBoard(accessTokenUser, boardId);
-  }
 
   @Post('/comment')
   @UseGuards(AccessTokenAuthGuard)
@@ -75,5 +51,40 @@ export class BoardController {
   @ApiCreatedResponse({ description: '게시판 좋아요/싫어요' })
   async likeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() likeBoardReq: LikeBoardReq) {
     return await this.boardService.likeBoard(accessTokenUser, likeBoardReq);
+  }
+
+  @Delete('/like')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 좋아요/싫어요 취소' })
+  async likeCancelBoard(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Body() likeCancelBoardReq: LikeCancelBoardReq,
+  ) {
+    return await this.boardService.likeCancelBoard(accessTokenUser, likeCancelBoardReq);
+  }
+
+  @Post('/')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 글쓰기' })
+  async writeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() writeBoardReq: WriteBoardReq) {
+    return await this.boardService.writeBoard(accessTokenUser, writeBoardReq);
+  }
+
+  @Patch('/:boardId')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 글수정' })
+  async updateBoard(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Body() updateBoardReq: UpdateBoardReq,
+    @Param('boardId') boardId: number,
+  ) {
+    return await this.boardService.updateBoard(accessTokenUser, updateBoardReq, boardId);
+  }
+
+  @Delete('/:boardId')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 글삭제' })
+  async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
+    return await this.boardService.deleteBoard(accessTokenUser, boardId);
   }
 }

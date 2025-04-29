@@ -22,6 +22,7 @@ import { BoardCommentRes } from '../dtos/board-comment.res';
 import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
 import { LikeBoardReq } from '../dtos/like-board.req';
 import { BoardLike } from '../entities/board-like.entity';
+import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -206,6 +207,26 @@ export class BoardService implements IBoardService {
     boardLike.like = like;
 
     await this.boardLikeRepository.addBoardLike(boardLike);
+  }
+
+  async likeCancelBoard(accessTokenUser: JwtAccessTokenReq, likeCancelBoardReq: LikeCancelBoardReq) {
+    const { userId } = accessTokenUser;
+    const { boardId } = likeCancelBoardReq;
+
+    const board = await this.getBoardById(boardId);
+    console.log('aaaa', board, boardId);
+
+    if (!board) {
+      throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
+    }
+
+    const boardLike = await this.boardLikeRepository.getBoardLikeByBoardIdAndUserId(boardId, userId);
+
+    if (!boardLike) {
+      throw new BadRequestException('좋아요 이력이 존재하지 않습니다.', 'DoesNotExistsBoardLike');
+    }
+
+    await this.boardLikeRepository.deleteBoardLikeById(boardLike.id);
   }
 
   async checkBoardCanBeDeleted(board: BoardRes) {

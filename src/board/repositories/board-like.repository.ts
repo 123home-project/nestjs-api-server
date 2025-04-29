@@ -28,4 +28,8 @@ export class BoardLikeRepository extends Repository<BoardLike> implements IBoard
 
     return await this.findOne({ where: { board: { id: boardId }, user: { id: userId } } });
   }
+
+  async deleteBoardLikeById(boardLikeId: number) {
+    await this.delete(boardLikeId);
+  }
 }
