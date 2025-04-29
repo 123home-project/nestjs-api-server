@@ -8,6 +8,7 @@ import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 import { UpdateBoardReq } from '../dtos/update-board.req';
 import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
+import { LikeBoardReq } from '../dtos/like-board.req';
 
 @Controller('board')
 export class BoardController {
@@ -67,5 +68,12 @@ export class BoardController {
     @Param('boardCommentId') boardCommentId: number,
   ) {
     return await this.boardService.deleteBoardComment(accessTokenUser, boardCommentId);
+  }
+
+  @Post('/like')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 댓글 쓰기' })
+  async likeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() likeBoardReq: LikeBoardReq) {
+    return await this.boardService.likeBoard(accessTokenUser, likeBoardReq);
   }
 }

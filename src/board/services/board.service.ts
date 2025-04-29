@@ -20,6 +20,8 @@ import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 import { BoardComment } from '../entities/board-comment.entity';
 import { BoardCommentRes } from '../dtos/board-comment.res';
 import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
+import { LikeBoardReq } from '../dtos/like-board.req';
+import { BoardLike } from '../entities/board-like.entity';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -175,6 +177,35 @@ export class BoardService implements IBoardService {
     }
 
     await this.boardCommentRepository.softDeleteBoardComment(boardCommentId);
+  }
+
+  async likeBoard(accessTokenUser: JwtAccessTokenReq, likeBoardReq: LikeBoardReq) {
+    const { userId } = accessTokenUser;
+    const { boardId, like } = likeBoardReq;
+
+    const board = await this.getBoardById(boardId);
+    const user = await this.userService.getUserById(userId);
+
+    if (!board) {
+      throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
+    }
+
+    const checkBoardLike = await this.boardLikeRepository.getBoardLikeByBoardIdAndUserId(boardId, userId);
+
+    if (checkBoardLike) {
+      throw new BadRequestException(
+        '동일한 게시물에 여러번 좋아요/싫어요 체크가 불가능합니다.',
+        'CanNotMultipleLikeSameBoard',
+      );
+    }
+
+    const boardLike = new BoardLike();
+
+    boardLike.board = plainToInstance(Board, board);
+    boardLike.user = plainToInstance(User, user);
+    boardLike.like = like;
+
+    await this.boardLikeRepository.addBoardLike(boardLike);
   }
 
   async checkBoardCanBeDeleted(board: BoardRes) {
