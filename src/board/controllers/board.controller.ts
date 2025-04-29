@@ -6,6 +6,7 @@ import { AccessTokenAuthGuard } from 'src/auth/guards/jwt-access-token.auth.guar
 import { AccessTokenUser } from 'src/auth/decorators/access-token.decorator';
 import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 import { UpdateBoardReq } from '../dtos/update-board.req';
+import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 
 @Controller('board')
 export class BoardController {
@@ -34,5 +35,15 @@ export class BoardController {
   @ApiCreatedResponse({ description: '게시판 글삭제' })
   async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
     return await this.boardService.deleteBoard(accessTokenUser, boardId);
+  }
+
+  @Post('/comment')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 댓글 쓰기' })
+  async writeBoardComment(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Body() writeBoardCommentReq: WriteBoardCommentReq,
+  ) {
+    return await this.boardService.writeBoardComment(accessTokenUser, writeBoardCommentReq);
   }
 }

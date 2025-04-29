@@ -11,6 +11,10 @@ export class UserRepository extends Repository<User> implements IUserRepository 
   }
 
   async getUserById(userId: number): Promise<User> {
+    if (!userId) {
+      return null;
+    }
+
     return await this.findOne({
       where: {
         id: userId,

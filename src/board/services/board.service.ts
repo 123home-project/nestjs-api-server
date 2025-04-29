@@ -16,6 +16,9 @@ import { BoardType } from '../types/board.type';
 import { FREE_STAR_BOARD_CONDITION, TEAM_STAR_BOARD_CONDITION } from '../constants/star-board-condition';
 import { IBoardCommentRepository } from '../interfaces/board-comment.repository.interface';
 import { IBoardLikeRepository } from '../interfaces/board-like.repository.interface';
+import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
+import { BoardComment } from '../entities/board-comment.entity';
+import { BoardCommentRes } from '../dtos/board-comment.res';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -62,7 +65,7 @@ export class BoardService implements IBoardService {
     const { userId } = accessTokenUser;
     const { boardTagId, title, contents } = updateBoard;
 
-    const board = await this.boardRepository.getBoardById(boardId);
+    const board = await this.getBoardById(boardId);
 
     if (!board) {
       throw new BadRequestException('존재하지 않는 게시물입니다.', 'DoesNotExistsBoard');
@@ -72,12 +75,7 @@ export class BoardService implements IBoardService {
       throw new UnauthorizedException('해당 게시물을 수정할 권한이 존재하지 않습니다.', 'DoesNotHavePermission');
     }
 
-    const boardRes = plainToInstance(BoardRes, board, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
-
-    await this.checkBoardCanBeDeleted(boardRes);
+    await this.checkBoardCanBeDeleted(board);
 
     await this.boardRepository.updateBoard(boardId, boardTagId, title, contents);
   }
@@ -98,7 +96,7 @@ export class BoardService implements IBoardService {
   async deleteBoard(accessTokenUser: JwtAccessTokenReq, boardId: number) {
     const { userId } = accessTokenUser;
 
-    const board = await this.boardRepository.getBoardById(boardId);
+    const board = await this.getBoardById(boardId);
 
     if (!board) {
       throw new BadRequestException('존재하지 않는 게시물입니다.', 'DoesNotExistsBoard');
@@ -108,13 +106,62 @@ export class BoardService implements IBoardService {
       throw new UnauthorizedException('해당 게시물을 삭제할 권한이 존재하지 않습니다.', 'DoesNotHavePermission');
     }
 
-    const boardRes = plainToInstance(BoardRes, board, {
+    await this.checkBoardCanBeDeleted(board);
+
+    await this.boardRepository.softDeleteBoard(boardId);
+  }
+
+  async writeBoardComment(accessTokenUser: JwtAccessTokenReq, writeBoardCommentReq: WriteBoardCommentReq) {
+    const { userId } = accessTokenUser;
+    const { boardId, tagUserId, parentCommentId, comment } = writeBoardCommentReq;
+
+    const user = await this.userService.getUserById(userId);
+    const tagUser = await this.userService.getUserById(tagUserId);
+    const board = await this.getBoardById(boardId);
+    const parentComment = await this.getBoardCommentById(parentCommentId);
+
+    if (!board) {
+      throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
+    }
+
+    if (tagUserId && !tagUser) {
+      throw new BadRequestException('존재하지 않는 유저입니다.', 'DoesNotExistsTagUser');
+    }
+
+    if (parentCommentId && !parentComment) {
+      throw new BadRequestException('존재하지 않는 원댓글입니다.', 'DoesNotExistsParentComment');
+    }
+
+    if (parentCommentId && parentComment.parentComment) {
+      throw new BadRequestException('대댓글에는 댓글을 작성할 수 없습니다.', 'CanNotWriteCommentInTheReply');
+    }
+
+    const boardComment = new BoardComment();
+
+    boardComment.user = plainToInstance(User, user);
+    boardComment.board = plainToInstance(Board, board);
+    boardComment.tagUser = plainToInstance(User, tagUser);
+    boardComment.parentComment = plainToInstance(BoardComment, parentComment);
+    boardComment.comment = comment;
+
+    await this.boardCommentRepository.addBoardComment(boardComment);
+  }
+
+  async getBoardById(boardId: number): Promise<BoardRes> {
+    const board = await this.boardRepository.getBoardById(boardId);
+
+    return plainToInstance(BoardRes, board, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
+  }
 
-    await this.checkBoardCanBeDeleted(boardRes);
+  async getBoardCommentById(boardId: number): Promise<BoardCommentRes> {
+    const boardComment = await this.boardCommentRepository.getBoardCommentById(boardId);
 
-    await this.boardRepository.softDeleteBoard(boardId);
+    return plainToInstance(BoardCommentRes, boardComment, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 }

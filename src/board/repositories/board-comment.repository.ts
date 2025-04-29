@@ -12,4 +12,16 @@ export class BoardCommentRepository extends Repository<BoardComment> implements 
   async countBoardCommentByBoardId(boardId: number): Promise<number> {
     return this.countBy({ board: { id: boardId } });
   }
+
+  async getBoardCommentById(boardCommentId: number): Promise<BoardComment> {
+    if (!boardCommentId) {
+      return null;
+    }
+
+    return this.findOne({ where: { id: boardCommentId }, relations: { parentComment: true } });
+  }
+
+  async addBoardComment(boardComment: BoardComment): Promise<BoardComment> {
+    return this.save(boardComment);
+  }
 }
