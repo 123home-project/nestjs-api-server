@@ -19,6 +19,7 @@ import { IBoardLikeRepository } from '../interfaces/board-like.repository.interf
 import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 import { BoardComment } from '../entities/board-comment.entity';
 import { BoardCommentRes } from '../dtos/board-comment.res';
+import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -52,15 +53,6 @@ export class BoardService implements IBoardService {
     await this.boardRepository.addBoard(board);
   }
 
-  async getboardTagById(boardTagId: number): Promise<BoardTagRes> {
-    const boardTag = await this.boardTagRepository.getBoardTagById(boardTagId);
-
-    return plainToInstance(BoardTagRes, boardTag, {
-      enableImplicitConversion: true,
-      excludeExtraneousValues: true,
-    });
-  }
-
   async updateBoard(accessTokenUser: JwtAccessTokenReq, updateBoard: UpdateBoardReq, boardId: number) {
     const { userId } = accessTokenUser;
     const { boardTagId, title, contents } = updateBoard;
@@ -80,19 +72,6 @@ export class BoardService implements IBoardService {
     await this.boardRepository.updateBoard(boardId, boardTagId, title, contents);
   }
 
-  async checkBoardCanBeDeleted(board: BoardRes) {
-    const boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
-    const boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id);
-    const boardViewCount = board.views;
-
-    const { comment, like, view } =
-      board.boardTypes === BoardType.free ? FREE_STAR_BOARD_CONDITION : TEAM_STAR_BOARD_CONDITION;
-
-    if (boardCommentCount >= comment || boardLikeCount >= like || boardViewCount >= view) {
-      throw new BadRequestException('스타 게시물은 수정/삭제 할 수 없습니다.', 'StarBoardCanNotBeModified');
-    }
-  }
-
   async deleteBoard(accessTokenUser: JwtAccessTokenReq, boardId: number) {
     const { userId } = accessTokenUser;
 
@@ -103,7 +82,10 @@ export class BoardService implements IBoardService {
     }
 
     if (board.user.id !== userId) {
-      throw new UnauthorizedException('해당 게시물을 삭제할 권한이 존재하지 않습니다.', 'DoesNotHavePermission');
+      throw new UnauthorizedException(
+        '해당 게시물을 삭제할 권한이 존재하지 않습니다.',
+        'DoesNotHavePermissionModifyBoard',
+      );
     }
 
     await this.checkBoardCanBeDeleted(board);
@@ -145,6 +127,57 @@ export class BoardService implements IBoardService {
     boardComment.comment = comment;
 
     await this.boardCommentRepository.addBoardComment(boardComment);
+  }
+
+  async updateBoardComment(
+    accessTokenUser: JwtAccessTokenReq,
+    updateBoardCommentReq: UpdateBoardCommentReq,
+    boardCommentId: number,
+  ) {
+    const { userId } = accessTokenUser;
+    const { tagUserId, comment } = updateBoardCommentReq;
+
+    const tagUser = await this.userService.getUserById(tagUserId);
+    const boardComment = await this.getBoardCommentById(boardCommentId);
+
+    if (!boardComment) {
+      throw new BadRequestException('존재하지 않는 댓글입니다.', 'DoesNotExistsBoardComment');
+    }
+
+    if (boardComment.user.id !== userId) {
+      throw new BadRequestException(
+        '해당 댓글을 수정할 권한이 존재하지 않습니다.',
+        'DoesNotHavePermissionModifyBoardComment',
+      );
+    }
+
+    if (tagUserId && !tagUser) {
+      throw new BadRequestException('존재하지 않는 유저입니다.', 'DoesNotExistsTagUser');
+    }
+
+    await this.boardCommentRepository.updateBoardComment(boardCommentId, tagUserId, comment);
+  }
+
+  async checkBoardCanBeDeleted(board: BoardRes) {
+    const boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
+    const boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id);
+    const boardViewCount = board.views;
+
+    const { comment, like, view } =
+      board.boardTypes === BoardType.free ? FREE_STAR_BOARD_CONDITION : TEAM_STAR_BOARD_CONDITION;
+
+    if (boardCommentCount >= comment || boardLikeCount >= like || boardViewCount >= view) {
+      throw new BadRequestException('스타 게시물은 수정/삭제 할 수 없습니다.', 'StarBoardCanNotBeModified');
+    }
+  }
+
+  async getboardTagById(boardTagId: number): Promise<BoardTagRes> {
+    const boardTag = await this.boardTagRepository.getBoardTagById(boardTagId);
+
+    return plainToInstance(BoardTagRes, boardTag, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
   async getBoardById(boardId: number): Promise<BoardRes> {

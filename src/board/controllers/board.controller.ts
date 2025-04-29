@@ -7,6 +7,7 @@ import { AccessTokenUser } from 'src/auth/decorators/access-token.decorator';
 import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 import { UpdateBoardReq } from '../dtos/update-board.req';
 import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
+import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
 
 @Controller('board')
 export class BoardController {
@@ -45,5 +46,16 @@ export class BoardController {
     @Body() writeBoardCommentReq: WriteBoardCommentReq,
   ) {
     return await this.boardService.writeBoardComment(accessTokenUser, writeBoardCommentReq);
+  }
+
+  @Patch('/comment/:boardCommentId')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiCreatedResponse({ description: '게시판 댓글 수정' })
+  async updateBoardComment(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Body() updateBoardCommentReq: UpdateBoardCommentReq,
+    @Param('boardCommentId') boardCommentId: number,
+  ) {
+    return await this.boardService.updateBoardComment(accessTokenUser, updateBoardCommentReq, boardCommentId);
   }
 }

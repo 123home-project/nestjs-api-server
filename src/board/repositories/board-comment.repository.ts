@@ -18,10 +18,27 @@ export class BoardCommentRepository extends Repository<BoardComment> implements 
       return null;
     }
 
-    return this.findOne({ where: { id: boardCommentId }, relations: { parentComment: true } });
+    return this.findOne({
+      where: { id: boardCommentId },
+      relations: { parentComment: true, user: true, tagUser: true },
+    });
   }
 
   async addBoardComment(boardComment: BoardComment): Promise<BoardComment> {
     return this.save(boardComment);
+  }
+
+  async updateBoardComment(boardCommentId: number, tagUserId: number, comment: string) {
+    const updateElements: any = {};
+
+    if (tagUserId !== undefined) {
+      updateElements.tagUser = { id: tagUserId };
+    }
+
+    if (comment) {
+      updateElements.comment = comment;
+    }
+
+    await this.update({ id: boardCommentId }, updateElements);
   }
 }
