@@ -29,7 +29,7 @@ export class BoardController {
 
   @Patch('/comment/:boardCommentId')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 댓글 수정' })
+  @ApiOkResponse({ description: '게시판 댓글 수정' })
   async updateBoardComment(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() updateBoardCommentReq: UpdateBoardCommentReq,
@@ -40,7 +40,7 @@ export class BoardController {
 
   @Delete('/comment/:boardCommentId')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 댓글 삭제' })
+  @ApiOkResponse({ description: '게시판 댓글 삭제' })
   async deleteBoardComment(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Param('boardCommentId') boardCommentId: number,
@@ -57,7 +57,7 @@ export class BoardController {
 
   @Delete('/like')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 좋아요/싫어요 취소' })
+  @ApiOkResponse({ description: '게시판 좋아요/싫어요 취소' })
   async likeCancelBoard(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() likeCancelBoardReq: LikeCancelBoardReq,
@@ -80,7 +80,7 @@ export class BoardController {
 
   @Patch('/:boardId')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 글수정' })
+  @ApiOkResponse({ description: '게시판 글수정' })
   async updateBoard(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() updateBoardReq: UpdateBoardReq,
@@ -91,7 +91,7 @@ export class BoardController {
 
   @Delete('/:boardId')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 글삭제' })
+  @ApiOkResponse({ description: '게시판 글삭제' })
   async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
     return await this.boardService.deleteBoard(accessTokenUser, boardId);
   }
