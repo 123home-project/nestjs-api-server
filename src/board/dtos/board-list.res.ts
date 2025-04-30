@@ -1,7 +1,6 @@
 import { IsDate, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { BoardType } from '../types/board.type';
 import { Expose, Type } from 'class-transformer';
-import { BoardTagRes } from './board-tag.res';
 
 class UserDto {
   @IsNumber()
