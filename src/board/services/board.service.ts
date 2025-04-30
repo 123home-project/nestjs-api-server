@@ -23,6 +23,8 @@ import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
 import { LikeBoardReq } from '../dtos/like-board.req';
 import { BoardLike } from '../entities/board-like.entity';
 import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
+import { BoardListReq } from '../dtos/board-list.req';
+import { BoardListRes } from '../dtos/board-list.res';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -214,7 +216,6 @@ export class BoardService implements IBoardService {
     const { boardId } = likeCancelBoardReq;
 
     const board = await this.getBoardById(boardId);
-    console.log('aaaa', board, boardId);
 
     if (!board) {
       throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
@@ -227,6 +228,24 @@ export class BoardService implements IBoardService {
     }
 
     await this.boardLikeRepository.deleteBoardLikeById(boardLike.id);
+  }
+
+  async getBoardList(boardListReq: BoardListReq): Promise<BoardListRes[]> {
+    const { boardFilterType, boardTagId, keyword, boardType, offset, limit } = boardListReq;
+
+    const boards = await this.boardRepository.getBoards(boardFilterType, boardTagId, keyword, boardType, offset, limit);
+    console.log('aa', boards);
+    const boardsRes = plainToInstance(BoardListRes, boards, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+
+    for (const board of boardsRes) {
+      board.boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
+      board.boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id);
+    }
+
+    return boardsRes;
   }
 
   async checkBoardCanBeDeleted(board: BoardRes) {

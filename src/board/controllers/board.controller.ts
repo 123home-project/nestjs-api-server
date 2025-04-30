@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Inject, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { ApiCreatedResponse } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { IBoardService } from '../interfaces/board.service.interface';
 import { WriteBoardReq } from '../dtos/write-board.req';
 import { AccessTokenAuthGuard } from 'src/auth/guards/jwt-access-token.auth.guard';
@@ -10,6 +10,8 @@ import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
 import { LikeBoardReq } from '../dtos/like-board.req';
 import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
+import { BoardListReq } from '../dtos/board-list.req';
+import { BoardListRes } from '../dtos/board-list.res';
 
 @Controller('board')
 export class BoardController {
@@ -61,6 +63,12 @@ export class BoardController {
     @Body() likeCancelBoardReq: LikeCancelBoardReq,
   ) {
     return await this.boardService.likeCancelBoard(accessTokenUser, likeCancelBoardReq);
+  }
+
+  @Get('/')
+  @ApiOkResponse({ description: '게시판 리스트 최신순', type: [BoardListRes] })
+  async getBoardList(@Query() boardListReq: BoardListReq): Promise<BoardListRes[]> {
+    return await this.boardService.getBoardList(boardListReq);
   }
 
   @Post('/')
