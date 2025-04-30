@@ -7,7 +7,7 @@ import { IUserService } from 'src/user/interfaces/user.service.inteface';
 import { plainToInstance } from 'class-transformer';
 import { User } from 'src/user/entities/user.entity';
 import { IBoardRepository } from '../interfaces/board.repository.interface';
-import { BoardTagRes } from '../dtos/board-tag.res';
+import { BoardTagDto } from '../dtos/board-tag.dto';
 import { BoardTag } from '../entities/board-tag.entity';
 import { IBoardTagRepository } from '../interfaces/board-tag.repository.interface';
 import { UpdateBoardReq } from '../dtos/update-board.req';
@@ -25,6 +25,8 @@ import { BoardLike } from '../entities/board-like.entity';
 import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
 import { BoardListReq } from '../dtos/board-list.req';
 import { BoardListRes } from '../dtos/board-list.res';
+import { BoardTagReq } from '../dtos/board-tag.req';
+import { BoardTagRes } from '../dtos/board-tag.res';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -234,7 +236,7 @@ export class BoardService implements IBoardService {
     const { boardFilterType, boardTagId, keyword, boardType, offset, limit } = boardListReq;
 
     const boards = await this.boardRepository.getBoards(boardFilterType, boardTagId, keyword, boardType, offset, limit);
-    console.log('aa', boards);
+
     const boardsRes = plainToInstance(BoardListRes, boards, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
@@ -246,6 +248,17 @@ export class BoardService implements IBoardService {
     }
 
     return boardsRes;
+  }
+
+  async getBoardTag(boardTagReq: BoardTagReq): Promise<BoardTagRes[]> {
+    const { boardType } = boardTagReq;
+
+    const boardTags = await this.boardTagRepository.getBoardTagByBoardType(boardType);
+
+    return plainToInstance(BoardTagRes, boardTags, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 
   async checkBoardCanBeDeleted(board: BoardRes) {
@@ -261,10 +274,10 @@ export class BoardService implements IBoardService {
     }
   }
 
-  async getboardTagById(boardTagId: number): Promise<BoardTagRes> {
+  async getboardTagById(boardTagId: number): Promise<BoardTagDto> {
     const boardTag = await this.boardTagRepository.getBoardTagById(boardTagId);
 
-    return plainToInstance(BoardTagRes, boardTag, {
+    return plainToInstance(BoardTagDto, boardTag, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });

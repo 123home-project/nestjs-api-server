@@ -1,6 +1,7 @@
 import { IsDate, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { BoardType } from '../types/board.type';
 import { Expose, Type } from 'class-transformer';
+import { BoardTagRes } from './board-tag.res';
 
 class UserDto {
   @IsNumber()
@@ -10,16 +11,6 @@ class UserDto {
   @IsString()
   @Expose()
   nickname: string;
-}
-
-class BoardTagDto {
-  @IsNumber()
-  @Expose()
-  id: number;
-
-  @IsString()
-  @Expose()
-  name: string;
 }
 
 export class BoardListRes {
@@ -34,10 +25,10 @@ export class BoardListRes {
   user?: UserDto;
 
   @ValidateNested()
-  @Type(() => BoardTagDto)
+  @Type(() => BoardTagRes)
   @IsOptional()
   @Expose()
-  boardTag?: BoardTagDto;
+  boardTag?: BoardTagRes;
 
   @IsString()
   @Expose()

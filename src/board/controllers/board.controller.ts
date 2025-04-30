@@ -12,6 +12,8 @@ import { LikeBoardReq } from '../dtos/like-board.req';
 import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
 import { BoardListReq } from '../dtos/board-list.req';
 import { BoardListRes } from '../dtos/board-list.res';
+import { BoardTagReq } from '../dtos/board-tag.req';
+import { BoardTagRes } from '../dtos/board-tag.res';
 
 @Controller('board')
 export class BoardController {
@@ -94,5 +96,11 @@ export class BoardController {
   @ApiOkResponse({ description: '게시판 글삭제' })
   async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
     return await this.boardService.deleteBoard(accessTokenUser, boardId);
+  }
+
+  @Get('/tag')
+  @ApiOkResponse({ description: '게시판 태그', type: [BoardTagRes] })
+  async getBoardTag(@Query() boardTagReq: BoardTagReq): Promise<BoardTagRes[]> {
+    return await this.boardService.getBoardTag(boardTagReq);
   }
 }

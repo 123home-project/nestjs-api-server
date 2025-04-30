@@ -2,7 +2,7 @@ import { IsDate, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from '
 import { BoardType } from '../types/board.type';
 import { Expose, Type } from 'class-transformer';
 import { UserRes } from 'src/user/dtos/user.res';
-import { BoardTagRes } from './board-tag.res';
+import { BoardTagDto } from './board-tag.dto';
 import { BoardLikeRes } from './board-like.res';
 import { BoardCommentRes } from './board-comment.res';
 
@@ -18,10 +18,10 @@ export class BoardRes {
   user?: UserRes;
 
   @ValidateNested()
-  @Type(() => BoardTagRes)
+  @Type(() => BoardTagDto)
   @IsOptional()
   @Expose()
-  boardTag?: BoardTagRes;
+  boardTag?: BoardTagDto;
 
   @IsString()
   @Expose()
