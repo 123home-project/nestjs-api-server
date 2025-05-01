@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { IsDate, IsEnum, IsNumber, IsOptional, ValidateNested } from 'class-validator';
 import { GameResultType } from 'src/team/types/game-result.type';
 import { TeamScheduleRes } from 'src/team/dtos/team-schedule.res';
-import { UserRes } from 'src/user/dtos/user.res';
+import { UserDto } from 'src/user/dtos/user.dto';
 
 export class PredictionMatchRes {
   @IsNumber()
@@ -10,9 +10,9 @@ export class PredictionMatchRes {
   id: number;
 
   @ValidateNested()
-  @Type(() => UserRes)
+  @Type(() => UserDto)
   @Expose()
-  user: UserRes;
+  user: UserDto;
 
   @ValidateNested()
   @Type(() => TeamScheduleRes)

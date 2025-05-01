@@ -1,25 +1,27 @@
 import { IsDate, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { BoardType } from '../types/board.type';
 import { Expose, Type } from 'class-transformer';
-import { BoardTagRes } from './board-tag.res';
-import { BoardUserRes } from './board-user.res';
+import { UserDto } from 'src/user/dtos/user.dto';
+import { BoardTagDto } from './board-tag.dto';
+import { BoardLikeRes } from './board-like.res';
+import { BoardCommentDto } from './board-comment.dto';
 
-export class BoardListRes {
+export class BoardDto {
   @IsNumber()
   @Expose()
   id: number;
 
   @ValidateNested()
-  @Type(() => BoardUserRes)
+  @Type(() => UserDto)
   @IsOptional()
   @Expose()
-  user?: BoardUserRes;
+  user?: UserDto;
 
   @ValidateNested()
-  @Type(() => BoardTagRes)
+  @Type(() => BoardTagDto)
   @IsOptional()
   @Expose()
-  boardTag?: BoardTagRes;
+  boardTag?: BoardTagDto;
 
   @IsString()
   @Expose()
@@ -37,13 +39,17 @@ export class BoardListRes {
   @Expose()
   boardTypes: BoardType;
 
-  @IsNumber()
+  @ValidateNested()
+  @Type(() => BoardCommentDto)
+  @IsOptional()
   @Expose()
-  boardCommentCount: number;
+  boardComment?: BoardCommentDto[];
 
-  @IsNumber()
+  @ValidateNested()
+  @Type(() => BoardLikeRes)
+  @IsOptional()
   @Expose()
-  boardLikeCount: number;
+  boardLike?: BoardLikeRes[];
 
   @IsDate()
   @Expose()
@@ -52,4 +58,8 @@ export class BoardListRes {
   @IsDate()
   @Expose()
   updatedAt: Date;
+
+  @IsDate()
+  @Expose()
+  deletedAt?: Date;
 }

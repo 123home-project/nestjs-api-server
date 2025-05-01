@@ -1,7 +1,6 @@
 import { IsDate, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
-import { UserRes } from 'src/user/dtos/user.res';
-import { BoardRes } from './board.res';
+import { BoardUserRes } from './board-user.res';
 
 export class BoardCommentRes {
   @IsNumber()
@@ -9,22 +8,9 @@ export class BoardCommentRes {
   id: number;
 
   @ValidateNested()
-  @Type(() => BoardRes)
-  @IsOptional()
+  @Type(() => BoardUserRes)
   @Expose()
-  board?: BoardRes;
-
-  @ValidateNested()
-  @Type(() => UserRes)
-  @IsOptional()
-  @Expose()
-  user?: UserRes;
-
-  @ValidateNested()
-  @Type(() => BoardCommentRes)
-  @IsOptional()
-  @Expose()
-  parentComment: BoardCommentRes;
+  user: BoardUserRes;
 
   @ValidateNested()
   @Type(() => BoardCommentRes)
@@ -43,8 +29,4 @@ export class BoardCommentRes {
   @IsDate()
   @Expose()
   updatedAt: Date;
-
-  @IsDate()
-  @Expose()
-  deletedAt?: Date;
 }

@@ -7,7 +7,7 @@ import { DEFAULT_USER_NICKNAME } from '../constants/nickname';
 import { UserAccount } from '../entities/user-account.entity';
 import { LocalRegisterReq } from 'src/auth/dtos/local-register.req';
 import { LoginPlatformType } from 'src/auth/types/login-platform.type';
-import { UserRes } from '../dtos/user.res';
+import { UserDto } from '../dtos/user.dto';
 import { plainToInstance } from 'class-transformer';
 import { SnsAccountUserReq } from 'src/auth/dtos/sns-account-user.req';
 
@@ -18,23 +18,23 @@ export class UserService implements IUserService {
     @Inject('IUserAccountRepository') private readonly userAccountRepository: IUserAccountRepository,
   ) {}
 
-  async getUserById(userId: number): Promise<UserRes> {
+  async getUserById(userId: number): Promise<UserDto> {
     const user = await this.userRepository.getUserById(userId);
-    return plainToInstance(UserRes, user, {
+    return plainToInstance(UserDto, user, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
   }
 
-  async getUserByAccountId(accountId: string): Promise<UserRes> {
+  async getUserByAccountId(accountId: string): Promise<UserDto> {
     const user = await this.userRepository.getUserByAccountId(accountId);
-    return plainToInstance(UserRes, user, {
+    return plainToInstance(UserDto, user, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
   }
 
-  async addUserBySnsAccount(snsAccountUserReq: SnsAccountUserReq): Promise<UserRes> {
+  async addUserBySnsAccount(snsAccountUserReq: SnsAccountUserReq): Promise<UserDto> {
     const user = new User();
     user.email = snsAccountUserReq.email;
     user.name = snsAccountUserReq.name;
@@ -50,13 +50,13 @@ export class UserService implements IUserService {
 
     await this.userAccountRepository.addUserAccount(userAccount);
 
-    return plainToInstance(UserRes, user, {
+    return plainToInstance(UserDto, user, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
   }
 
-  async addUserByLocal(localRegisterReq: LocalRegisterReq): Promise<UserRes> {
+  async addUserByLocal(localRegisterReq: LocalRegisterReq): Promise<UserDto> {
     const user = new User();
     user.email = localRegisterReq.email;
     user.nickname = DEFAULT_USER_NICKNAME;
@@ -72,7 +72,7 @@ export class UserService implements IUserService {
 
     await this.userAccountRepository.addUserAccount(userAccount);
 
-    return plainToInstance(UserRes, user, {
+    return plainToInstance(UserDto, user, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
@@ -82,9 +82,9 @@ export class UserService implements IUserService {
     await this.userAccountRepository.updateUserAccountVerifyByUserId(userId);
   }
 
-  async getLocalUserByEmail(email: string): Promise<UserRes> {
+  async getLocalUserByEmail(email: string): Promise<UserDto> {
     const user = await this.userRepository.getLocalUserByEmail(email);
-    return plainToInstance(UserRes, user, {
+    return plainToInstance(UserDto, user, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });

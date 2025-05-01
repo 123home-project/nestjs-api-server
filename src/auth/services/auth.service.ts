@@ -11,7 +11,7 @@ import { IEmailService } from 'src/email/interfaces/email.service.inteface';
 import { ICryptoService } from 'src/crypto/interfaces/crypto.service.interface';
 import { AuthTokenRes } from '../dtos/auth-token.res';
 import { plainToInstance } from 'class-transformer';
-import { UserRes } from 'src/user/dtos/user.res';
+import { UserDto } from 'src/user/dtos/user.dto';
 import { JwtRefreshTokenReq } from '../dtos/jwt-refresh-token.req';
 import { LocalRegisterReq } from '../dtos/local-register.req';
 import { JwtAccessTokenReq } from '../dtos/jwt-access-token.req';
@@ -38,7 +38,7 @@ export class AuthService implements IAuthService {
     return await this.getAuthToken(refreshToken.userId);
   }
 
-  async validateUserByLocalAccount(email: string, password: string): Promise<UserRes> {
+  async validateUserByLocalAccount(email: string, password: string): Promise<UserDto> {
     const user = await this.userService.getUserByAccountId(email);
 
     if (!user) {
@@ -51,7 +51,7 @@ export class AuthService implements IAuthService {
       throw new UnauthorizedException('올바르지 않은 아이디 혹은 비밀번호');
     }
 
-    return plainToInstance(UserRes, user, {
+    return plainToInstance(UserDto, user, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
@@ -84,7 +84,7 @@ export class AuthService implements IAuthService {
     await this.userService.verifyUserAccountByUserId(emailAuthTokenJson.userId);
   }
 
-  async addRefreshToken(refreshToken: string, user: UserRes) {
+  async addRefreshToken(refreshToken: string, user: UserDto) {
     const refreshTokenEntity = new RefreshToken();
     refreshTokenEntity.token = refreshToken;
     refreshTokenEntity.user = plainToInstance(User, user);
@@ -115,13 +115,13 @@ export class AuthService implements IAuthService {
     await this.userService.resetUserAccountPasswordByUserId(emailAuthTokenJson.userId, passwordEcrypt);
   }
 
-  private async validateUserBySnsAcccountUser(snsAccountUser: SnsAccountUserReq): Promise<UserRes> {
+  private async validateUserBySnsAcccountUser(snsAccountUser: SnsAccountUserReq): Promise<UserDto> {
     const user = await this.userService.getUserByAccountId(snsAccountUser.accountId);
     if (!user) {
       return await this.userService.addUserBySnsAccount(snsAccountUser);
     }
 
-    return plainToInstance(UserRes, user, {
+    return plainToInstance(UserDto, user, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });

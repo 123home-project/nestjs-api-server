@@ -9,6 +9,7 @@ import { BoardListReq } from '../dtos/board-list.req';
 import { BoardListRes } from '../dtos/board-list.res';
 import { BoardTagReq } from '../dtos/board-tag.req';
 import { BoardTagRes } from '../dtos/board-tag.res';
+import { BoardRes } from '../dtos/board.res';
 
 export interface IBoardService {
   writeBoard(accessTokenUser: JwtAccessTokenReq, writeBoardReq: WriteBoardReq);
@@ -25,4 +26,5 @@ export interface IBoardService {
   likeCancelBoard(accessTokenUser: JwtAccessTokenReq, likeCancelBoardReq: LikeCancelBoardReq);
   getBoardList(boardListReq: BoardListReq): Promise<BoardListRes[]>;
   getBoardTag(boardTagReq: BoardTagReq): Promise<BoardTagRes[]>;
+  getBoardDetail(boardId: number): Promise<BoardRes>;
 }

@@ -5,12 +5,12 @@ import { LocalRegisterReq } from '../dtos/local-register.req';
 import { JwtAccessTokenReq } from '../dtos/jwt-access-token.req';
 import { PasswordForgetReq } from '../dtos/password-forget.req';
 import { PasswordResetReq } from '../dtos/password-reset.req';
-import { UserRes } from 'src/user/dtos/user.res';
+import { UserDto } from 'src/user/dtos/user.dto';
 
 export interface IAuthService {
   snsLogin(snsAccountUser: SnsAccountUserReq): Promise<AuthTokenRes>;
   convertRefreshToken(refreshToken: JwtRefreshTokenReq): Promise<AuthTokenRes>;
-  validateUserByLocalAccount(email: string, password: string): Promise<UserRes>;
+  validateUserByLocalAccount(email: string, password: string): Promise<UserDto>;
   localLogin(userId: number): Promise<AuthTokenRes>;
   localRegister(localRegisterReq: LocalRegisterReq): Promise<AuthTokenRes>;
   verifyRegisterEmail(emailauthcode: string);

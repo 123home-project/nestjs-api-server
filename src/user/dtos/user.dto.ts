@@ -4,11 +4,11 @@ import { UserAccountRes } from './user-account.res';
 import { PredictionMatchRes } from 'src/prediction/dtos/prediction-match.res';
 import { RefreshTokenRes } from 'src/auth/dtos/refresh-token.res';
 import { PredictionPlayerRes } from 'src/prediction/dtos/prediction-player.res';
-import { BoardRes } from 'src/board/dtos/board.res';
-import { BoardCommentRes } from 'src/board/dtos/board-comment.res';
+import { BoardDto } from 'src/board/dtos/board.dto';
+import { BoardCommentDto } from 'src/board/dtos/board-comment.dto';
 import { BoardLikeRes } from 'src/board/dtos/board-like.res';
 
-export class UserRes {
+export class UserDto {
   @IsNumber()
   @Expose()
   id: number;
@@ -52,16 +52,16 @@ export class UserRes {
   predictionPlayer?: PredictionPlayerRes[];
 
   @ValidateNested()
-  @Type(() => BoardRes)
+  @Type(() => BoardDto)
   @IsOptional()
   @Expose()
-  board?: BoardRes[];
+  board?: BoardDto[];
 
   @ValidateNested()
-  @Type(() => BoardCommentRes)
+  @Type(() => BoardCommentDto)
   @IsOptional()
   @Expose()
-  boardComment?: BoardCommentRes[];
+  boardComment?: BoardCommentDto[];
 
   @ValidateNested()
   @Type(() => BoardLikeRes)
