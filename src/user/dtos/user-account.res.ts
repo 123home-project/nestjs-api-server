@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { LoginPlatformType } from 'src/auth/types/login-platform.type';
-import { UserRes } from './user.res';
+import { UserDto } from './user.dto';
 
 export class UserAccountRes {
   @IsNumber()
@@ -26,10 +26,10 @@ export class UserAccountRes {
   verify: boolean;
 
   @ValidateNested()
-  @Type(() => UserRes)
+  @Type(() => UserDto)
   @IsOptional()
   @Expose()
-  user?: UserRes;
+  user?: UserDto;
 
   @IsString()
   @Expose()

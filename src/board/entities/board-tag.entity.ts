@@ -16,7 +16,7 @@ export class BoardTag {
   name: string;
 
   @Column({ name: 'tag_type', type: 'varchar', length: 45 })
-  tagTypes: BoardType;
+  tagType: BoardType;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

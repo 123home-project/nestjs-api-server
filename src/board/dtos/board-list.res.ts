@@ -1,24 +1,25 @@
-import { Expose, Type } from 'class-transformer';
 import { IsDate, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { BoardUserRes } from './board-user.res';
-import { BoardTagRes } from './board-tag.res';
 import { BoardType } from '../types/board.type';
-import { BoardCommentRes } from './board-comment.res';
+import { Expose, Type } from 'class-transformer';
+import { BoardTagRes } from './board-tag.res';
+import { BoardUserRes } from './board-user.res';
 
-export class BoardRes {
+export class BoardListRes {
   @IsNumber()
   @Expose()
   id: number;
 
   @ValidateNested()
   @Type(() => BoardUserRes)
+  @IsOptional()
   @Expose()
-  user: BoardUserRes;
+  user?: BoardUserRes;
 
   @ValidateNested()
   @Type(() => BoardTagRes)
+  @IsOptional()
   @Expose()
-  boardTag: BoardTagRes;
+  boardTag?: BoardTagRes;
 
   @IsString()
   @Expose()
@@ -34,21 +35,15 @@ export class BoardRes {
 
   @IsEnum(BoardType)
   @Expose()
-  boardType: BoardType;
+  boardTypes: BoardType;
 
-  @ValidateNested()
-  @Type(() => BoardCommentRes)
-  @IsOptional()
+  @IsNumber()
   @Expose()
-  boardComment?: BoardCommentRes[];
+  boardCommentCount: number;
 
   @IsNumber()
   @Expose()
   boardLikeCount: number;
-
-  @IsNumber()
-  @Expose()
-  boardDislikeCount: number;
 
   @IsDate()
   @Expose()

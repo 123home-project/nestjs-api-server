@@ -7,22 +7,30 @@ import { IUserService } from 'src/user/interfaces/user.service.inteface';
 import { plainToInstance } from 'class-transformer';
 import { User } from 'src/user/entities/user.entity';
 import { IBoardRepository } from '../interfaces/board.repository.interface';
-import { BoardTagRes } from '../dtos/board-tag.res';
+import { BoardTagDto } from '../dtos/board-tag.dto';
 import { BoardTag } from '../entities/board-tag.entity';
 import { IBoardTagRepository } from '../interfaces/board-tag.repository.interface';
 import { UpdateBoardReq } from '../dtos/update-board.req';
-import { BoardRes } from '../dtos/board.res';
+import { BoardDto } from '../dtos/board.dto';
 import { BoardType } from '../types/board.type';
 import { FREE_STAR_BOARD_CONDITION, TEAM_STAR_BOARD_CONDITION } from '../constants/star-board-condition';
 import { IBoardCommentRepository } from '../interfaces/board-comment.repository.interface';
 import { IBoardLikeRepository } from '../interfaces/board-like.repository.interface';
 import { WriteBoardCommentReq } from '../dtos/write-board-comment.req';
 import { BoardComment } from '../entities/board-comment.entity';
-import { BoardCommentRes } from '../dtos/board-comment.res';
+import { BoardCommentDto } from '../dtos/board-comment.dto';
 import { UpdateBoardCommentReq } from '../dtos/update-board-comment.req';
 import { LikeBoardReq } from '../dtos/like-board.req';
 import { BoardLike } from '../entities/board-like.entity';
 import { LikeCancelBoardReq } from '../dtos/like-cancel-board.req';
+import { BoardListReq } from '../dtos/board-list.req';
+import { BoardListRes } from '../dtos/board-list.res';
+import { BoardTagReq } from '../dtos/board-tag.req';
+import { BoardTagRes } from '../dtos/board-tag.res';
+import { BoardLikeType } from '../types/board-like.type';
+import { BoardRes } from '../dtos/board.res';
+import { BoardCommentRes } from '../dtos/board-comment.res';
+import { PopularBoardListReq } from '../dtos/popular-board-list';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -214,7 +222,6 @@ export class BoardService implements IBoardService {
     const { boardId } = likeCancelBoardReq;
 
     const board = await this.getBoardById(boardId);
-    console.log('aaaa', board, boardId);
 
     if (!board) {
       throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
@@ -229,9 +236,77 @@ export class BoardService implements IBoardService {
     await this.boardLikeRepository.deleteBoardLikeById(boardLike.id);
   }
 
-  async checkBoardCanBeDeleted(board: BoardRes) {
+  async getBoardList(boardListReq: BoardListReq): Promise<BoardListRes[]> {
+    const { boardFilterType, boardTagId, keyword, boardType, offset, limit } = boardListReq;
+
+    const boards = await this.boardRepository.getBoards(boardFilterType, boardTagId, keyword, boardType, offset, limit);
+
+    const boardsRes = plainToInstance(BoardListRes, boards, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+
+    for (const board of boardsRes) {
+      board.boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
+      board.boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id, BoardLikeType.like);
+    }
+
+    return boardsRes;
+  }
+
+  async getBoardTag(boardTagReq: BoardTagReq): Promise<BoardTagRes[]> {
+    const { boardType } = boardTagReq;
+
+    const boardTags = await this.boardTagRepository.getBoardTagByBoardType(boardType);
+
+    return plainToInstance(BoardTagRes, boardTags, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getBoardDetail(boardId: number): Promise<BoardRes> {
+    const board = await this.boardRepository.getBoardById(boardId);
+    const boardComments = await this.boardCommentRepository.getBoardCommentByBoardId(boardId);
+    const boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(boardId, BoardLikeType.like);
+    const boardDisLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(boardId, BoardLikeType.disLike);
+
+    const boardRes = plainToInstance(BoardRes, board, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+
+    boardRes.boardComment = plainToInstance(BoardCommentRes, boardComments, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+    boardRes.boardLikeCount = boardLikeCount;
+    boardRes.boardDislikeCount = boardDisLikeCount;
+
+    return boardRes;
+  }
+
+  async getPopularBoardList(popularBoardListReq: PopularBoardListReq): Promise<BoardListRes[]> {
+    const { boardType, offset, limit, period } = popularBoardListReq;
+
+    const boards = await this.boardRepository.getPopularBoards(boardType, offset, limit, period);
+
+    const boardsRes = plainToInstance(BoardListRes, boards, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+
+    for (const board of boardsRes) {
+      board.boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
+      board.boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id, BoardLikeType.like);
+    }
+
+    return boardsRes;
+  }
+
+  async checkBoardCanBeDeleted(board: BoardDto) {
     const boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
-    const boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id);
+    const boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id, BoardLikeType.like);
     const boardViewCount = board.views;
 
     const { comment, like, view } =
@@ -242,28 +317,28 @@ export class BoardService implements IBoardService {
     }
   }
 
-  async getboardTagById(boardTagId: number): Promise<BoardTagRes> {
+  async getboardTagById(boardTagId: number): Promise<BoardTagDto> {
     const boardTag = await this.boardTagRepository.getBoardTagById(boardTagId);
 
-    return plainToInstance(BoardTagRes, boardTag, {
+    return plainToInstance(BoardTagDto, boardTag, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
   }
 
-  async getBoardById(boardId: number): Promise<BoardRes> {
+  async getBoardById(boardId: number): Promise<BoardDto> {
     const board = await this.boardRepository.getBoardById(boardId);
 
-    return plainToInstance(BoardRes, board, {
+    return plainToInstance(BoardDto, board, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
   }
 
-  async getBoardCommentById(boardId: number): Promise<BoardCommentRes> {
+  async getBoardCommentById(boardId: number): Promise<BoardCommentDto> {
     const boardComment = await this.boardCommentRepository.getBoardCommentById(boardId);
 
-    return plainToInstance(BoardCommentRes, boardComment, {
+    return plainToInstance(BoardCommentDto, boardComment, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });

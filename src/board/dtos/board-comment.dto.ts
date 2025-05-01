@@ -1,9 +1,9 @@
-import { IsDate, IsNumber, IsOptional, ValidateNested } from 'class-validator';
+import { IsDate, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
 import { UserDto } from 'src/user/dtos/user.dto';
 import { BoardDto } from './board.dto';
 
-export class BoardLikeRes {
+export class BoardCommentDto {
   @IsNumber()
   @Expose()
   id: number;
@@ -20,9 +20,21 @@ export class BoardLikeRes {
   @Expose()
   user?: UserDto;
 
-  @IsNumber()
+  @ValidateNested()
+  @Type(() => BoardCommentDto)
+  @IsOptional()
   @Expose()
-  like: number;
+  parentComment: BoardCommentDto;
+
+  @ValidateNested()
+  @Type(() => BoardCommentDto)
+  @IsOptional()
+  @Expose()
+  reply: BoardCommentDto[];
+
+  @IsString()
+  @Expose()
+  comment: string;
 
   @IsDate()
   @Expose()
