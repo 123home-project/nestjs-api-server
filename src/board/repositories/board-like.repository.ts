@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { BoardLike } from '../entities/board-like.entity';
 import { IBoardLikeRepository } from '../interfaces/board-like.repository.interface';
+import { BoardLikeType } from '../types/board-like.type';
 
 @Injectable()
 export class BoardLikeRepository extends Repository<BoardLike> implements IBoardLikeRepository {
@@ -9,8 +10,8 @@ export class BoardLikeRepository extends Repository<BoardLike> implements IBoard
     super(BoardLike, dataSource.createEntityManager());
   }
 
-  async countBoardLikeByBoardId(boardId: number): Promise<number> {
-    return this.countBy({ board: { id: boardId } });
+  async countBoardLikeByBoardId(boardId: number, like: BoardLikeType): Promise<number> {
+    return this.countBy({ board: { id: boardId }, like });
   }
 
   async addBoardLike(boardLike: BoardLike): Promise<BoardLike> {

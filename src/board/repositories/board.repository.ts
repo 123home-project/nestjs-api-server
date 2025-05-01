@@ -21,7 +21,7 @@ export class BoardRepository extends Repository<Board> implements IBoardReposito
       return null;
     }
 
-    return this.findOne({ where: { id: boardId }, relations: ['user'] });
+    return this.findOne({ where: { id: boardId }, relations: ['user', 'boardTag'] });
   }
 
   async updateBoard(boardId: number, boardTagId: number, title: string, contents: string) {

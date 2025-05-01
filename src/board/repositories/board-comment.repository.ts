@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, IsNull, Repository } from 'typeorm';
 import { BoardComment } from '../entities/board-comment.entity';
 import { IBoardCommentRepository } from '../interfaces/board-comment.repository.interface';
 
@@ -44,5 +44,12 @@ export class BoardCommentRepository extends Repository<BoardComment> implements 
 
   async softDeleteBoardComment(boardCommentId: number) {
     await this.softDelete(boardCommentId);
+  }
+
+  async getBoardCommentByBoardId(boardId: number): Promise<BoardComment[]> {
+    return await this.find({
+      where: { board: { id: boardId }, parentComment: IsNull() },
+      relations: { reply: true },
+    });
   }
 }
