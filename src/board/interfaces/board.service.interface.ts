@@ -10,6 +10,7 @@ import { BoardListRes } from '../dtos/board-list.res';
 import { BoardTagReq } from '../dtos/board-tag.req';
 import { BoardTagRes } from '../dtos/board-tag.res';
 import { BoardRes } from '../dtos/board.res';
+import { PopularBoardListReq } from '../dtos/popular-board-list';
 
 export interface IBoardService {
   writeBoard(accessTokenUser: JwtAccessTokenReq, writeBoardReq: WriteBoardReq);
@@ -27,4 +28,5 @@ export interface IBoardService {
   getBoardList(boardListReq: BoardListReq): Promise<BoardListRes[]>;
   getBoardTag(boardTagReq: BoardTagReq): Promise<BoardTagRes[]>;
   getBoardDetail(boardId: number): Promise<BoardRes>;
+  getPopularBoardList(popularBoardListReq: PopularBoardListReq): Promise<BoardListRes[]>;
 }

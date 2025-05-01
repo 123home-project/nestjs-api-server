@@ -30,6 +30,7 @@ import { BoardTagRes } from '../dtos/board-tag.res';
 import { BoardLikeType } from '../types/board-like.type';
 import { BoardRes } from '../dtos/board.res';
 import { BoardCommentRes } from '../dtos/board-comment.res';
+import { PopularBoardListReq } from '../dtos/popular-board-list';
 
 @Injectable()
 export class BoardService implements IBoardService {
@@ -283,6 +284,24 @@ export class BoardService implements IBoardService {
     boardRes.boardDislikeCount = boardDisLikeCount;
 
     return boardRes;
+  }
+
+  async getPopularBoardList(popularBoardListReq: PopularBoardListReq): Promise<BoardListRes[]> {
+    const { boardType, offset, limit, period } = popularBoardListReq;
+
+    const boards = await this.boardRepository.getPopularBoards(boardType, offset, limit, period);
+
+    const boardsRes = plainToInstance(BoardListRes, boards, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+
+    for (const board of boardsRes) {
+      board.boardCommentCount = await this.boardCommentRepository.countBoardCommentByBoardId(board.id);
+      board.boardLikeCount = await this.boardLikeRepository.countBoardLikeByBoardId(board.id, BoardLikeType.like);
+    }
+
+    return boardsRes;
   }
 
   async checkBoardCanBeDeleted(board: BoardDto) {

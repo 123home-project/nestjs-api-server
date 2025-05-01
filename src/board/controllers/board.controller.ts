@@ -15,6 +15,7 @@ import { BoardListRes } from '../dtos/board-list.res';
 import { BoardTagReq } from '../dtos/board-tag.req';
 import { BoardTagRes } from '../dtos/board-tag.res';
 import { BoardRes } from '../dtos/board.res';
+import { PopularBoardListReq } from '../dtos/popular-board-list';
 
 @Controller('board')
 export class BoardController {
@@ -103,6 +104,12 @@ export class BoardController {
   @ApiOkResponse({ description: '게시판 태그', type: [BoardTagRes] })
   async getBoardTag(@Query() boardTagReq: BoardTagReq): Promise<BoardTagRes[]> {
     return await this.boardService.getBoardTag(boardTagReq);
+  }
+
+  @Get('/popular')
+  @ApiOkResponse({ description: '게시판 인기글', type: [BoardListRes] })
+  async getPopularBoardList(@Query() popularBoardListReq: PopularBoardListReq): Promise<BoardListRes[]> {
+    return await this.boardService.getPopularBoardList(popularBoardListReq);
   }
 
   @Get('/:boardId')

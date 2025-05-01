@@ -64,4 +64,21 @@ export class BoardRepository extends Repository<Board> implements IBoardReposito
 
     return await query.getMany();
   }
+
+  async getPopularBoards(boardType: BoardType, offset: number, limit: number, period: number): Promise<Board[]> {
+    return await this.createQueryBuilder('b')
+      .innerJoinAndSelect('b.user', 'u')
+      .innerJoinAndSelect('b.boardTag', 'bt')
+      .addSelect(
+        (qb) =>
+          qb.subQuery().select('COUNT(*)').from('board_like', 'bl').where('bl.board_id = b.id').andWhere('bl.like = 1'),
+        'boardLikeCount',
+      )
+      .where('b.created_at BETWEEN DATE_SUB(NOW(), INTERVAL :period DAY) AND NOW()', { period })
+      .andWhere('b.board_type = :boardType', { boardType })
+      .orderBy('boardLikeCount', 'DESC')
+      .skip(offset)
+      .take(limit)
+      .getMany();
+  }
 }

@@ -15,4 +15,5 @@ export interface IBoardRepository {
     offset: number,
     limit: number,
   ): Promise<Board[]>;
+  getPopularBoards(boardType: BoardType, offset: number, limit: number, period: number): Promise<Board[]>;
 }
