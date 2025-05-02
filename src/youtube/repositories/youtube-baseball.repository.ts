@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { YoutubeBaseball } from '../entities/youtube-baseball.entity';
 import { IYoutubeBaseballRepository } from '../interfaces/youtube-baseball.repository.interface';
 
@@ -11,5 +11,19 @@ export class YoutubeBassballRepository extends Repository<YoutubeBaseball> imple
 
   async addYoutubeBaseball(youtubeBaseball: YoutubeBaseball): Promise<YoutubeBaseball> {
     return this.save(youtubeBaseball);
+  }
+
+  async getYoutubeBasballs(limit: number, offset: number, keyword: string) {
+    return this.find({
+      where: {
+        title: Like('%' + (keyword ?? '') + '%'),
+        permission: true,
+      },
+      take: limit,
+      skip: offset,
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
 }

@@ -7,6 +7,8 @@ import { YoutubeBaseball } from '../entities/youtube-baseball.entity';
 import { IUserService } from 'src/user/interfaces/user.service.inteface';
 import { plainToInstance } from 'class-transformer';
 import { User } from 'src/user/entities/user.entity';
+import { YoutubeBaseballReq } from '../dtos/youtube-baseball.req';
+import { YoutubeBaseballRes } from '../dtos/youtube-baseball.res';
 
 @Injectable()
 export class YoutubeService implements IYoutubeService {
@@ -31,5 +33,16 @@ export class YoutubeService implements IYoutubeService {
     youtubeBaseball.permission = false;
 
     await this.youtubeBaseballRepository.addYoutubeBaseball(youtubeBaseball);
+  }
+
+  async getYoutubeBasball(youtubeBaseballReq: YoutubeBaseballReq) {
+    const { limit, offset, keyword } = youtubeBaseballReq;
+
+    const youtubeBaseball = await this.youtubeBaseballRepository.getYoutubeBasballs(limit, offset, keyword);
+
+    return plainToInstance(YoutubeBaseballRes, youtubeBaseball, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
   }
 }
