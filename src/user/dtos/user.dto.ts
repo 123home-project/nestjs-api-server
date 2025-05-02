@@ -7,6 +7,7 @@ import { PredictionPlayerRes } from 'src/prediction/dtos/prediction-player.res';
 import { BoardDto } from 'src/board/dtos/board.dto';
 import { BoardCommentDto } from 'src/board/dtos/board-comment.dto';
 import { BoardLikeRes } from 'src/board/dtos/board-like.res';
+import { YoutubeBaseballDto } from 'src/youtube/dtos/youtube-baseball.dto';
 
 export class UserDto {
   @IsNumber()
@@ -68,6 +69,12 @@ export class UserDto {
   @IsOptional()
   @Expose()
   boardLike?: BoardLikeRes[];
+
+  @ValidateNested()
+  @Type(() => YoutubeBaseballDto)
+  @IsOptional()
+  @Expose()
+  youtubeBaseball?: YoutubeBaseballDto[];
 
   @IsDate()
   @Expose()

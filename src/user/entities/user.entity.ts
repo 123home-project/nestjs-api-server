@@ -14,6 +14,7 @@ import { PredictionPlayer } from 'src/prediction/entities/prediction_player.enti
 import { Board } from 'src/board/entities/board.entity';
 import { BoardComment } from 'src/board/entities/board-comment.entity';
 import { BoardLike } from 'src/board/entities/board-like.entity';
+import { YoutubeBaseball } from 'src/youtube/entities/youtube-baseball.entity';
 
 @Entity('user')
 export class User {
@@ -52,6 +53,9 @@ export class User {
 
   @OneToMany(() => BoardLike, (boardLike) => boardLike.user, { cascade: true })
   boardLike?: BoardLike[];
+
+  @OneToMany(() => YoutubeBaseball, (youtubeBaseball) => youtubeBaseball.user, { cascade: true })
+  youtubeBaseball?: YoutubeBaseball[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
