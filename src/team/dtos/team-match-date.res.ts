@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GameResultType } from '../types/game-result.type';
-import { TeamDto } from './team.dto';
+import { TeamScoreRes } from './team-score.res';
 
 export class TeamMatchDto {
   @ApiProperty({ description: '팀 스케줄 아이디' })
@@ -10,11 +10,11 @@ export class TeamMatchDto {
 
   @ApiProperty({ description: '홈 팀' })
   @Expose()
-  homeTeam: TeamDto;
+  homeTeam: TeamScoreRes;
 
   @ApiProperty({ description: '원정 팀' })
   @Expose()
-  awayTeam: TeamDto;
+  awayTeam: TeamScoreRes;
 
   @ApiPropertyOptional({ description: '결과' })
   @Expose()

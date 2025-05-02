@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { IsDate, IsNumber, IsOptional, ValidateNested } from 'class-validator';
-import { TeamRes } from './team.res';
+import { TeamDto } from './team.dto';
 import { TeamScheduleRes } from './team-schedule.res';
 import { PlayerHitterStatRes } from 'src/player/dtos/player-hitter-stat.res';
 import { PredictionPlayerRes } from 'src/prediction/dtos/prediction-player.res';
@@ -11,7 +11,7 @@ export class TeamScheduleHitterRes {
   id: number;
 
   @ValidateNested()
-  @Type(() => TeamRes)
+  @Type(() => TeamDto)
   @IsOptional()
   @Expose()
   teamSchedule?: TeamScheduleRes;

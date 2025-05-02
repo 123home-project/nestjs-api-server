@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { IsDate, IsNumber, IsOptional, ValidateNested } from 'class-validator';
-import { TeamRes } from './team.res';
+import { TeamDto } from './team.dto';
 
 export class TeamStatRes {
   @IsNumber()
@@ -8,10 +8,10 @@ export class TeamStatRes {
   id: number;
 
   @ValidateNested()
-  @Type(() => TeamRes)
+  @Type(() => TeamDto)
   @IsOptional()
   @Expose()
-  team?: TeamRes;
+  team?: TeamDto;
 
   @IsNumber()
   @Expose()
