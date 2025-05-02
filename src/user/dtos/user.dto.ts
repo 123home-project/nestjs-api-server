@@ -8,6 +8,7 @@ import { BoardDto } from 'src/board/dtos/board.dto';
 import { BoardCommentDto } from 'src/board/dtos/board-comment.dto';
 import { BoardLikeRes } from 'src/board/dtos/board-like.res';
 import { YoutubeBaseballDto } from 'src/youtube/dtos/youtube-baseball.dto';
+import { TeamRes } from 'src/team/dtos/team.res';
 
 export class UserDto {
   @IsNumber()
@@ -27,6 +28,12 @@ export class UserDto {
   @IsOptional()
   @Expose()
   email?: string;
+
+  @ValidateNested()
+  @Type(() => TeamRes)
+  @IsOptional()
+  @Expose()
+  favoriteTeam?: TeamRes;
 
   @ValidateNested()
   @Type(() => UserAccountRes)

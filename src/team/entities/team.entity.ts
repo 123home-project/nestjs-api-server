@@ -4,6 +4,7 @@ import { TeamStat } from './team-stat.entity';
 import { PlayerHitterStat } from 'src/player/entities/player-hitter-stat.entity';
 import { PlayerPitcherStat } from 'src/player/entities/player-pitcher-stat.entity';
 import { TeamSchedule } from './team-schedule.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity('team')
 export class Team {
@@ -36,6 +37,9 @@ export class Team {
 
   @OneToMany(() => PlayerPitcherStat, (playerPitcherStat) => playerPitcherStat.team, { cascade: true })
   playerPitcherStat?: PlayerPitcherStat[];
+
+  @OneToMany(() => User, (user) => user.favoriteTeam, { cascade: true })
+  user?: User[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

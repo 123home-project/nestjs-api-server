@@ -5,6 +5,7 @@ import { TeamHistoryRes } from './team-history.res';
 import { TeamStatRes } from './team-stat.res';
 import { PlayerHitterStatRes } from 'src/player/dtos/player-hitter-stat.res';
 import { PlayerPitcherStatRes } from 'src/player/dtos/player-pitcher-stat.res';
+import { UserDto } from 'src/user/dtos/user.dto';
 
 export class TeamRes {
   @IsNumber()
@@ -58,6 +59,12 @@ export class TeamRes {
   @IsOptional()
   @Expose()
   playerPitcherStat?: PlayerPitcherStatRes[];
+
+  @ValidateNested()
+  @Type(() => UserDto)
+  @IsOptional()
+  @Expose()
+  user?: UserDto[];
 
   @IsDate()
   @Expose()
