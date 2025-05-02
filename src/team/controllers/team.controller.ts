@@ -21,4 +21,10 @@ export class TeamController {
   async getTeamMatchSchedule(@Query() teamMatchScheduleReq: TeamMatchScheduleReq): Promise<TeamMatchDateRes[]> {
     return await this.teamService.getTeamMatchSchedule(teamMatchScheduleReq);
   }
+
+  @Get('/')
+  @ApiOkResponse({ description: '팀 리스트', type: [TeamMatchDateRes] })
+  async getTeam(): Promise<TeamMatchDateRes[]> {
+    return await this.teamService.getTeam();
+  }
 }

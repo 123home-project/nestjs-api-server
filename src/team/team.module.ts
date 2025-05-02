@@ -11,6 +11,7 @@ import { TeamScheduleHitter } from './entities/team-schedule-hitter.entity';
 import { TeamSchedulePitcher } from './entities/team-schedule-pitcher.entity';
 import { TeamScheduleRepository } from './repositories/team-schedule.repository';
 import { TimeModule } from 'src/time/time.module';
+import { TeamRepository } from './repositories/team.repository';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TimeModule } from 'src/time/time.module';
     { provide: 'ITeamService', useClass: TeamService },
     { provide: 'ITeamStatRepository', useClass: TeamStatRepository },
     { provide: 'ITeamScheduleRepository', useClass: TeamScheduleRepository },
+    { provide: 'ITeamRepository', useClass: TeamRepository },
   ],
   exports: [{ provide: 'ITeamService', useClass: TeamService }],
 })

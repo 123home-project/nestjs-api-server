@@ -12,6 +12,7 @@ import { PlayerModule } from './player/player.module';
 import { PredictionModule } from './prediction/prediction.module';
 import { TimeModule } from './time/time.module';
 import { BoardModule } from './board/board.module';
+import { YoutubeModule } from './youtube/youtube.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { BoardModule } from './board/board.module';
     PredictionModule,
     TimeModule,
     BoardModule,
+    YoutubeModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
