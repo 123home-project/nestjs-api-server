@@ -10,12 +10,15 @@ import { ITimeService } from 'src/time/interfaces/time.service.interface';
 import moment from 'moment';
 import { TeamMatchDateRes } from '../dtos/team-match-date.res';
 import { TeamScheduleRes } from '../dtos/team-schedule.res';
+import { ITeamRepository } from '../interfaces/team.repository.interface';
+import { TeamRes } from '../dtos/team.res';
 
 @Injectable()
 export class TeamService implements ITeamService {
   constructor(
     @Inject('ITeamStatRepository') private readonly teamStatRepository: ITeamStatRepository,
     @Inject('ITeamScheduleRepository') private readonly teamScheduleRepository: ITeamScheduleRepository,
+    @Inject('ITeamRepository') private readonly teamRepository: ITeamRepository,
     @Inject('ITimeService') private readonly timeService: ITimeService,
   ) {}
 
@@ -92,6 +95,15 @@ export class TeamService implements ITeamService {
     const teamSchedule = await this.teamScheduleRepository.getTeamScheduleByDateWithinDate(predictionDate);
 
     return plainToInstance(TeamScheduleRes, teamSchedule, {
+      enableImplicitConversion: true,
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getTeam() {
+    const team = await this.teamRepository.getTeam();
+
+    return plainToInstance(TeamRes, team, {
       enableImplicitConversion: true,
       excludeExtraneousValues: true,
     });
