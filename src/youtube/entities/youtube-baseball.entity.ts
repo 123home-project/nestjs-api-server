@@ -36,7 +36,7 @@ export class YoutubeBaseball {
   @Column({ name: 'youtube_id', length: 255, type: 'varchar', nullable: true })
   youtubeId?: string;
 
-  @Column({ name: 'youtube_id', type: 'tinyint' })
+  @Column({ type: 'tinyint' })
   permission: boolean;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
