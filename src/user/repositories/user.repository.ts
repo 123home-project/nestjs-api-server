@@ -53,4 +53,18 @@ export class UserRepository extends Repository<User> implements IUserRepository 
       },
     });
   }
+
+  async updateUserProfile(userId: number, nickname: string, favoriteTeamId: number) {
+    const updateElements: any = {};
+
+    if (nickname) {
+      updateElements.nickname = nickname;
+    }
+
+    if (favoriteTeamId !== undefined) {
+      updateElements.favoriteTeam = { id: favoriteTeamId };
+    }
+
+    await this.update({ id: userId }, updateElements);
+  }
 }
