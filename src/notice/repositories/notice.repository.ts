@@ -20,4 +20,8 @@ export class NoticeRepository extends Repository<Notice> implements INoticeRepos
       },
     });
   }
+
+  async getNoticeById(noticeId: number): Promise<Notice> {
+    return await this.findOne({ where: { id: noticeId } });
+  }
 }
