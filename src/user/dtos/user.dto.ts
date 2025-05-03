@@ -9,6 +9,7 @@ import { BoardCommentDto } from 'src/board/dtos/board-comment.dto';
 import { BoardLikeRes } from 'src/board/dtos/board-like.res';
 import { YoutubeBaseballDto } from 'src/youtube/dtos/youtube-baseball.dto';
 import { TeamDto } from 'src/team/dtos/team.dto';
+import { ReportDto } from 'src/report/dtos/report.dto';
 
 export class UserDto {
   @IsNumber()
@@ -83,6 +84,12 @@ export class UserDto {
   @Expose()
   youtubeBaseball?: YoutubeBaseballDto[];
 
+  @ValidateNested()
+  @Type(() => ReportDto)
+  @IsOptional()
+  @Expose()
+  report?: ReportDto[];
+
   @IsDate()
   @Expose()
   createdAt: Date;
@@ -90,4 +97,8 @@ export class UserDto {
   @IsDate()
   @Expose()
   updatedAt: Date;
+
+  @IsDate()
+  @Expose()
+  deletedAt?: Date;
 }

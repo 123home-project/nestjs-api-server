@@ -14,6 +14,7 @@ import { TimeModule } from './time/time.module';
 import { BoardModule } from './board/board.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { NoticeModule } from './notice/notice.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { NoticeModule } from './notice/notice.module';
     BoardModule,
     YoutubeModule,
     NoticeModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],

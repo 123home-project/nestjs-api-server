@@ -19,6 +19,7 @@ import { BoardComment } from 'src/board/entities/board-comment.entity';
 import { BoardLike } from 'src/board/entities/board-like.entity';
 import { YoutubeBaseball } from 'src/youtube/entities/youtube-baseball.entity';
 import { Team } from 'src/team/entities/team.entity';
+import { Report } from 'src/report/entities/report.entity';
 
 @Entity('user')
 export class User {
@@ -64,6 +65,9 @@ export class User {
 
   @OneToMany(() => YoutubeBaseball, (youtubeBaseball) => youtubeBaseball.user, { cascade: true })
   youtubeBaseball?: YoutubeBaseball[];
+
+  @OneToMany(() => Report, (report) => report.user, { cascade: true })
+  report?: Report[];
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
