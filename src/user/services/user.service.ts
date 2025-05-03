@@ -102,4 +102,10 @@ export class UserService implements IUserService {
 
     await this.userRepository.updateUserProfile(userId, nickname, favoriteTeamId);
   }
+
+  async cancelUser(accessTokenUser: JwtAccessTokenReq) {
+    const { userId } = accessTokenUser;
+
+    await this.userRepository.softDeleteUser(userId);
+  }
 }

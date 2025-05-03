@@ -67,4 +67,8 @@ export class UserRepository extends Repository<User> implements IUserRepository 
 
     await this.update({ id: userId }, updateElements);
   }
+
+  async softDeleteUser(userId: number) {
+    await this.softDelete(userId);
+  }
 }

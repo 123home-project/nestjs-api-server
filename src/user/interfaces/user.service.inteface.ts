@@ -13,4 +13,5 @@ export interface IUserService {
   getLocalUserByEmail(email: string): Promise<UserDto>;
   resetUserAccountPasswordByUserId(userId: number, password: string);
   updateUserProfile(accessTokenUser: JwtAccessTokenReq, updateUserProfileReq: UpdateUserProfileReq);
+  cancelUser(accessTokenUser: JwtAccessTokenReq);
 }

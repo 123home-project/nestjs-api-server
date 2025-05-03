@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Inject, Patch, UseGuards } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { IUserService } from '../interfaces/user.service.inteface';
 import { UpdateUserProfileReq } from '../dtos/update-user-profile.req';
@@ -18,5 +18,12 @@ export class UserController {
     @Body() updateUserProfileReq: UpdateUserProfileReq,
   ) {
     return await this.userService.updateUserProfile(accessTokenUser, updateUserProfileReq);
+  }
+
+  @Delete('/')
+  @UseGuards(AccessTokenAuthGuard)
+  @ApiOkResponse({ description: '회원 탈퇴' })
+  async cancelUser(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq) {
+    return await this.userService.cancelUser(accessTokenUser);
   }
 }
