@@ -5,4 +5,6 @@ export interface IUserRepository {
   getUserByAccountId(accountId: string): Promise<User>;
   addUser(user: User);
   getLocalUserByEmail(email: string): Promise<User>;
+  updateUserProfile(userId: number, nickname: string, favoriteTeamId: number);
+  softDeleteUser(userId: number);
 }

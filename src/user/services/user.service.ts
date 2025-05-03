@@ -10,6 +10,8 @@ import { LoginPlatformType } from 'src/auth/types/login-platform.type';
 import { UserDto } from '../dtos/user.dto';
 import { plainToInstance } from 'class-transformer';
 import { SnsAccountUserReq } from 'src/auth/dtos/sns-account-user.req';
+import { UpdateUserProfileReq } from '../dtos/update-user-profile.req';
+import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -92,5 +94,18 @@ export class UserService implements IUserService {
 
   async resetUserAccountPasswordByUserId(userId: number, password: string) {
     await this.userAccountRepository.updateUserAccountPasswordByUserId(userId, password);
+  }
+
+  async updateUserProfile(accessTokenUser: JwtAccessTokenReq, updateUserProfileReq: UpdateUserProfileReq) {
+    const { nickname, favoriteTeamId } = updateUserProfileReq;
+    const { userId } = accessTokenUser;
+
+    await this.userRepository.updateUserProfile(userId, nickname, favoriteTeamId);
+  }
+
+  async cancelUser(accessTokenUser: JwtAccessTokenReq) {
+    const { userId } = accessTokenUser;
+
+    await this.userRepository.softDeleteUser(userId);
   }
 }
