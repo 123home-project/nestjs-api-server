@@ -13,7 +13,7 @@ export class EmailService implements IEmailService {
       html: `
         계정 인증을 위해 아래 링크를 클릭해주세요 
         <p><p>
-        <a href="http://127.0.0.1:4321/auth/email?emailauthtoken=${emailAuthToken}">계정 인증 하기</a>
+        <a href="http://127.0.0.1:5000/auth/email?emailauthtoken=${emailAuthToken}">계정 인증 하기</a>
       `,
     });
   }
