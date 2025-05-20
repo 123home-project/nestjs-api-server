@@ -19,13 +19,15 @@ async function bootstrap() {
     .setTitle('일이삼홈 API 문서')
     .setDescription('일이삼홈 API 문서')
     .setVersion('1.0')
-    .addServer('http://localhost:4321/', 'Local')
+    .addServer('http://localhost:5000/', 'Local')
     .addTag('swagger')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 
-  await app.listen(4321);
+  const PORT = process.env.PORT || 5000;
+
+  await app.listen(PORT);
 }
 bootstrap();
