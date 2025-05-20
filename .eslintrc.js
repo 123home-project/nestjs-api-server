@@ -12,7 +12,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['*.js', '**/*.js'],
   rules: {
     'prettier/prettier': ['error', { endOfLine: 'auto', printWidth: 120 }],
     '@typescript-eslint/interface-name-prefix': 'off',
