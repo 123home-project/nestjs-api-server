@@ -36,6 +36,10 @@ jobs:
     - name: build api server file
       run: zip -r 123home.zip ./dist ./scripts ./src ./.eslintrc.js ./gitignore ./.prettierrc ./appspec.yml ./.production.env ./ecosystem.config.js ./package.json ./package-lock.json ./nest-cli.json ./README.md ./tsconfig.build.json ./tsconfig.json ./webpack-hmr.config.js
 
+    - name: Debug secrets
+      run: |
+        echo "KEY=${{ secrets.AWS_ACCESS_KEY_ID }}"
+    
     - name: AWS configure credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
