@@ -3,6 +3,6 @@ REPOSITORY=/home/ec2-user/123home-api
 
 cd $REPOSITORY
 
-npm install
+sudo npm install
 
-npm run start:prod
+sudo npm run start:prod
