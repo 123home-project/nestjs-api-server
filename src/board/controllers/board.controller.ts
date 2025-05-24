@@ -113,7 +113,7 @@ export class BoardController {
   }
 
   @Get('/:boardId')
-  @ApiOkResponse({ description: '게시판 보기', type: BoardRes })
+  @ApiOkResponse({ description: '게시판 상세 보기', type: BoardRes })
   async getBoardById(@Param('boardId') boardId: number): Promise<BoardRes> {
     return await this.boardService.getBoardDetail(boardId);
   }
