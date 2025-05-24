@@ -77,7 +77,7 @@ export class BoardController {
 
   @Post('/')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '게시판 글쓰기' })
+  @ApiCreatedResponse({ description: '게시판 글 작성' })
   async writeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() writeBoardReq: WriteBoardReq) {
     return await this.boardService.writeBoard(accessTokenUser, writeBoardReq);
   }
