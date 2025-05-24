@@ -84,7 +84,7 @@ export class BoardController {
 
   @Patch('/:boardId')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiOkResponse({ description: '게시판 글수정' })
+  @ApiOkResponse({ description: '게시판 글 수정' })
   async updateBoard(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() updateBoardReq: UpdateBoardReq,
@@ -95,7 +95,7 @@ export class BoardController {
 
   @Delete('/:boardId')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiOkResponse({ description: '게시판 글삭제' })
+  @ApiOkResponse({ description: '게시판 글 삭제' })
   async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
     return await this.boardService.deleteBoard(accessTokenUser, boardId);
   }
