@@ -63,7 +63,7 @@ export class AuthService implements IAuthService {
 
   async localRegister(localRegisterReq: LocalRegisterReq): Promise<AuthTokenRes> {
     if (await this.userService.getLocalUserByEmail(localRegisterReq.email)) {
-      throw new BadRequestException('이미 가입된 계정 이메일입니다.', 'EmailAlreadyExists');
+      throw new BadRequestException('이미 가입된 계정 이메일입니다', 'EmailAlreadyExists');
     }
 
     localRegisterReq.password = await this.cryptoService.passwordEcrypt(localRegisterReq.password);

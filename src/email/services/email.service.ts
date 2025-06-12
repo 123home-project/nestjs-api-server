@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { IEmailService } from '../interfaces/email.service.inteface';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailService implements IEmailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private configService: ConfigService,
+  ) {}
 
   async sendLocalRegisterVerifyEmail(email: string, emailAuthToken: string) {
     await this.mailerService.sendMail({
@@ -13,7 +17,7 @@ export class EmailService implements IEmailService {
       html: `
         계정 인증을 위해 아래 링크를 클릭해주세요 
         <p><p>
-        <a href="http://127.0.0.1:5000/auth/email?emailauthtoken=${emailAuthToken}">계정 인증 하기</a>
+        <a href="${this.configService.get('url.api')}/auth/email?emailauthtoken=${emailAuthToken}">계정 인증 하기</a>
       `,
     });
   }
