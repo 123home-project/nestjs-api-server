@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { IBoardService } from '../interfaces/board.service.interface';
 import { WriteBoardReq } from '../dtos/write-board.req';
 import { AccessTokenAuthGuard } from 'src/auth/guards/jwt-access-token.auth.guard';
@@ -24,6 +24,14 @@ export class BoardController {
   @Post('/comment')
   @UseGuards(AccessTokenAuthGuard)
   @ApiCreatedResponse({ description: '게시판 댓글 쓰기' })
+  @ApiBadRequestResponse({
+    description: `
+  - [DoesNotExistsBoard]존재하지 않는 게시글입니다
+  - [DoesNotExistsTagUser]존재하지 않는 유저입니다
+  - [DoesNotExistsParentComment]존재하지 않는 원댓글입니다
+  - [CanNotWriteCommentInTheReply]대댓글에는 댓글을 작성할 수 없습니다
+    `,
+  })
   async writeBoardComment(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() writeBoardCommentReq: WriteBoardCommentReq,
@@ -34,6 +42,14 @@ export class BoardController {
   @Patch('/comment/:boardCommentId')
   @UseGuards(AccessTokenAuthGuard)
   @ApiOkResponse({ description: '게시판 댓글 수정' })
+  @ApiBadRequestResponse({
+    description: `
+  - [EmailAlreadyExists]이미 가입된 계정 이메일입니다
+  - [DoesNotExistsBoardComment]존재하지 않는 댓글입니다
+  - [DoesNotHavePermissionModifyBoardComment]해당 댓글을 수정할 권한이 존재하지 않습니다
+  - [DoesNotExistsTagUser]존재하지 않는 유저입니다
+    `,
+  })
   async updateBoardComment(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() updateBoardCommentReq: UpdateBoardCommentReq,
@@ -45,6 +61,12 @@ export class BoardController {
   @Delete('/comment/:boardCommentId')
   @UseGuards(AccessTokenAuthGuard)
   @ApiOkResponse({ description: '게시판 댓글 삭제' })
+  @ApiBadRequestResponse({
+    description: `
+  - [DoesNotExistsBoardComment]존재하지 않는 댓글입니다
+  - [DoesNotHavePermissionDeleteBoardComment]해당 댓글을 삭제할 권한이 존재하지 않습니다
+    `,
+  })
   async deleteBoardComment(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Param('boardCommentId') boardCommentId: number,
@@ -55,6 +77,12 @@ export class BoardController {
   @Post('/like')
   @UseGuards(AccessTokenAuthGuard)
   @ApiCreatedResponse({ description: '게시판 좋아요/싫어요' })
+  @ApiBadRequestResponse({
+    description: `
+  - [DoesNotExistsBoard]존재하지 않는 게시글입니다
+  - [CanNotMultipleLikeSameBoard]동일한 게시물에 여러번 좋아요/싫어요 체크가 불가능합니다
+    `,
+  })
   async likeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() likeBoardReq: LikeBoardReq) {
     return await this.boardService.likeBoard(accessTokenUser, likeBoardReq);
   }
@@ -62,6 +90,12 @@ export class BoardController {
   @Delete('/like')
   @UseGuards(AccessTokenAuthGuard)
   @ApiOkResponse({ description: '게시판 좋아요/싫어요 취소' })
+  @ApiBadRequestResponse({
+    description: `
+  - [DoesNotExistsBoard]존재하지 않는 게시글입니다
+  - [DoesNotExistsBoardLike]좋아요 이력이 존재하지 않습니다
+    `,
+  })
   async likeCancelBoard(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() likeCancelBoardReq: LikeCancelBoardReq,
@@ -78,6 +112,11 @@ export class BoardController {
   @Post('/')
   @UseGuards(AccessTokenAuthGuard)
   @ApiCreatedResponse({ description: '게시판 글 작성' })
+  @ApiBadRequestResponse({
+    description: `
+  - [DoesNotExistsBoardTag]존재하지 않는 게시판 태그입니다
+    `,
+  })
   async writeBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() writeBoardReq: WriteBoardReq) {
     return await this.boardService.writeBoard(accessTokenUser, writeBoardReq);
   }
@@ -85,6 +124,13 @@ export class BoardController {
   @Patch('/:boardId')
   @UseGuards(AccessTokenAuthGuard)
   @ApiOkResponse({ description: '게시판 글 수정' })
+  @ApiBadRequestResponse({
+    description: `
+  - [DoesNotExistsBoard]존재하지 않는 게시물입니다
+  - [DoesNotHavePermission]해당 게시물을 수정할 권한이 존재하지 않습니다
+  - [StarBoardCanNotBeModified]스타 게시물은 수정/삭제 할 수 없습니다
+    `,
+  })
   async updateBoard(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() updateBoardReq: UpdateBoardReq,
@@ -96,6 +142,13 @@ export class BoardController {
   @Delete('/:boardId')
   @UseGuards(AccessTokenAuthGuard)
   @ApiOkResponse({ description: '게시판 글 삭제' })
+  @ApiBadRequestResponse({
+    description: `
+  - [DoesNotExistsBoard]존재하지 않는 게시물입니다
+  - [DoesNotHavePermissionModifyBoard]해당 게시물을 삭제할 권한이 존재하지 않습니다
+  - [StarBoardCanNotBeModified]스타 게시물은 수정/삭제 할 수 없습니다
+    `,
+  })
   async deleteBoard(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Param('boardId') boardId: number) {
     return await this.boardService.deleteBoard(accessTokenUser, boardId);
   }
@@ -113,7 +166,7 @@ export class BoardController {
   }
 
   @Get('/:boardId')
-  @ApiOkResponse({ description: '게시판 보기', type: BoardRes })
+  @ApiOkResponse({ description: '게시판 상세 보기', type: BoardRes })
   async getBoardById(@Param('boardId') boardId: number): Promise<BoardRes> {
     return await this.boardService.getBoardDetail(boardId);
   }

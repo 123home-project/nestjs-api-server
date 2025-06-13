@@ -3,12 +3,12 @@ import { Expose } from 'class-transformer';
 import { IsString } from 'class-validator';
 
 export class AuthTokenRes {
-  @ApiProperty({ description: '리프레쉬 토큰' })
+  @ApiProperty({ description: '리프레쉬 토큰', example: 'eyJhbGciOi.JIUzI1NiIsIn.R5cCI6IkpXVCJ9' })
   @IsString()
   @Expose()
   refreshToken: string;
 
-  @ApiProperty({ description: '엑세스 토큰' })
+  @ApiProperty({ description: '엑세스 토큰', example: 'eyJhbGciOi.JIUzI1NiIsIn.R5cCI6IkpXVCJ0' })
   @IsString()
   @Expose()
   accessToken: string;

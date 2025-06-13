@@ -3,13 +3,13 @@ import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PlayerStatsRankingReq {
-  @ApiPropertyOptional({ description: '기록 년도' })
+  @ApiPropertyOptional({ description: '기록 년도', example: 2025 })
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   year?: number = new Date().getFullYear();
 
-  @ApiPropertyOptional({ description: '보여줄 개수' })
+  @ApiPropertyOptional({ description: '보여줄 개수', default: 100, example: 100 })
   @IsNumber()
   @IsOptional()
   @Min(0)

@@ -4,19 +4,19 @@ import { GameResultType } from 'src/team/types/game-result.type';
 import { TeamScoreRes } from 'src/team/dtos/team-score.res';
 
 export class MyMatchPredictionHistoryRes {
-  @ApiProperty({ description: '승패예측 id' })
+  @ApiProperty({ description: '승패예측 id', example: 123 })
   @Expose()
   predictionMatchId: number;
 
-  @ApiProperty({ description: '유저 id' })
+  @ApiProperty({ description: '유저 id', example: 123 })
   @Expose()
   userId: number;
 
-  @ApiProperty({ description: '경기 일정 id' })
+  @ApiProperty({ description: '경기 일정 id', example: 123 })
   @Expose()
   teamScheduleId: number;
 
-  @ApiProperty({ description: '예측', enum: GameResultType })
+  @ApiProperty({ description: '예측', example: 'win', enum: GameResultType })
   @Expose()
   prediction: GameResultType;
 
@@ -24,7 +24,7 @@ export class MyMatchPredictionHistoryRes {
   @Expose()
   startDate: Date;
 
-  @ApiProperty({ description: '결과', enum: GameResultType })
+  @ApiProperty({ description: '결과', example: 'win', enum: GameResultType })
   @Expose()
   result: GameResultType;
 

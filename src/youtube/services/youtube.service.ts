@@ -35,7 +35,7 @@ export class YoutubeService implements IYoutubeService {
     await this.youtubeBaseballRepository.addYoutubeBaseball(youtubeBaseball);
   }
 
-  async getYoutubeBasball(youtubeBaseballReq: YoutubeBaseballReq) {
+  async getYoutubeBasball(youtubeBaseballReq: YoutubeBaseballReq): Promise<YoutubeBaseballRes> {
     const { limit, offset, keyword } = youtubeBaseballReq;
 
     const youtubeBaseball = await this.youtubeBaseballRepository.getYoutubeBasballs(limit, offset, keyword);

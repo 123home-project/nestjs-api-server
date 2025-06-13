@@ -6,37 +6,37 @@ import { SortOrderType } from 'src/shared/types/sort-order.type';
 import { PredictionHitterStatType } from '../types/prediction-hitter-stat.type';
 
 export class PlayerPredictionHitterReq {
-  @ApiPropertyOptional({ description: '예측 년도', default: '현재 년도' })
+  @ApiPropertyOptional({ description: '예측 년도', default: '현재 년도', example: 2025 })
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   year?: number = new Date().getFullYear();
 
-  @ApiPropertyOptional({ description: '보여줄 개수', default: 100 })
+  @ApiPropertyOptional({ description: '보여줄 개수', default: 100, example: 100 })
   @IsNumber()
   @IsOptional()
   @Min(0)
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   limit: number = 100;
 
-  @ApiPropertyOptional({ description: '시작 번호', default: 0 })
+  @ApiPropertyOptional({ description: '시작 번호', default: 0, example: 0 })
   @IsNumber()
   @IsOptional()
   @Min(0)
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   offset?: number = 0;
 
-  @ApiPropertyOptional({ description: '정렬 기록', default: 'avg', enum: PredictionHitterStatType })
+  @ApiPropertyOptional({ description: '정렬 기록', default: 'avg', example: 'awg', enum: PredictionHitterStatType })
   @IsEnum(PredictionHitterStatType)
   @IsOptional()
   sortBy?: PredictionHitterStatType = 'avg';
 
-  @ApiPropertyOptional({ description: '정렬 기준', enum: SortOrderType })
+  @ApiPropertyOptional({ description: '정렬 기준', example: 'ASC', enum: SortOrderType })
   @IsEnum(SortOrderType)
   @IsOptional()
   sortOrder?: SortOrderType;
 
-  @ApiPropertyOptional({ description: '검색 닉네임' })
+  @ApiPropertyOptional({ description: '검색 닉네임', example: '안녕' })
   @IsString()
   @IsOptional()
   nickname?: string;

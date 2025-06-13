@@ -2,11 +2,11 @@ import { IsNumber, Max, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LikeBoardReq {
-  @ApiProperty({ description: '게시판 태그 id' })
+  @ApiProperty({ description: '게시판 태그 id', example: 123 })
   @IsNumber()
   boardId: number;
 
-  @ApiProperty({ description: '좋아요: 1 / 싫어요: -1', default: 1 })
+  @ApiProperty({ description: '좋아요: 1 / 싫어요: -1', default: 1, example: 1 })
   @IsNumber()
   @Min(-1)
   @Max(1)
