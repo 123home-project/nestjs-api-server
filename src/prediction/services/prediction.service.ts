@@ -65,17 +65,17 @@ export class PredictionService implements IPredictionService {
     const user = await this.userService.getUserById(userId);
 
     if (!user) {
-      throw new BadRequestException('존재하지 않는 유저입니다.', 'UserDoesNotExists');
+      throw new BadRequestException('존재하지 않는 유저입니다', 'UserDoesNotExists');
     }
 
     const teamSchedule = await this.teamService.getTeamScheduleWithinDate(teamScheduleId);
 
     if (!teamSchedule) {
-      throw new BadRequestException('예측할 수 없는 경기 일정입니다.', 'TeamScheduleDoesNotExists');
+      throw new BadRequestException('예측할 수 없는 경기 일정입니다', 'TeamScheduleDoesNotExists');
     }
 
     if (await this.predictionMatchRepository.getPredictionMatchByUserIdAndTeamScheduleId(userId, teamScheduleId)) {
-      throw new BadRequestException('이미 오늘의 예측을 완료하였습니다.', 'AlreadyCompletedTodaysPrediciton');
+      throw new BadRequestException('이미 오늘의 예측을 완료하였습니다', 'AlreadyCompletedTodaysPrediciton');
     }
 
     const predictMatch = new PredictionMatch();
@@ -94,13 +94,13 @@ export class PredictionService implements IPredictionService {
     const user = await this.userService.getUserById(userId);
 
     if (!user) {
-      throw new BadRequestException('존재하지 않는 유저입니다.', 'UserDoesNotExists');
+      throw new BadRequestException('존재하지 않는 유저입니다', 'UserDoesNotExists');
     }
 
     const teamSchedule = await this.teamService.getTeamScheduleWithinDate(teamScheduleId);
 
     if (!teamSchedule) {
-      throw new BadRequestException('예측 수정 할 수 없는 경기 일정입니다.', 'TeamScheduleDoesNotExists');
+      throw new BadRequestException('예측 수정 할 수 없는 경기 일정입니다', 'TeamScheduleDoesNotExists');
     }
 
     await this.predictionMatchRepository.updateMatchPrediction(userId, teamScheduleId, prediction);
@@ -227,11 +227,11 @@ export class PredictionService implements IPredictionService {
     const teamSchedule = await this.teamService.getTeamScheduleByDate(predictionDate);
 
     if (!teamSchedule) {
-      throw new BadRequestException('현재 해당 날짜에 선수 예측이 불가능합니다.', 'TeamScheduleDoesNotExists');
+      throw new BadRequestException('현재 해당 날짜에 선수 예측이 불가능합니다', 'TeamScheduleDoesNotExists');
     }
 
     if (await this.predictionPlayerRepository.getPredictionPlayerByPredictionDate(predictionDate, userId)) {
-      throw new BadRequestException('이미 해당 날짜의 예측을 완료하셨습니다.', 'PredictPlayerAlreadyCompleted');
+      throw new BadRequestException('이미 해당 날짜의 예측을 완료하셨습니다', 'PredictPlayerAlreadyCompleted');
     }
 
     const predictionPlayer = new PredictionPlayer();
@@ -258,11 +258,11 @@ export class PredictionService implements IPredictionService {
     const teamSchedule = await this.teamService.getTeamScheduleByDate(predictionDate);
 
     if (!teamSchedule) {
-      throw new BadRequestException('현재 해당 날짜에 선수 예측이 불가능합니다.', 'TeamScheduleDoesNotExists');
+      throw new BadRequestException('현재 해당 날짜에 선수 예측이 불가능합니다', 'TeamScheduleDoesNotExists');
     }
 
     if (!(await this.predictionPlayerRepository.getPredictionPlayerByPredictionDate(predictionDate, userId))) {
-      throw new BadRequestException('해당 날짜의 예측이 존재하지 않습니다.', 'PredictPlayerNotCompleted');
+      throw new BadRequestException('해당 날짜의 예측이 존재하지 않습니다', 'PredictPlayerNotCompleted');
     }
 
     await this.predictionPlayerRepository.updatePredictionPlayer(

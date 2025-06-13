@@ -45,4 +45,7 @@ export default (): any => ({
       key: String(process.env.TWO_WAY_ENCRYPT_KEY),
     },
   },
+  url: {
+    api: String(process.env.API_URL),
+  },
 });

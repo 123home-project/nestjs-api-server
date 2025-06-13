@@ -5,6 +5,7 @@ import { TeamStatsRes } from '../dtos/team-stats.res';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { TeamMatchScheduleReq } from '../dtos/team-match-schedule.req';
 import { TeamMatchDateRes } from '../dtos/team-match-date.res';
+import { TeamRes } from '../dtos/team.res';
 
 @Controller('team')
 export class TeamController {
@@ -23,8 +24,8 @@ export class TeamController {
   }
 
   @Get('/')
-  @ApiOkResponse({ description: '팀 리스트', type: [TeamMatchDateRes] })
-  async getTeam(): Promise<TeamMatchDateRes[]> {
+  @ApiOkResponse({ description: '팀 리스트', type: [TeamRes] })
+  async getTeam(): Promise<TeamRes[]> {
     return await this.teamService.getTeam();
   }
 }

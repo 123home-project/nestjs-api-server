@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Inject, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { SendReportReq } from '../dtos/send-report.req';
 import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 import { AccessTokenUser } from 'src/auth/decorators/access-token.decorator';
 import { AccessTokenAuthGuard } from 'src/auth/guards/jwt-access-token.auth.guard';
 import { IReportService } from '../interfaces/report.service.interface';
 import { ReportListReq } from '../dtos/report-list.req';
+import { ReportListRes } from '../dtos/report-list.res';
 
 @Controller('report')
 export class ReportController {
@@ -20,8 +21,11 @@ export class ReportController {
 
   @Get('/')
   @UseGuards(AccessTokenAuthGuard)
-  @ApiCreatedResponse({ description: '신고하기' })
-  async getReportList(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Query() reportListReq: ReportListReq) {
+  @ApiOkResponse({ description: '신고 내역', type: [ReportListRes] })
+  async getReportList(
+    @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
+    @Query() reportListReq: ReportListReq,
+  ): Promise<ReportListRes[]> {
     return await this.reportService.getReportList(accessTokenUser, reportListReq);
   }
 }

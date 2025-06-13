@@ -32,7 +32,7 @@ export class ReportService implements IReportService {
     await this.reportRepository.addReport(report);
   }
 
-  async getReportList(accessTokenUser: JwtAccessTokenReq, reportListReq: ReportListReq) {
+  async getReportList(accessTokenUser: JwtAccessTokenReq, reportListReq: ReportListReq): Promise<ReportListRes[]> {
     const { userId } = accessTokenUser;
     const { keyword, limit, offset, reportType } = reportListReq;
 

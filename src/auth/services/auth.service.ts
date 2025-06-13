@@ -63,7 +63,7 @@ export class AuthService implements IAuthService {
 
   async localRegister(localRegisterReq: LocalRegisterReq): Promise<AuthTokenRes> {
     if (await this.userService.getLocalUserByEmail(localRegisterReq.email)) {
-      throw new BadRequestException('이미 가입된 계정 이메일입니다.', 'EmailAlreadyExists');
+      throw new BadRequestException('이미 가입된 계정 이메일입니다', 'EmailAlreadyExists');
     }
 
     localRegisterReq.password = await this.cryptoService.passwordEcrypt(localRegisterReq.password);
@@ -78,7 +78,7 @@ export class AuthService implements IAuthService {
     const emailAuthTokenJson = JSON.parse(this.cryptoService.twoWayDecrypt(emailauthtoken));
 
     if (emailAuthTokenJson.expire < Number(new Date())) {
-      throw new UnauthorizedException('인증 시간이 초과되었습니다.', 'VerifyTimeOut');
+      throw new UnauthorizedException('인증 시간이 초과되었습니다', 'VerifyTimeOut');
     }
 
     await this.userService.verifyUserAccountByUserId(emailAuthTokenJson.userId);

@@ -40,7 +40,13 @@ export class PredictionController {
   @Post('/match')
   @UseGuards(AccessTokenAuthGuard)
   @ApiCreatedResponse({ description: '승패예측 성공' })
-  @ApiBadRequestResponse({ description: '존재하지 않는 유저입니다.' })
+  @ApiBadRequestResponse({
+    description: `
+  - [UserDoesNotExists]존재하지 않는 유저입니다
+  - [TeamScheduleDoesNotExists]예측할 수 없는 경기 일정입니다
+  - [AlreadyCompletedTodaysPrediciton]이미 오늘의 예측을 완료하였습니다
+    `,
+  })
   async predictMatch(@AccessTokenUser() accessTokenUser: JwtAccessTokenReq, @Body() predictMatchReq: PredictMatchReq) {
     return await this.predictionService.predictMatch(accessTokenUser, predictMatchReq);
   }
@@ -48,7 +54,12 @@ export class PredictionController {
   @Patch('/match')
   @UseGuards(AccessTokenAuthGuard)
   @ApiOkResponse({ description: '승패예측 수정 성공' })
-  @ApiBadRequestResponse({ description: '존재하지 않는 유저입니다.' })
+  @ApiBadRequestResponse({
+    description: `
+  - [UserDoesNotExists]존재하지 않는 유저입니다
+  - [TeamScheduleDoesNotExists]예측할 수 없는 경기 일정입니다
+    `,
+  })
   async updateMatchPrediction(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() updateMatchPredictionReq: UpdateMatchPredictionReq,
@@ -87,7 +98,12 @@ export class PredictionController {
   @Post('/player')
   @UseGuards(AccessTokenAuthGuard)
   @ApiCreatedResponse({ description: '선수 예측 성공' })
-  @ApiBadRequestResponse({ description: '존재하지 않는 유저입니다.' })
+  @ApiBadRequestResponse({
+    description: `
+  - [TeamScheduleDoesNotExists]현재 해당 날짜에 선수 예측이 불가능합니다
+  - [PredictPlayerAlreadyCompleted]이미 해당 날짜의 예측을 완료하셨습니다
+    `,
+  })
   async predictPlayer(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() predictPlayerReq: PredictPlayerReq,
@@ -98,7 +114,12 @@ export class PredictionController {
   @Patch('/player')
   @UseGuards(AccessTokenAuthGuard)
   @ApiOkResponse({ description: '선수 예측 수정 성공' })
-  @ApiBadRequestResponse({ description: '존재하지 않는 유저입니다.' })
+  @ApiBadRequestResponse({
+    description: `
+  - [TeamScheduleDoesNotExists]현재 해당 날짜에 선수 예측이 불가능합니다
+  - [PredictPlayerNotCompleted]해당 날짜의 예측이 존재하지 않습니다
+    `,
+  })
   async updatePlayerPrediction(
     @AccessTokenUser() accessTokenUser: JwtAccessTokenReq,
     @Body() updatePlayerPredictionReq: UpdatePlayerPredictionReq,
