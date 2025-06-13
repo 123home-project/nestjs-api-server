@@ -100,7 +100,7 @@ export class TeamService implements ITeamService {
     });
   }
 
-  async getTeam() {
+  async getTeam(): Promise<TeamRes[]> {
     const team = await this.teamRepository.getTeam();
 
     return plainToInstance(TeamRes, team, {

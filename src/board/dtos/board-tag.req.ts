@@ -3,7 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { BoardType } from '../types/board.type';
 
 export class BoardTagReq {
-  @ApiPropertyOptional({ description: '게시판 타입', default: 'free' })
+  @ApiPropertyOptional({ description: '게시판 타입', default: 'free', example: 'free', enum: BoardType })
   @IsOptional()
   @IsEnum(BoardType)
   boardType: BoardType = 'free';

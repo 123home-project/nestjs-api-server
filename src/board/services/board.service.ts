@@ -50,7 +50,7 @@ export class BoardService implements IBoardService {
     const boardTag = await this.getboardTagById(boardTagId);
 
     if (!boardTag) {
-      throw new BadRequestException('존재하지 않는 게시판 태그입니다.', 'DoesNotExistsBoardTag');
+      throw new BadRequestException('존재하지 않는 게시판 태그입니다', 'DoesNotExistsBoardTag');
     }
 
     const board = new Board();
@@ -71,11 +71,11 @@ export class BoardService implements IBoardService {
     const board = await this.getBoardById(boardId);
 
     if (!board) {
-      throw new BadRequestException('존재하지 않는 게시물입니다.', 'DoesNotExistsBoard');
+      throw new BadRequestException('존재하지 않는 게시물입니다', 'DoesNotExistsBoard');
     }
 
     if (board.user.id !== userId) {
-      throw new UnauthorizedException('해당 게시물을 수정할 권한이 존재하지 않습니다.', 'DoesNotHavePermission');
+      throw new UnauthorizedException('해당 게시물을 수정할 권한이 존재하지 않습니다', 'DoesNotHavePermission');
     }
 
     await this.checkBoardCanBeDeleted(board);
@@ -114,19 +114,19 @@ export class BoardService implements IBoardService {
     const parentComment = await this.getBoardCommentById(parentCommentId);
 
     if (!board) {
-      throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
+      throw new BadRequestException('존재하지 않는 게시글입니다', 'DoesNotExistsBoard');
     }
 
     if (tagUserId && !tagUser) {
-      throw new BadRequestException('존재하지 않는 유저입니다.', 'DoesNotExistsTagUser');
+      throw new BadRequestException('존재하지 않는 유저입니다', 'DoesNotExistsTagUser');
     }
 
     if (parentCommentId && !parentComment) {
-      throw new BadRequestException('존재하지 않는 원댓글입니다.', 'DoesNotExistsParentComment');
+      throw new BadRequestException('존재하지 않는 원댓글입니다', 'DoesNotExistsParentComment');
     }
 
     if (parentCommentId && parentComment.parentComment) {
-      throw new BadRequestException('대댓글에는 댓글을 작성할 수 없습니다.', 'CanNotWriteCommentInTheReply');
+      throw new BadRequestException('대댓글에는 댓글을 작성할 수 없습니다', 'CanNotWriteCommentInTheReply');
     }
 
     const boardComment = new BoardComment();
@@ -152,18 +152,18 @@ export class BoardService implements IBoardService {
     const boardComment = await this.getBoardCommentById(boardCommentId);
 
     if (!boardComment) {
-      throw new BadRequestException('존재하지 않는 댓글입니다.', 'DoesNotExistsBoardComment');
+      throw new BadRequestException('존재하지 않는 댓글입니다', 'DoesNotExistsBoardComment');
     }
 
     if (boardComment.user.id !== userId) {
       throw new BadRequestException(
-        '해당 댓글을 수정할 권한이 존재하지 않습니다.',
+        '해당 댓글을 수정할 권한이 존재하지 않습니다',
         'DoesNotHavePermissionModifyBoardComment',
       );
     }
 
     if (tagUserId && !tagUser) {
-      throw new BadRequestException('존재하지 않는 유저입니다.', 'DoesNotExistsTagUser');
+      throw new BadRequestException('존재하지 않는 유저입니다', 'DoesNotExistsTagUser');
     }
 
     await this.boardCommentRepository.updateBoardComment(boardCommentId, tagUserId, comment);
@@ -175,12 +175,12 @@ export class BoardService implements IBoardService {
     const boardComment = await this.getBoardCommentById(boardCommentId);
 
     if (!boardComment) {
-      throw new BadRequestException('존재하지 않는 댓글입니다.', 'DoesNotExistsBoardComment');
+      throw new BadRequestException('존재하지 않는 댓글입니다', 'DoesNotExistsBoardComment');
     }
 
     if (boardComment.user.id !== userId) {
       throw new BadRequestException(
-        '해당 댓글을 삭제할 권한이 존재하지 않습니다.',
+        '해당 댓글을 삭제할 권한이 존재하지 않습니다',
         'DoesNotHavePermissionDeleteBoardComment',
       );
     }
@@ -196,14 +196,14 @@ export class BoardService implements IBoardService {
     const user = await this.userService.getUserById(userId);
 
     if (!board) {
-      throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
+      throw new BadRequestException('존재하지 않는 게시글입니다', 'DoesNotExistsBoard');
     }
 
     const checkBoardLike = await this.boardLikeRepository.getBoardLikeByBoardIdAndUserId(boardId, userId);
 
     if (checkBoardLike) {
       throw new BadRequestException(
-        '동일한 게시물에 여러번 좋아요/싫어요 체크가 불가능합니다.',
+        '동일한 게시물에 여러번 좋아요/싫어요 체크가 불가능합니다',
         'CanNotMultipleLikeSameBoard',
       );
     }
@@ -224,13 +224,13 @@ export class BoardService implements IBoardService {
     const board = await this.getBoardById(boardId);
 
     if (!board) {
-      throw new BadRequestException('존재하지 않는 게시글입니다.', 'DoesNotExistsBoard');
+      throw new BadRequestException('존재하지 않는 게시글입니다', 'DoesNotExistsBoard');
     }
 
     const boardLike = await this.boardLikeRepository.getBoardLikeByBoardIdAndUserId(boardId, userId);
 
     if (!boardLike) {
-      throw new BadRequestException('좋아요 이력이 존재하지 않습니다.', 'DoesNotExistsBoardLike');
+      throw new BadRequestException('좋아요 이력이 존재하지 않습니다', 'DoesNotExistsBoardLike');
     }
 
     await this.boardLikeRepository.deleteBoardLikeById(boardLike.id);
@@ -313,7 +313,7 @@ export class BoardService implements IBoardService {
       board.boardTypes === BoardType.free ? FREE_STAR_BOARD_CONDITION : TEAM_STAR_BOARD_CONDITION;
 
     if (boardCommentCount >= comment || boardLikeCount >= like || boardViewCount >= view) {
-      throw new BadRequestException('스타 게시물은 수정/삭제 할 수 없습니다.', 'StarBoardCanNotBeModified');
+      throw new BadRequestException('스타 게시물은 수정/삭제 할 수 없습니다', 'StarBoardCanNotBeModified');
     }
   }
 

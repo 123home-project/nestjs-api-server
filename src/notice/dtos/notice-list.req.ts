@@ -4,25 +4,25 @@ import { Transform } from 'class-transformer';
 import { NoticeType } from '../types/notice.type';
 
 export class NoticeListReq {
-  @ApiPropertyOptional({ description: '검색 키워드' })
+  @ApiPropertyOptional({ description: '검색 키워드', example: '안녕' })
   @IsOptional()
   @IsString()
   @MinLength(0)
   keyword?: string;
 
-  @ApiPropertyOptional({ description: '게시판 타입', default: 'notice' })
+  @ApiPropertyOptional({ description: '게시판 타입', default: 'notice', example: 'notice', enum: NoticeType })
   @IsOptional()
   @IsEnum(NoticeType)
   noticeType: NoticeType = 'notice';
 
-  @ApiPropertyOptional({ description: '보여줄 개수', default: 100 })
+  @ApiPropertyOptional({ description: '보여줄 개수', default: 100, example: 100 })
   @IsNumber()
   @IsOptional()
   @Min(0)
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
   limit: number = 100;
 
-  @ApiPropertyOptional({ description: '시작 번호', default: 0 })
+  @ApiPropertyOptional({ description: '시작 번호', default: 0, example: 0 })
   @IsNumber()
   @IsOptional()
   @Min(0)

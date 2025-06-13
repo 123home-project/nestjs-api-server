@@ -15,6 +15,8 @@ async function bootstrap() {
     module.hot.dispose(() => app.close());
   }
 
+  app.enableCors();
+
   const options = new DocumentBuilder()
     .setTitle('일이삼홈 API 문서')
     .setDescription('일이삼홈 API 문서')

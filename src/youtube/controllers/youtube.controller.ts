@@ -6,6 +6,7 @@ import { JwtAccessTokenReq } from 'src/auth/dtos/jwt-access-token.req';
 import { AccessTokenUser } from 'src/auth/decorators/access-token.decorator';
 import { ProvideYoutubeBaseballReq } from '../dtos/provide-youtube-baseball.req';
 import { YoutubeBaseballReq } from '../dtos/youtube-baseball.req';
+import { YoutubeBaseballRes } from '../dtos/youtube-baseball.res';
 
 @Controller('youtube')
 export class YoutubeController {
@@ -22,8 +23,8 @@ export class YoutubeController {
   }
 
   @Get('/baseball')
-  @ApiOkResponse({ description: '유튜브 야구관 영상 리스트' })
-  async getYoutubeBasball(@Query() youtubeBaseballReq: YoutubeBaseballReq) {
+  @ApiOkResponse({ description: '유튜브 야구관 영상 리스트', type: YoutubeBaseballRes })
+  async getYoutubeBasball(@Query() youtubeBaseballReq: YoutubeBaseballReq): Promise<YoutubeBaseballRes> {
     return await this.youtubeService.getYoutubeBasball(youtubeBaseballReq);
   }
 }

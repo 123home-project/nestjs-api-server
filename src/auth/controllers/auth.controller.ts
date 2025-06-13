@@ -68,7 +68,11 @@ export class AuthController {
   @Post('/refresh-token')
   @UseGuards(RefreshTokenAuthGuard)
   @ApiCreatedResponse({ description: '인증 토큰 재발급', type: AuthTokenRes })
-  @ApiUnauthorizedResponse({ description: '유효하지 않은 토큰' })
+  @ApiUnauthorizedResponse({
+    description: `
+  - [Unauthorized]올바르지 않은 토큰
+    `,
+  })
   async convertRefreshToken(@RefreshTokenUser() refreshTokenUser: JwtRefreshTokenReq): Promise<AuthTokenRes> {
     return await this.authService.convertRefreshToken(refreshTokenUser);
   }
@@ -76,20 +80,33 @@ export class AuthController {
   @Post('/login')
   @UseGuards(LocalAuthGuard)
   @ApiCreatedResponse({ description: '일반 로그인', type: AuthTokenRes })
+  @ApiUnauthorizedResponse({
+    description: `
+  - [Unauthorized]올바르지 않은 아이디 혹은 비밀번호
+    `,
+  })
   localLogin(@LocalUserId() userId: number): Promise<AuthTokenRes> {
     return this.authService.localLogin(userId);
   }
 
   @Post('/register')
   @ApiCreatedResponse({ description: '회원가입', type: AuthTokenRes })
-  @ApiBadRequestResponse({ description: '이미 가입된 계정 이메일입니다.' })
+  @ApiBadRequestResponse({
+    description: `
+  - [EmailAlreadyExists]이미 가입된 계정 이메일입니다
+    `,
+  })
   async localRegister(@Body() localRegisterReq: LocalRegisterReq): Promise<AuthTokenRes> {
     return await this.authService.localRegister(localRegisterReq);
   }
 
   @Get('/email')
   @ApiOkResponse({ description: '이메일 인증' })
-  @ApiUnauthorizedResponse({ description: '인증 시간 초과' })
+  @ApiUnauthorizedResponse({
+    description: `
+  - [VerifyTimeOut]인증 시간이 초과되었습니다
+    `,
+  })
   async verifyRegisterEmail(@Query('emailauthtoken') emailauthtoken: string) {
     return await this.authService.verifyRegisterEmail(emailauthtoken);
   }
@@ -109,7 +126,11 @@ export class AuthController {
 
   @Patch('/password-reset')
   @ApiCreatedResponse({ description: '비밀번호 재설정' })
-  @ApiUnauthorizedResponse({ description: '인증 시간 초과' })
+  @ApiUnauthorizedResponse({
+    description: `
+  - [VerifyTimeOut]인증 시간이 초과되었습니다
+    `,
+  })
   async resetPassword(@Body() passwordResetReq: PasswordResetReq) {
     return await this.authService.resetPassword(passwordResetReq);
   }

@@ -78,7 +78,7 @@ export class AuthService implements IAuthService {
     const emailAuthTokenJson = JSON.parse(this.cryptoService.twoWayDecrypt(emailauthtoken));
 
     if (emailAuthTokenJson.expire < Number(new Date())) {
-      throw new UnauthorizedException('인증 시간이 초과되었습니다.', 'VerifyTimeOut');
+      throw new UnauthorizedException('인증 시간이 초과되었습니다', 'VerifyTimeOut');
     }
 
     await this.userService.verifyUserAccountByUserId(emailAuthTokenJson.userId);
